@@ -33108,7 +33108,7 @@ var Navbar = function (_React$Component) {
             ),
             _react2.default.createElement(
               'a',
-              { className: 'navbar-brand', href: '{{ rootUrl }}/' },
+              { className: 'navbar-brand', href: '/' },
               'Swatch it!'
             )
           ),
@@ -33123,7 +33123,7 @@ var Navbar = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'a',
-                  { href: '{{ rootUrl }}/brands' },
+                  { href: '/brands' },
                   'Brands'
                 )
               ),
@@ -33132,7 +33132,7 @@ var Navbar = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'a',
-                  { href: '{{ rootUrl }}/import-images' },
+                  { href: '/import-images' },
                   'Import images'
                 )
               )

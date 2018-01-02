@@ -184,7 +184,7 @@ app.get('*', (req, res) => {
     res.redirect(301, context.url);
   } else {
     // we're good, send the response
-    res.send(markup);
+    res.render('app.html.twig', { markup });
   }
 });
 
