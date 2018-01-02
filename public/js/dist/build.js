@@ -1490,14 +1490,14 @@ module.exports = function () {
 };
 
 },{"events":50,"uberproto":151}],16:[function(require,module,exports){
-const {
-  hooks,
-  validateArguments,
-  isPromise
-} = require('@feathersjs/commons');
+const { hooks, validateArguments, isPromise } = require('@feathersjs/commons');
 
 const {
-  createHookObject, getHooks, processHooks, enableHooks, makeArguments
+  createHookObject,
+  getHooks,
+  processHooks,
+  enableHooks,
+  makeArguments
 } = hooks;
 
 // A service mixin that adds `service.hooks()` method and functionality
@@ -1540,7 +1540,6 @@ const hookMixin = exports.hookMixin = function hookMixin (service) {
       // Create the hook object that gets passed through
       const hookObject = createHookObject(method, args, {
         type: 'before', // initial hook object type
-        returnHook,
         service,
         app
       });
@@ -1581,8 +1580,8 @@ const hookMixin = exports.hookMixin = function hookMixin (service) {
         })
         .then(hookObject =>
           // Finally, return the result
-          // Or the hook object if the `__returnHook` flag is set
-          hookObject.returnHook ? hookObject : hookObject.result
+          // Or the hook object if the `returnHook` flag is set
+          returnHook ? hookObject : hookObject.result
         )
         // Handle errors
         .catch(error => {
@@ -1602,16 +1601,14 @@ const hookMixin = exports.hookMixin = function hookMixin (service) {
           return processHooks
             .call(service, hookChain, errorHookObject)
             .then(hook => {
-              if (errorHookObject.returnHook) {
-                // Return either the complete hook if the `__returnHook` flag is set
-                return Promise.reject(hook);
-              } else if (hook.result) {
-                // Return the result if it is set so you can swallow errors
-                return Promise.resolve(hook.result);
+              if (returnHook) {
+                // Either resolve or reject with the hook object
+                return hook.result ? hook : Promise.reject(hook);
               }
 
-              // If none of the above, return the error
-              return Promise.reject(hook.error);
+              // Otherwise return either the result if set (to swallow errors)
+              // Or reject with the hook error
+              return hook.result ? hook.result : Promise.reject(hook.error);
             });
         });
     };
@@ -1659,7 +1656,7 @@ module.exports = createApplication;
 module.exports.default = createApplication;
 
 },{"./application":14,"./version":18,"uberproto":151}],18:[function(require,module,exports){
-module.exports = '3.0.2';
+module.exports = '3.0.3';
 
 },{}],19:[function(require,module,exports){
 module.exports = require('./lib/client');

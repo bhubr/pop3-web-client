@@ -7,6 +7,10 @@ const socketio = require('@feathersjs/socketio');
 const config   = require('./config');
 const usersSrv = require('./services/users');
 const _        = require('lodash');
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { StaticRouter } from 'react-router';
+import App from './components/DummyApp';
 
 function transformFields(fields) {
   return function(data) {
@@ -155,18 +159,42 @@ app.service('users').hooks({
   }
 });
 
+// server (not the complete story)
+// <StaticRouter
+//   location={req.url}
+//   context={context}
+// >
+//   <App/>
+// </StaticRouter>
 
-app.get('/', (req, res) => {
-  res.render('index.html.twig');
+app.get('*', (req, res) => {
+  // res.render('index.html.twig');
+  const context = {};
+  const markup = ReactDOMServer.renderToString(
+    <StaticRouter
+      location={req.url}
+      context={context}
+    >
+      <App/>
+    </StaticRouter>
+  );
+
+  if (context.url) {
+    // Somewhere a `<Redirect>` was rendered
+    res.redirect(301, context.url);
+  } else {
+    // we're good, send the response
+    res.send(markup);
+  }
 });
 
-app.get('/login', (req, res) => {
-  res.render('login.html.twig');
-});
-
-app.get('/register', (req, res) => {
-  res.render('register.html.twig');
-});
+// app.get('/login', (req, res) => {
+//   res.render('login.html.twig');
+// });
+//
+// app.get('/register', (req, res) => {
+//   res.render('register.html.twig');
+// });
 
 
 
