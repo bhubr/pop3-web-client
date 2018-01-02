@@ -14,7 +14,9 @@ function compile(watch, done) {
       .plugin(pathmod(), {mods: [
         pathmod.mod.dir('node_modules', __dirname + '/node_modules'),
       ]})
-      .transform(babel, { presets: ['es2015', 'react'] })
+      // Transform JSX      https://github.com/andreypopp/reactify/issues/58
+      // Fix unexpected ... https://github.com/babel/babel-loader/issues/170
+      .transform(babel, { presets: ['es2015', 'stage-0', 'react'] })
   );
 
   function rebundle() {

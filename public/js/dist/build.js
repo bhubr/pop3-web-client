@@ -28760,6 +28760,10 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _Register = require('../common/components/Register');
+
+var _Register2 = _interopRequireDefault(_Register);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28783,8 +28787,13 @@ var HelloMessage = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
-        'Hello ',
-        this.props.name
+        _react2.default.createElement(
+          'div',
+          null,
+          'Hello ',
+          this.props.name
+        ),
+        _react2.default.createElement(_Register2.default, null)
       );
     }
   }]);
@@ -28809,6 +28818,199 @@ app.authenticate({
 var mountNode = document.getElementById('app');
 _reactDom2.default.render(_react2.default.createElement(HelloMessage, { name: 'Muthu' }), mountNode);
 
-},{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"react":93,"react-dom":90,"socket.io-client":98}]},{},[114])
+},{"../common/components/Register":115,"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"react":93,"react-dom":90,"socket.io-client":98}],115:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Register = function (_React$Component) {
+  _inherits(Register, _React$Component);
+
+  // https://reactjs.org/docs/forms.html#controlled-components
+  function Register(props) {
+    _classCallCheck(this, Register);
+
+    var _this = _possibleConstructorReturn(this, (Register.__proto__ || Object.getPrototypeOf(Register)).call(this, props));
+
+    _this.state = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      passwordsMatch: true
+    };
+
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.checkPasswordsMatch = _this.checkPasswordsMatch.bind(_this);
+    return _this;
+  }
+
+  _createClass(Register, [{
+    key: 'handleChange',
+    value: function handleChange(event) {
+      console.log(this.state);
+      var _event$target = event.target,
+          name = _event$target.name,
+          value = _event$target.value;
+
+      var changedValues = _defineProperty({}, name, value);
+      if (name.startsWith('password')) {
+        changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
+      }
+      this.setState(function (prevState, props) {
+        return Object.assign(_extends({}, prevState), changedValues);
+      });
+    }
+  }, {
+    key: 'checkPasswordsMatch',
+    value: function checkPasswordsMatch(name, value) {
+      var checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
+      console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
+      return this.state[checkAgainst] === value;
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+      if (!this.state.passwordsMatch) {
+        return;
+      }
+      fetch('/users', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.state)
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'container' },
+        _react2.default.createElement(
+          'section',
+          { className: 'signup_form row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-md-6 col-md-offset-3' },
+            _react2.default.createElement(
+              'div',
+              { className: 'login-panel panel panel-default' },
+              _react2.default.createElement(
+                'div',
+                { className: 'panel-body' },
+                _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.handleSubmit, role: 'form' },
+                  _react2.default.createElement(
+                    'fieldset',
+                    null,
+                    _react2.default.createElement(
+                      'legend',
+                      null,
+                      'Sign up'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'First name',
+                        name: 'firstName',
+                        type: 'text',
+                        value: this.state.firstName,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Last name',
+                        name: 'lastName',
+                        type: 'text',
+                        value: this.state.lastName,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Email',
+                        name: 'email',
+                        type: 'email',
+                        value: this.state.email,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group ' + (this.state.passwordsMatch ? '' : 'has-error') },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Password',
+                        name: 'password',
+                        type: 'password',
+                        value: this.state.password,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group ' + (this.state.passwordsMatch ? '' : 'has-error') },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Password',
+                        name: 'passwordConfirm',
+                        type: 'password',
+                        value: this.state.passwordConfirm,
+                        onChange: this.handleChange })
+                    )
+                  ),
+                  _react2.default.createElement('i', { className: 'divider' }),
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
+                    'Join'
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Register;
+}(_react2.default.Component);
+
+exports.default = Register;
+
+},{"react":93}]},{},[114])
 
 //# sourceMappingURL=build.js.map

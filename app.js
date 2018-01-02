@@ -6,6 +6,18 @@ const jwt      = require('@feathersjs/authentication-jwt');
 const socketio = require('@feathersjs/socketio');
 const config   = require('./config');
 const usersSrv = require('./services/users');
+const _        = require('lodash');
+
+function transformFields(fields) {
+  return function(data) {
+    let output = {};
+    fields.forEach(f => {
+      output[ _.snakeCase(f) ] = data[f];
+    });
+    console.log('transformed', data, output);
+    return output;
+  };
+}
 
 class Messages {
   constructor() {
@@ -116,7 +128,11 @@ app.service('users').hooks({
       auth.hooks.authenticate('jwt')
     ],
     create: [
-      local.hooks.hashPassword({ passwordField: 'password' })
+      local.hooks.hashPassword({ passwordField: 'password' }),
+      function(context) {
+        console.log(context.data, arguments);
+        context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
+      }
     ]
   }
 });

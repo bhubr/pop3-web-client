@@ -5,10 +5,14 @@ import localstorage from 'feathers-localstorage';
 import authentication from '@feathersjs/authentication-client';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Register from '../common/components/Register';
 
 class HelloMessage extends React.Component {
   render() {
-    return <div>Hello {this.props.name}</div>;
+    return <div>
+      <div>Hello {this.props.name}</div>
+      <Register />
+    </div>;
   }
 }
 
