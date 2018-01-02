@@ -19,7 +19,6 @@ export default class Register extends React.Component {
   }
 
   handleChange(event) {
-    console.log(this.state)
     const { name, value } = event.target;
     let changedValues = { [name]: value };
     if(name.startsWith('password')) {
@@ -54,13 +53,13 @@ export default class Register extends React.Component {
   render() {
     return (
       <div className="container">
-        <section className="signup_form row">
+        <section className="row">
           <div className="col-md-6 col-md-offset-3">
-            <div className="login-panel panel panel-default">
+            <div className="panel panel-default">
               <div className="panel-body">
                 <form onSubmit={this.handleSubmit} role="form">
                   <fieldset>
-                    <legend>Sign up</legend>
+                    <legend>Register</legend>
                     <div className="col-md-12 form-group">
                       <input
                         className="form-control"

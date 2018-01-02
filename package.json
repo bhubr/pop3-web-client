@@ -22,8 +22,6 @@
     "knex": "^0.14.2",
     "lodash": "^4.17.4",
     "mysql": "^2.15.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
     "twig": "^1.10.5"
   },
   "devDependencies": {
@@ -44,6 +42,9 @@
     "gulp-uglify": "^3.0.0",
     "gulplog": "^1.0.0",
     "pathmodify": "^0.5.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
     "rollup-stream": "^1.24.1",
     "socket.io-client": "^2.0.4",
     "vinyl-buffer": "^1.0.1",

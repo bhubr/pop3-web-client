@@ -1,36 +1,37 @@
-import io from 'socket.io-client';
-import feathers from '@feathersjs/feathers';
-import socketio from '@feathersjs/socketio-client';
-import localstorage from 'feathers-localstorage';
-import authentication from '@feathersjs/authentication-client';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Register from '../common/components/Register';
+import Login from '../common/components/Login';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 
-class HelloMessage extends React.Component {
-  render() {
-    return <div>
-      <div>Hello {this.props.name}</div>
-      <Register />
-    </div>;
-  }
-}
+const MyApp = () => (
+  <Router>
+    <div>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/register">Register</Link></li>
+        <li><Link to="/login">Login</Link></li>
+      </ul>
 
-const socket = io('http://localhost:3008/');
-const app = feathers()
-  .configure(socketio(socket)) // you could use Primus or REST instead
-  .configure(authentication({ storage: window.localStorage }));
+      <hr/>
 
-app.authenticate({
-  strategy: 'local',
-  email: 'pat@ytc.tls',
-  password: 'pat'
-}).then(function(result){
-  console.log('Authenticated!', result);
-}).catch(function(error){
-  console.error('Error authenticating!', error);
-});
+      <Route exact path="/" component={Home}/>
+      <Route path="/register" component={Register}/>
+      <Route path="/login" component={Login}/>
+    </div>
+  </Router>
+);
+
+const Home = () => (
+  <div>
+    <h2>Home</h2>
+  </div>
+);
 
 
 var mountNode = document.getElementById('app');
-ReactDOM.render(<HelloMessage name='Muthu' />, mountNode);
+ReactDOM.render(<MyApp />, mountNode);
