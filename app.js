@@ -117,6 +117,13 @@ app.service('authentication').hooks({
     remove: [
       auth.hooks.authenticate('jwt')
     ]
+  },
+  after: {
+    create: [
+      context => {
+        context.result.userId = context.params.user.id;
+      }
+    ]
   }
 });
 
@@ -132,6 +139,17 @@ app.service('users').hooks({
       function(context) {
         console.log(context.data, arguments);
         context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
+      }
+    ]
+  },
+  after: {
+    get: [
+      context => {
+        context.result.firstName = context.result.first_name;
+        context.result.lastName = context.result.last_name;
+        delete context.result.password;
+        delete context.result.first_name;
+        delete context.result.last_name;
       }
     ]
   }

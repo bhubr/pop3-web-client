@@ -1,15 +1,11 @@
 import React from 'react';
-// import { users, app } from '../../client/feathers';
 import simpleAuth from '../../client/simpleAuth';
 
 export default class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
-    this.state = {
-      email: '',
-      password: ''
-    };
+    this.state = simpleAuth.user;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,13 +21,9 @@ export default class Login extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-
-    simpleAuth.authenticate(this.state)
-      .then(function(result){
-        console.log('Authenticated!', result);
-      }).catch(function(error){
-        console.error('Error authenticating!', error);
-      });
+    console.log('submit profile', {
+      ...this.state
+    });
 
   }
 
@@ -44,9 +36,29 @@ export default class Login extends React.Component {
               <div className="panel-body">
                 <form onSubmit={this.handleSubmit} role="form">
                   <fieldset>
-                    <legend>Login</legend>
-                    <div className="col-md-12 form-group">
+                    <legend>Profile</legend>
 
+                    <div className="col-md-12 form-group">
+                      <input
+                        className="form-control"
+                        placeholder="First name"
+                        name="firstName"
+                        type="text"
+                        value={this.state.firstName}
+                        onChange={this.handleChange} />
+                    </div>
+
+                    <div className="col-md-12 form-group">
+                      <input
+                        className="form-control"
+                        placeholder="Last name"
+                        name="lastName"
+                        type="text"
+                        value={this.state.lastName}
+                        onChange={this.handleChange} />
+                    </div>
+
+                    <div className="col-md-12 form-group">
                       <input
                         className="form-control"
                         placeholder="Email"
@@ -69,7 +81,7 @@ export default class Login extends React.Component {
                   </fieldset>
 
                   <i className="divider"></i>
-                  <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Login</button>
+                  <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Update profile</button>
                 </form>
               </div>
             </div>

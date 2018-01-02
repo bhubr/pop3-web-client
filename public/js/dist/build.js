@@ -32762,6 +32762,8 @@ exports.app = app;
 },{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"socket.io-client":137}],156:[function(require,module,exports){
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -32782,9 +32784,19 @@ var _Login = require('../common/components/Login');
 
 var _Login2 = _interopRequireDefault(_Login);
 
+var _Profile = require('../common/components/Profile');
+
+var _Profile2 = _interopRequireDefault(_Profile);
+
+var _simpleAuth = require('./simpleAuth');
+
+var _simpleAuth2 = _interopRequireDefault(_simpleAuth);
+
 var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var MyApp = function MyApp() {
   return _react2.default.createElement(
@@ -32796,7 +32808,8 @@ var MyApp = function MyApp() {
       _react2.default.createElement(_Navbar2.default, { user: { email: 'joe@foo.bar' } }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: Home }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default })
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
+      _react2.default.createElement(PrivateRoute, { path: '/profile', component: _Profile2.default })
     )
   );
 };
@@ -32813,10 +32826,64 @@ var Home = function Home() {
   );
 };
 
+var PrivateRoute = function PrivateRoute(_ref) {
+  var Component = _ref.component,
+      rest = _objectWithoutProperties(_ref, ['component']);
+
+  return _react2.default.createElement(_reactRouterDom.Route, _extends({}, rest, { render: function render(props) {
+      return _simpleAuth2.default.user ? _react2.default.createElement(Component, props) : _react2.default.createElement(_reactRouterDom.Redirect, { to: {
+          pathname: '/login',
+          state: { from: props.location }
+        } });
+    } }));
+};
+
 var mountNode = document.getElementById('app');
 _reactDom2.default.render(_react2.default.createElement(MyApp, null), mountNode);
 
-},{"../common/components/Login":157,"../common/components/Navbar":158,"../common/components/Register":159,"react":131,"react-dom":103,"react-router-dom":115}],157:[function(require,module,exports){
+},{"../common/components/Login":158,"../common/components/Navbar":159,"../common/components/Profile":160,"../common/components/Register":161,"./simpleAuth":157,"react":131,"react-dom":103,"react-router-dom":115}],157:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _feathers = require('./feathers');
+
+var simpleAuth = {
+  // isAuthenticated: false,
+  user: null,
+  authenticate: function authenticate(credentials) {
+    var self = this;
+    var email = credentials.email;
+
+    return _feathers.app.authenticate(_extends({}, credentials, {
+      strategy: 'local'
+    })).then(function (result) {
+      console.log('Authenticated!', result);
+      _feathers.users.get(result.userId).then(function (user) {
+        console.log('got user', user);
+        self.user = user;
+      });
+    }).catch(function (error) {
+      console.error('Error authenticating!', error);
+    });
+  },
+  signout: function signout(cb) {
+    self.user = null;
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        return resolve(true);
+      }, 100);
+    });
+  }
+};
+
+exports.default = simpleAuth;
+
+},{"./feathers":155}],158:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32831,7 +32898,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _feathers = require('../../client/feathers');
+var _simpleAuth = require('../../client/simpleAuth');
+
+var _simpleAuth2 = _interopRequireDefault(_simpleAuth);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32842,8 +32911,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import { users, app } from '../../client/feathers';
 
-console.log('login component', _feathers.users, _feathers.app);
 
 var Login = function (_React$Component) {
   _inherits(Login, _React$Component);
@@ -32880,20 +32949,8 @@ var Login = function (_React$Component) {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
-      // fetch('/users', {
-      //   method: 'POST',
-      //   headers: {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify(this.state)
-      // });
-      console.log(_extends({}, this.state, {
-        strategy: 'local'
-      }), _feathers.app);
-      _feathers.app.authenticate(_extends({}, this.state, {
-        strategy: 'local'
-      })).then(function (result) {
+
+      _simpleAuth2.default.authenticate(this.state).then(function (result) {
         console.log('Authenticated!', result);
       }).catch(function (error) {
         console.error('Error authenticating!', error);
@@ -32971,7 +33028,7 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"../../client/feathers":155,"react":131}],158:[function(require,module,exports){
+},{"../../client/simpleAuth":157,"react":131}],159:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33099,7 +33156,164 @@ var Navbar = function (_React$Component) {
 
 exports.default = Navbar;
 
-},{"react":131,"react-router-dom":115}],159:[function(require,module,exports){
+},{"react":131,"react-router-dom":115}],160:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _simpleAuth = require('../../client/simpleAuth');
+
+var _simpleAuth2 = _interopRequireDefault(_simpleAuth);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Login = function (_React$Component) {
+  _inherits(Login, _React$Component);
+
+  // https://reactjs.org/docs/forms.html#controlled-components
+  function Login(props) {
+    _classCallCheck(this, Login);
+
+    var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
+
+    _this.state = _simpleAuth2.default.user;
+
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    return _this;
+  }
+
+  _createClass(Login, [{
+    key: 'handleChange',
+    value: function handleChange(event) {
+      var _event$target = event.target,
+          name = _event$target.name,
+          value = _event$target.value;
+
+      var changedValue = _defineProperty({}, name, value);
+      this.setState(function (prevState, props) {
+        return Object.assign(_extends({}, prevState), changedValue);
+      });
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+      console.log('submit profile', _extends({}, this.state));
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'container' },
+        _react2.default.createElement(
+          'section',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-md-6 col-md-offset-3' },
+            _react2.default.createElement(
+              'div',
+              { className: 'panel panel-default' },
+              _react2.default.createElement(
+                'div',
+                { className: 'panel-body' },
+                _react2.default.createElement(
+                  'form',
+                  { onSubmit: this.handleSubmit, role: 'form' },
+                  _react2.default.createElement(
+                    'fieldset',
+                    null,
+                    _react2.default.createElement(
+                      'legend',
+                      null,
+                      'Profile'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'First name',
+                        name: 'firstName',
+                        type: 'text',
+                        value: this.state.firstName,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Last name',
+                        name: 'lastName',
+                        type: 'text',
+                        value: this.state.lastName,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Email',
+                        name: 'email',
+                        type: 'email',
+                        value: this.state.email,
+                        onChange: this.handleChange })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'col-md-12 form-group' },
+                      _react2.default.createElement('input', {
+                        className: 'form-control',
+                        placeholder: 'Password',
+                        name: 'password',
+                        type: 'password',
+                        value: this.state.password,
+                        onChange: this.handleChange })
+                    )
+                  ),
+                  _react2.default.createElement('i', { className: 'divider' }),
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
+                    'Update profile'
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Login;
+}(_react2.default.Component);
+
+exports.default = Login;
+
+},{"../../client/simpleAuth":157,"react":131}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
