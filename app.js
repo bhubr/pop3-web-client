@@ -1,5 +1,11 @@
 const feathers = require('@feathersjs/feathers');
 const express  = require('@feathersjs/express');
+const auth     = require('@feathersjs/authentication');
+const local    = require('@feathersjs/authentication-local');
+const jwt      = require('@feathersjs/authentication-jwt');
+const socketio = require('@feathersjs/socketio');
+const config   = require('./config');
+const usersSrv = require('./services/users');
 
 class Messages {
   constructor() {
@@ -63,14 +69,71 @@ class Messages {
 const app = express(feathers());
 
 // Turn on JSON parser for REST services
-app.use(express.json());
-// Turn on URL-encoded parser for REST services
-app.use(express.urlencoded({ extended: true }));
-// Set up REST transport
-app.configure(express.rest());
-// Initialize the messages service by creating
-// a new instance of our class
-app.use('messages', new Messages());
+app
+  .use(express.json())
+  // Turn on URL-encoded parser for REST services
+  .use(express.urlencoded({ extended: true }))
+  // Static assets
+  .use(express.static(__dirname + '/public'))
+  // Set up REST transport
+  .configure(express.rest())
+  // Socket IO
+  .configure(socketio())
+
+  // Local&JWT auth
+  .configure(auth({
+    secret: config.secret
+  }))
+  .configure(local())
+  .configure(jwt())
+
+  // Initialize the messages service by creating
+  // a new instance of our class
+  .use('messages', new Messages())
+  .use('users', usersSrv)
+
+  // Set Twig.js as view engine
+  .set('view engine', 'twig');
+
+// Auth hooks
+app.service('authentication').hooks({
+  before: {
+    create: [
+      // You can chain multiple strategies
+      auth.hooks.authenticate(['jwt', 'local'])
+    ],
+    remove: [
+      auth.hooks.authenticate('jwt')
+    ]
+  }
+});
+
+// Add a hook to the user service that automatically replaces
+// the password with a hash of the password before saving it.
+app.service('users').hooks({
+  before: {
+    find: [
+      auth.hooks.authenticate('jwt')
+    ],
+    create: [
+      local.hooks.hashPassword({ passwordField: 'password' })
+    ]
+  }
+});
+
+
+app.get('/', (req, res) => {
+  res.render('index.html.twig');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login.html.twig');
+});
+
+app.get('/register', (req, res) => {
+  res.render('register.html.twig');
+});
+
 
 const server = app.listen(3008);
 

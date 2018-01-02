@@ -1,0 +1,28 @@
+.polish a {
+  color: #fff;
+}
+.polish-crop {
+  max-height: 600px;
+}
+.pad-bottom {
+  padding-bottom: 15px;
+}
+
+#google-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.g-thumb img {
+  max-height: 100px;
+}
+
+.g-thumb img.selected {
+  border: 2px solid green;
+  box-sizing: border-box;
+}
+
+#google-fullsize img {
+  max-width: 100%;
+  max-height: 250px;
+}
