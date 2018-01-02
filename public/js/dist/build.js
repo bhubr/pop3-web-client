@@ -32770,6 +32770,10 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _Navbar = require('../common/components/Navbar');
+
+var _Navbar2 = _interopRequireDefault(_Navbar);
+
 var _Register = require('../common/components/Register');
 
 var _Register2 = _interopRequireDefault(_Register);
@@ -32789,38 +32793,7 @@ var MyApp = function MyApp() {
     _react2.default.createElement(
       'div',
       null,
-      _react2.default.createElement(
-        'ul',
-        null,
-        _react2.default.createElement(
-          'li',
-          null,
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/' },
-            'Home'
-          )
-        ),
-        _react2.default.createElement(
-          'li',
-          null,
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/register' },
-            'Register'
-          )
-        ),
-        _react2.default.createElement(
-          'li',
-          null,
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/login' },
-            'Login'
-          )
-        )
-      ),
-      _react2.default.createElement('hr', null),
+      _react2.default.createElement(_Navbar2.default, { user: { email: 'joe@foo.bar' } }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: Home }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default })
@@ -32843,7 +32816,7 @@ var Home = function Home() {
 var mountNode = document.getElementById('app');
 _reactDom2.default.render(_react2.default.createElement(MyApp, null), mountNode);
 
-},{"../common/components/Login":157,"../common/components/Register":158,"react":131,"react-dom":103,"react-router-dom":115}],157:[function(require,module,exports){
+},{"../common/components/Login":157,"../common/components/Navbar":158,"../common/components/Register":159,"react":131,"react-dom":103,"react-router-dom":115}],157:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32999,6 +32972,134 @@ var Login = function (_React$Component) {
 exports.default = Login;
 
 },{"../../client/feathers":155,"react":131}],158:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function LinkItem(props) {
+  return _react2.default.createElement(
+    'li',
+    null,
+    _react2.default.createElement(
+      _reactRouterDom.Link,
+      { to: props.href },
+      props.label
+    )
+  );
+}
+
+var Navbar = function (_React$Component) {
+  _inherits(Navbar, _React$Component);
+
+  function Navbar() {
+    _classCallCheck(this, Navbar);
+
+    return _possibleConstructorReturn(this, (Navbar.__proto__ || Object.getPrototypeOf(Navbar)).apply(this, arguments));
+  }
+
+  _createClass(Navbar, [{
+    key: 'render',
+    value: function render() {
+      var user = this.props.user;
+
+      var rightMenu = user ? [{ href: '/profile', label: user.email }] : [{ href: '/login', label: 'Login' }, { href: '/register', label: 'Register' }];
+      var menuItems = rightMenu.map(function (link, index) {
+        return _react2.default.createElement(LinkItem, { key: index, href: link.href, label: link.label });
+      });
+      // key={index.toString()}
+      //  (
+      //   <li><a href="/profile/">{this.props.user.email}</a></li>
+      // ) : (
+      //   <li><a href="/login/">Login</a></li>
+      //   <li><a href="/register/">Register</a></li>
+      // );
+      return _react2.default.createElement(
+        'nav',
+        { className: 'navbar navbar-default' },
+        _react2.default.createElement(
+          'div',
+          { className: 'container' },
+          _react2.default.createElement(
+            'div',
+            { className: 'navbar-header' },
+            _react2.default.createElement(
+              'button',
+              { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#bs-example-navbar-collapse-1' },
+              _react2.default.createElement(
+                'span',
+                { className: 'sr-only' },
+                'Toggle Navigation'
+              ),
+              _react2.default.createElement('span', { className: 'icon-bar' }),
+              _react2.default.createElement('span', { className: 'icon-bar' }),
+              _react2.default.createElement('span', { className: 'icon-bar' })
+            ),
+            _react2.default.createElement(
+              'a',
+              { className: 'navbar-brand', href: '{{ rootUrl }}/' },
+              'Swatch it!'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'collapse navbar-collapse', id: 'bs-example-navbar-collapse-1' },
+            _react2.default.createElement(
+              'ul',
+              { className: 'nav navbar-nav' },
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { href: '{{ rootUrl }}/brands' },
+                  'Brands'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { href: '{{ rootUrl }}/import-images' },
+                  'Import images'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'ul',
+              { className: 'nav navbar-nav pull-right' },
+              menuItems
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Navbar;
+}(_react2.default.Component);
+
+exports.default = Navbar;
+
+},{"react":131,"react-router-dom":115}],159:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Navbar from '../common/components/Navbar';
 import Register from '../common/components/Register';
 import Login from '../common/components/Login';
 import {
@@ -11,13 +12,7 @@ import {
 const MyApp = () => (
   <Router>
     <div>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/register">Register</Link></li>
-        <li><Link to="/login">Login</Link></li>
-      </ul>
-
-      <hr/>
+      <Navbar user={{email:'joe@foo.bar'}}/>
 
       <Route exact path="/" component={Home}/>
       <Route path="/register" component={Register}/>
