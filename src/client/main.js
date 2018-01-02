@@ -3,6 +3,14 @@ import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
 import localstorage from 'feathers-localstorage';
 import authentication from '@feathersjs/authentication-client';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class HelloMessage extends React.Component {
+  render() {
+    return <div>Hello {this.props.name}</div>;
+  }
+}
 
 const socket = io('http://localhost:3008/');
 const app = feathers()
@@ -18,3 +26,7 @@ app.authenticate({
 }).catch(function(error){
   console.error('Error authenticating!', error);
 });
+
+
+var mountNode = document.getElementById('app');
+ReactDOM.render(<HelloMessage name='Muthu' />, mountNode);
