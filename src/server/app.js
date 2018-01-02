@@ -10,7 +10,7 @@ const _        = require('lodash');
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
-import App from './components/DummyApp';
+import MyApp from './components/MyApp';
 
 function transformFields(fields) {
   return function(data) {
@@ -175,7 +175,7 @@ app.get('*', (req, res) => {
       location={req.url}
       context={context}
     >
-      <App/>
+      <MyApp/>
     </StaticRouter>
   );
 

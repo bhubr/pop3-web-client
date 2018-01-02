@@ -1,6 +1,6 @@
 import React from 'react';
 // import { users, app } from '../../client/feathers';
-import simpleAuth from '../../client/simpleAuth';
+// import simpleAuth from '../../common/simpleAuth';
 
 export default class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
@@ -26,12 +26,12 @@ export default class Login extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    simpleAuth.authenticate(this.state)
-      .then(function(result){
-        console.log('Authenticated!', result);
-      }).catch(function(error){
-        console.error('Error authenticating!', error);
-      });
+    // simpleAuth.authenticate(this.state)
+    //   .then(function(result){
+    //     console.log('Authenticated!', result);
+    //   }).catch(function(error){
+    //     console.error('Error authenticating!', error);
+    //   });
 
   }
 

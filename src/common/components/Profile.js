@@ -1,11 +1,12 @@
 import React from 'react';
-import simpleAuth from '../../client/simpleAuth';
+// import simpleAuth from '../../common/simpleAuth';
 
 export default class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
-    this.state = simpleAuth.user;
+    // this.state = simpleAuth.user;
+    this.state =  {};
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
