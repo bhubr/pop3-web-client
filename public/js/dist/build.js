@@ -22088,7 +22088,34 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/components/MyApp":71,"react":64,"react-dom":36,"react-router-dom":48}],69:[function(require,module,exports){
+},{"../common/components/MyApp":72,"react":64,"react-dom":36,"react-router-dom":48}],69:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Dashboard = function Dashboard() {
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h2',
+      null,
+      'Dashboard'
+    )
+  );
+};
+
+exports.default = Dashboard;
+
+},{"react":64}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22115,7 +22142,7 @@ var Home = function Home() {
 
 exports.default = Home;
 
-},{"react":64}],70:[function(require,module,exports){
+},{"react":64}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22258,7 +22285,7 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"react":64}],71:[function(require,module,exports){
+},{"react":64}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22285,33 +22312,94 @@ var _Profile = require('./Profile');
 
 var _Profile2 = _interopRequireDefault(_Profile);
 
+var _PrivateRoute = require('./PrivateRoute');
+
+var _PrivateRoute2 = _interopRequireDefault(_PrivateRoute);
+
+var _RedirectWithStatus = require('./RedirectWithStatus');
+
+var _RedirectWithStatus2 = _interopRequireDefault(_RedirectWithStatus);
+
 var _Home = require('./Home');
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _PrivateRoute = require('./PrivateRoute');
+var _Dashboard = require('./Dashboard');
 
-var _PrivateRoute2 = _interopRequireDefault(_PrivateRoute);
+var _Dashboard2 = _interopRequireDefault(_Dashboard);
+
+var _Profiles = require('./Profiles');
+
+var _Profiles2 = _interopRequireDefault(_Profiles);
 
 var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var Status = function Status(_ref) {
+  var code = _ref.code,
+      children = _ref.children;
+  return _react2.default.createElement(_reactRouterDom.Route, { render: function render(_ref2) {
+      var staticContext = _ref2.staticContext;
+
+      if (staticContext) {
+        staticContext.status = code;
+      }
+      return children;
+    } });
+};
+
+// import simpleAuth from './simpleAuth';
+
+
+var NotFound = function NotFound() {
+  return _react2.default.createElement(
+    Status,
+    { code: 404 },
+    _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'h1',
+        null,
+        'Sorry, can\u2019t find that.'
+      )
+    )
+  );
+};
+
 var MyApp = function MyApp() {
   return _react2.default.createElement(
     'div',
     null,
-    _react2.default.createElement(_Navbar2.default, { user: { email: 'joe@foo.bar' } }),
-    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
-    _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
-    _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
-    _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default })
+    _react2.default.createElement(_Navbar2.default, { user: null }),
+    _react2.default.createElement(
+      _reactRouterDom.Switch,
+      null,
+      _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/profiles', component: _Profiles2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
+      _react2.default.createElement(_RedirectWithStatus2.default, {
+        status: 301,
+        from: '/brands',
+        to: '/profiles'
+      }),
+      _react2.default.createElement(_RedirectWithStatus2.default, {
+        status: 302,
+        from: '/courses',
+        to: '/dashboard'
+      }),
+      _react2.default.createElement(_reactRouterDom.Route, { component: NotFound })
+    )
   );
 };
-// import simpleAuth from './simpleAuth';
+
 exports.default = MyApp;
 
-},{"./Home":69,"./Login":70,"./Navbar":72,"./PrivateRoute":73,"./Profile":74,"./Register":75,"react":64,"react-router-dom":48}],72:[function(require,module,exports){
+},{"./Dashboard":69,"./Home":70,"./Login":71,"./Navbar":73,"./PrivateRoute":74,"./Profile":75,"./Profiles":76,"./RedirectWithStatus":77,"./Register":78,"react":64,"react-router-dom":48}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22418,8 +22506,8 @@ var Navbar = function (_React$Component) {
                 null,
                 _react2.default.createElement(
                   'a',
-                  { href: '/import-images' },
-                  'Import images'
+                  { href: '/courses' },
+                  'Courses'
                 )
               )
             ),
@@ -22439,7 +22527,7 @@ var Navbar = function (_React$Component) {
 
 exports.default = Navbar;
 
-},{"react":64,"react-router-dom":48}],73:[function(require,module,exports){
+},{"react":64,"react-router-dom":48}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22482,7 +22570,7 @@ var PrivateRoute = function PrivateRoute(_ref) {
 
 exports.default = PrivateRoute;
 
-},{"react":64,"react-router-dom":48}],74:[function(require,module,exports){
+},{"react":64,"react-router-dom":48}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22638,7 +22726,68 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"react":64}],75:[function(require,module,exports){
+},{"react":64}],76:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Profiles = function Profiles() {
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'h2',
+      null,
+      'Profiles'
+    )
+  );
+};
+
+exports.default = Profiles;
+
+},{"react":64}],77:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RedirectWithStatus = function RedirectWithStatus(_ref) {
+  var from = _ref.from,
+      to = _ref.to,
+      status = _ref.status;
+  return _react2.default.createElement(_reactRouterDom.Route, { render: function render(_ref2) {
+      var staticContext = _ref2.staticContext;
+
+      // there is no `staticContext` on the client, so
+      // we need to guard against that here
+      console.log('context', staticContext, from, to, status);
+      if (staticContext) {
+        staticContext.status = status;
+      }
+      return _react2.default.createElement(_reactRouterDom.Redirect, { from: from, to: to });
+    } });
+};
+
+exports.default = RedirectWithStatus;
+
+},{"react":64,"react-router-dom":48}],78:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

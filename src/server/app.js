@@ -170,6 +170,7 @@ app.service('users').hooks({
 app.get('*', (req, res) => {
   // res.render('index.html.twig');
   const context = {};
+  console.log('req.url / context', req.url, context);
   const markup = ReactDOMServer.renderToString(
     <StaticRouter
       location={req.url}
@@ -178,13 +179,16 @@ app.get('*', (req, res) => {
       <MyApp/>
     </StaticRouter>
   );
+  console.log('context after', context);
+
+  const status = context.status ? context.status : 200;
 
   if (context.url) {
     // Somewhere a `<Redirect>` was rendered
-    res.redirect(301, context.url);
+    res.redirect(status, context.url);
   } else {
     // we're good, send the response
-    res.render('app.html.twig', { markup });
+    res.status(status).render('app.html.twig', { markup });
   }
 });
 
