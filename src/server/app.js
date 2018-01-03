@@ -7,9 +7,11 @@ const socketio = require('@feathersjs/socketio');
 const config   = require('./config');
 const usersSrv = require('./services/users');
 const _        = require('lodash');
+const Promise  = require('bluebird');
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
+import { matchPath } from 'react-router-dom';
 import MyApp from './components/MyApp';
 
 function transformFields(fields) {
@@ -91,6 +93,8 @@ class Messages {
 
 const app = express(feathers());
 
+const messagesSrv = new Messages();
+
 // Turn on JSON parser for REST services
 app
   .use(express.json())
@@ -112,7 +116,7 @@ app
 
   // Initialize the messages service by creating
   // a new instance of our class
-  .use('api/messages', new Messages())
+  .use('api/messages', messagesSrv)
   .use('users', usersSrv)
 
   // Set Twig.js as view engine
@@ -173,30 +177,61 @@ app.service('users').hooks({
 // >
 //   <App/>
 // </StaticRouter>
+const routes = [{
+  path: '/messages',
+  loadData: async function() {
+    const messages = await messagesSrv.find();
+    return { messages };
+  }
+}];
 
 app.get('*', (req, res) => {
-  // res.render('index.html.twig');
-  const context = {};
-  console.log('req.url / context', req.url, context);
-  const markup = ReactDOMServer.renderToString(
-    <StaticRouter
-      location={req.url}
-      context={context}
-    >
-      <MyApp/>
-    </StaticRouter>
-  );
-  console.log('context after', context);
 
-  const status = context.status ? context.status : 200;
+  // inside a request
+  const promises = [];
+  // use `some` to imitate `<Switch>` behavior of selecting only
+  // the first to match
+  routes.some(route => {
+    // console.log('route', req.url, route);
+    // use `matchPath` here
+    const match = matchPath(req.url, route);
+    if (match) {
+      // console.log('it matches!', match);
+      promises.push(route.loadData(match));
+    }
+    return match;
+  });
 
-  if (context.url) {
-    // Somewhere a `<Redirect>` was rendered
-    res.redirect(status, context.url);
-  } else {
-    // we're good, send the response
-    res.status(status).render('app.html.twig', { markup });
-  }
+  Promise.all(promises).then(data => {
+    const state = JSON.stringify(data[0]);
+    console.log('Got data', data, state);
+    // do something w/ the data so the client
+    // can access it then render the app
+
+    const context = {};
+    console.log('req.url / context', req.url, context);
+    const markup = ReactDOMServer.renderToString(
+      <StaticRouter
+        location={req.url}
+        context={context}
+      >
+        <MyApp/>
+      </StaticRouter>
+    );
+    console.log('context after', context);
+
+    const status = context.status ? context.status : 200;
+
+    if (context.url) {
+      // Somewhere a `<Redirect>` was rendered
+      res.redirect(status, context.url);
+    } else {
+      // we're good, send the response
+      res.status(status).render('app.html.twig', { markup, state });
+    }
+  });
+
+
 });
 
 // app.get('/login', (req, res) => {

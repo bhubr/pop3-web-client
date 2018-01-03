@@ -17,6 +17,7 @@
     "@feathersjs/express": "^1.1.2",
     "@feathersjs/feathers": "^3.0.3",
     "@feathersjs/socketio": "^3.0.1",
+    "bluebird": "^3.5.1",
     "express": "^4.16.2",
     "feathers-knex": "^3.0.1",
     "knex": "^0.14.2",

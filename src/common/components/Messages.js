@@ -11,9 +11,14 @@ class MessageItem extends React.Component {
 class Messages extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      messages: []
-    };
+    if( typeof window !== 'undefined' ) {
+      console.log('FOUND STATE', window.initialState);
+    }
+    this.state =
+      typeof window !== 'undefined' ? window.initialState :
+        {
+          messages: []
+        };
   }
 
   componentDidMount() {

@@ -7,7 +7,8 @@ import PrivateRoute from './PrivateRoute';
 import RedirectWithStatus from './RedirectWithStatus';
 import Home from './Home';
 import Dashboard from './Dashboard';
-import Messages from './Messages';
+// import Messages from './Messages';
+import routes from './routes';
 
 // import simpleAuth from './simpleAuth';
 import {
@@ -44,7 +45,11 @@ const MyApp = () => (
       <Route exact path="/" component={Home}/>
       <Route path="/register" component={Register}/>
       <Route path="/login" component={Login}/>
-      <Route path="/messages" component={Messages}/>
+      {/*<Route path="/messages" component={Messages}/>*/}
+      {routes.map(route => (
+        <Route key={route.path} {...route}/>
+      ))}
+
       <Route path="/dashboard" component={Dashboard}/>
       {/* some other routes */}
       <RedirectWithStatus

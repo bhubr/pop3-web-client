@@ -22337,7 +22337,10 @@ var Messages = function (_React$Component2) {
 
     var _this2 = _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).call(this, props));
 
-    _this2.state = {
+    if (typeof window !== 'undefined') {
+      console.log('FOUND STATE', window.initialState);
+    }
+    _this2.state = typeof window !== 'undefined' ? window.initialState : {
       messages: []
     };
     return _this2;
@@ -22391,6 +22394,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+// import Messages from './Messages';
+
+
+// import simpleAuth from './simpleAuth';
+
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -22427,9 +22437,9 @@ var _Dashboard = require('./Dashboard');
 
 var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
-var _Messages = require('./Messages');
+var _routes = require('./routes');
 
-var _Messages2 = _interopRequireDefault(_Messages);
+var _routes2 = _interopRequireDefault(_routes);
 
 var _reactRouterDom = require('react-router-dom');
 
@@ -22447,9 +22457,6 @@ var Status = function Status(_ref) {
       return children;
     } });
 };
-
-// import simpleAuth from './simpleAuth';
-
 
 var NotFound = function NotFound() {
   return _react2.default.createElement(
@@ -22479,7 +22486,9 @@ var MyApp = function MyApp() {
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/messages', component: _Messages2.default }),
+      _routes2.default.map(function (route) {
+        return _react2.default.createElement(_reactRouterDom.Route, _extends({ key: route.path }, route));
+      }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
       _react2.default.createElement(_RedirectWithStatus2.default, {
         status: 301,
@@ -22498,7 +22507,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":69,"./Home":70,"./Login":71,"./Messages":72,"./Navbar":74,"./PrivateRoute":75,"./Profile":76,"./RedirectWithStatus":77,"./Register":78,"react":64,"react-router-dom":48}],74:[function(require,module,exports){
+},{"./Dashboard":69,"./Home":70,"./Login":71,"./Navbar":74,"./PrivateRoute":75,"./Profile":76,"./RedirectWithStatus":77,"./Register":78,"./routes":79,"react":64,"react-router-dom":48}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23051,6 +23060,24 @@ var Register = function (_React$Component) {
 
 exports.default = Register;
 
-},{"react":64}]},{},[68])
+},{"react":64}],79:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Messages = require('./Messages');
+
+var _Messages2 = _interopRequireDefault(_Messages);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = [{
+  path: '/messages',
+  component: _Messages2.default
+}];
+
+},{"./Messages":72}]},{},[68])
 
 //# sourceMappingURL=build.js.map
