@@ -22088,7 +22088,7 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/components/MyApp":72,"react":64,"react-dom":36,"react-router-dom":48}],69:[function(require,module,exports){
+},{"../common/components/MyApp":73,"react":64,"react-dom":36,"react-router-dom":48}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22292,6 +22292,105 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MessageItem = function (_React$Component) {
+  _inherits(MessageItem, _React$Component);
+
+  function MessageItem() {
+    _classCallCheck(this, MessageItem);
+
+    return _possibleConstructorReturn(this, (MessageItem.__proto__ || Object.getPrototypeOf(MessageItem)).apply(this, arguments));
+  }
+
+  _createClass(MessageItem, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'li',
+        null,
+        this.props.text
+      );
+    }
+  }]);
+
+  return MessageItem;
+}(_react2.default.Component);
+
+var Messages = function (_React$Component2) {
+  _inherits(Messages, _React$Component2);
+
+  function Messages(props) {
+    _classCallCheck(this, Messages);
+
+    var _this2 = _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).call(this, props));
+
+    _this2.state = {
+      messages: []
+    };
+    return _this2;
+  }
+
+  _createClass(Messages, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      console.log('component did mount');
+      fetch('/api/messages').then(function (response) {
+        return response.json();
+      }).then(function (messages) {
+        console.log(messages);
+        _this3.setState({ messages: messages });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var messages = this.state.messages.map(function (m) {
+        return _react2.default.createElement(MessageItem, { key: m.id, text: m.text });
+      });
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h2',
+          null,
+          'Messages'
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          messages
+        )
+      );
+    }
+  }]);
+
+  return Messages;
+}(_react2.default.Component);
+
+exports.default = Messages;
+
+},{"react":64}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -22328,9 +22427,9 @@ var _Dashboard = require('./Dashboard');
 
 var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
-var _Profiles = require('./Profiles');
+var _Messages = require('./Messages');
 
-var _Profiles2 = _interopRequireDefault(_Profiles);
+var _Messages2 = _interopRequireDefault(_Messages);
 
 var _reactRouterDom = require('react-router-dom');
 
@@ -22380,12 +22479,12 @@ var MyApp = function MyApp() {
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/profiles', component: _Profiles2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/messages', component: _Messages2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
       _react2.default.createElement(_RedirectWithStatus2.default, {
         status: 301,
         from: '/brands',
-        to: '/profiles'
+        to: '/messages'
       }),
       _react2.default.createElement(_RedirectWithStatus2.default, {
         status: 302,
@@ -22399,7 +22498,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":69,"./Home":70,"./Login":71,"./Navbar":73,"./PrivateRoute":74,"./Profile":75,"./Profiles":76,"./RedirectWithStatus":77,"./Register":78,"react":64,"react-router-dom":48}],73:[function(require,module,exports){
+},{"./Dashboard":69,"./Home":70,"./Login":71,"./Messages":72,"./Navbar":74,"./PrivateRoute":75,"./Profile":76,"./RedirectWithStatus":77,"./Register":78,"react":64,"react-router-dom":48}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22527,7 +22626,7 @@ var Navbar = function (_React$Component) {
 
 exports.default = Navbar;
 
-},{"react":64,"react-router-dom":48}],74:[function(require,module,exports){
+},{"react":64,"react-router-dom":48}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22570,7 +22669,7 @@ var PrivateRoute = function PrivateRoute(_ref) {
 
 exports.default = PrivateRoute;
 
-},{"react":64,"react-router-dom":48}],75:[function(require,module,exports){
+},{"react":64,"react-router-dom":48}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22725,33 +22824,6 @@ var Login = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Login;
-
-},{"react":64}],76:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Profiles = function Profiles() {
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'h2',
-      null,
-      'Profiles'
-    )
-  );
-};
-
-exports.default = Profiles;
 
 },{"react":64}],77:[function(require,module,exports){
 'use strict';

@@ -25,8 +25,14 @@ function transformFields(fields) {
 
 class Messages {
   constructor() {
-    this.messages = [];
-    this.currentId = 0;
+    this.messages = [{
+      id: 1,
+      text: 'This is a dummy message'
+    }, {
+      id: 2,
+      text: 'This is another dummy text'
+    }];
+    this.currentId = 2;
   }
 
   async find(params) {
@@ -51,7 +57,8 @@ class Messages {
     // Create a new object with the original data and an id
     // taken from the incrementing `currentId` counter
     const message = Object.assign({
-      id: ++this.currentId
+      id: ++this.currentId,
+      text: 'N/A'
     }, data);
 
     this.messages.push(message);
@@ -105,7 +112,7 @@ app
 
   // Initialize the messages service by creating
   // a new instance of our class
-  .use('messages', new Messages())
+  .use('api/messages', new Messages())
   .use('users', usersSrv)
 
   // Set Twig.js as view engine
