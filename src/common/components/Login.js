@@ -12,7 +12,7 @@ class Login extends React.Component {
       email: '',
       password: ''
     };
-    console.log('Login props', this.props);
+    // console.log('Login props', this.props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);

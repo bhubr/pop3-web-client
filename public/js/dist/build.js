@@ -34821,9 +34821,21 @@ var clientAPI = function () {
       var self = this;
       var email = credentials.email;
 
-      return _feathers.app.authenticate(_extends({}, credentials, {
-        strategy: 'local'
-      })).then(function (result) {
+      return fetch('/authentication', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(_extends({}, credentials, { strategy: 'local'
+        }))
+      })
+      // return app.authenticate({
+      //   ...credentials,
+      //   strategy: 'local'
+      // })
+      .then(function (result) {
         console.log('Authenticated!', result);
         return _feathers.users.get(result.userId).then(function (user) {
           console.log('got user', user);
@@ -35338,7 +35350,7 @@ var Login = function (_React$Component) {
       email: '',
       password: ''
     };
-    console.log('Login props', _this.props);
+    // console.log('Login props', this.props);
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);

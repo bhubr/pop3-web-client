@@ -8,6 +8,9 @@ const config   = require('./config');
 const usersSrv = require('./services/users');
 const _        = require('lodash');
 const Promise  = require('bluebird');
+const cookieParser = require('cookie-parser');
+
+import jsonwebtoken from 'jsonwebtoken';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
@@ -102,6 +105,7 @@ const messagesSrv = new Messages();
 
 // Turn on JSON parser for REST services
 app
+  .use(cookieParser())
   .use(express.json())
   // Turn on URL-encoded parser for REST services
   .use(express.urlencoded({ extended: true }))
@@ -114,7 +118,13 @@ app
 
   // Local&JWT auth
   .configure(auth({
-    secret: config.secret
+    secret: config.secret,
+    cookie: {
+      enabled: true, // whether cookie creation is enabled
+      name: 'feathers-jwt', // the cookie name
+      httpOnly: process.env.NODE_ENV === 'production', // when enabled, prevents the client from reading the cookie.
+      secure: process.env.NODE_ENV === 'production' // whether cookies should only be available over HTTPS
+    }
   }))
   .configure(local())
   .configure(jwt())
@@ -126,6 +136,14 @@ app
 
   // Set Twig.js as view engine
   .set('view engine', 'twig');
+
+// app.post('/login', auth.express.authenticate('local', {}),
+//   auth.express.setCookie({ enabled: true }),
+//   function(req, res, next) {
+//     console.log("putain c'est laborieux", req.session, req.feathers, req.cookie);
+//     res.json({ success: true });
+//   }
+// );
 
 // Auth hooks
 app.service('authentication').hooks({
@@ -196,7 +214,27 @@ const routes = [{
   }
 }];
 
-app.get('*', (req, res) => {
+app.get('*', (req, res, next) => {
+  console.log('GET ALL', req.headers, req.cookies);
+  const token = req.cookies['feathers-jwt'];
+  if(! token) {
+    return next();
+  }
+  jsonwebtoken.verify(token, config.secret, function(err, data) {
+    console.log('##### jsonwebtoken.verify err/data', err, data);
+    if(! err) {
+      usersSrv.get(data.userId)
+        .then(user => {
+          console.log("#### got USER", user, req.user);
+          req.user = user;
+
+          next();
+        })
+    }
+  });
+},
+ (req, res) => {
+
 
   // inside a request
   const promises = [];
@@ -214,10 +252,15 @@ app.get('*', (req, res) => {
   });
 
   Promise.all(promises).then(data => {
+
     const state = JSON.stringify(data[0] || {});
     console.log('Got data', data, state);
 
-    const store = initStore({});
+    const { user } = req;
+    const session = { user };
+    const store = initStore({
+      session
+    });
     // do something w/ the data so the client
     // can access it then render the app
 

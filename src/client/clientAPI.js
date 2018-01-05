@@ -18,17 +18,29 @@ class clientAPI {
   authenticateUser(credentials) {
     const self = this;
     const { email } = credentials;
-    return app.authenticate({
-      ...credentials,
-      strategy: 'local'
-    }).then(function(result){
-      console.log('Authenticated!', result);
-      return users.get(result.userId)
-        .then(user => {
-          console.log('got user', user);
-          return user;
-        });
-    });
+    return fetch('/authentication', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        ...credentials, strategy: 'local'
+      })
+    })
+    // return app.authenticate({
+    //   ...credentials,
+    //   strategy: 'local'
+    // })
+      .then(function(result){
+        console.log('Authenticated!', result);
+        return users.get(result.userId)
+          .then(user => {
+            console.log('got user', user);
+            return user;
+          });
+      });
     // .catch(function(error){
     //   console.error('Error authenticating!', error);
     // });

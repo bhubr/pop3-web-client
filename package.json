@@ -18,6 +18,7 @@
     "@feathersjs/feathers": "^3.0.3",
     "@feathersjs/socketio": "^3.0.1",
     "bluebird": "^3.5.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "feathers-knex": "^3.0.1",
     "knex": "^0.14.2",
