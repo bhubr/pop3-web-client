@@ -51,7 +51,7 @@ const MyApp = () => (
       ))}
 
       <Route path="/dashboard" component={Dashboard}/>
-      {/* some other routes */}
+      {/* some other routes
       <RedirectWithStatus
         status={301}
         from="/brands"
@@ -61,7 +61,7 @@ const MyApp = () => (
         status={302}
         from="/courses"
         to="/dashboard"
-      />
+      /> */}
       <Route component={NotFound}/>
     </Switch>
   </div>

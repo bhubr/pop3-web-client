@@ -11,8 +11,10 @@ const Promise  = require('bluebird');
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
+import { Provider } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import MyApp from './components/MyApp';
+import initStore from './initStore';
 
 function transformFields(fields) {
   return function(data) {
@@ -203,20 +205,23 @@ app.get('*', (req, res) => {
   });
 
   Promise.all(promises).then(data => {
-    const state = JSON.stringify(data[0]);
+    const state = JSON.stringify(data[0] || {});
     console.log('Got data', data, state);
+
+    const store = initStore({});
     // do something w/ the data so the client
     // can access it then render the app
 
     const context = {};
     console.log('req.url / context', req.url, context);
     const markup = ReactDOMServer.renderToString(
-      <StaticRouter
-        location={req.url}
-        context={context}
-      >
-        <MyApp/>
-      </StaticRouter>
+      <Provider store={store}>
+        <StaticRouter
+          location={req.url}
+          context={context}>
+          <MyApp/>
+        </StaticRouter>
+      </Provider>
     );
     console.log('context after', context);
 

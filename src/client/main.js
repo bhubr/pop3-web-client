@@ -4,13 +4,21 @@ import MyApp from '../common/components/MyApp';
 import {
   BrowserRouter
 } from 'react-router-dom';
-var mountNode = document.getElementById('app');
+import { Provider } from 'react-redux';
+import initStore from '../common/initStore';
+
+const mountNode = document.getElementById('app');
+
+const initialState = {};
+const store = initStore(initialState);
 
 const MyRoutedApp = () => {
   return (
-    <BrowserRouter>
-      <MyApp />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <MyApp />
+      </BrowserRouter>
+    </Provider>
   );
 };
 

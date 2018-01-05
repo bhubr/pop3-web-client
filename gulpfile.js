@@ -7,7 +7,7 @@ var watchify = require('watchify');
 var babelify = require('babelify');
 var pathmod = require('pathmodify');
 var babel = require('gulp-babel');
-
+var gutil = require('gulp-util');
 //
 function buildClient(watch, done) {
   // var bundler = watchify(
