@@ -11,8 +11,8 @@ class API {
 
   call(action, ...actionArgs) {
     const which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
-    console.log(`API CALL ${which}`, action, actionArgs);
-    return this.strategy[action](actionArgs);
+    console.log(`API CALL ${which}`, action, ...actionArgs);
+    return this.strategy[action](...actionArgs);
   }
 }
 

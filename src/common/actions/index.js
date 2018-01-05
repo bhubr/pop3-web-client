@@ -4,6 +4,7 @@
 //   authenticateUser
 // } from '../api';
 import api from '../api';
+import { browserHistory, hashHistory } from 'react-router';
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
@@ -106,7 +107,11 @@ export function loginUser(user)  {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
     return api.call('authenticateUser', user)
-      .then(user => dispatch(loginUserSuccess(user)))
+      .then(user => {
+        dispatch(loginUserSuccess(user));
+        console.log('DISPATCHED LOGIN SUCCESS', browserHistory, hashHistory);
+        browserHistory.push('/profile');
+      })
       .catch(err => dispatch(loginUserError(err)));
   };
 }
@@ -115,7 +120,7 @@ export function registerUser(user)  {
   return dispatch => {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return insertUser(user)
+    return api.call('insertUser', user)
       .then(user => dispatch(registerUserSuccess(user)))
       .catch(err => dispatch(registerUserError(err)));
   };

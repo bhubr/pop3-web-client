@@ -5,9 +5,14 @@ let id = 0;
 class clientAPI {
 
   insertUser(user) {
-    console.log('INSERT USER CLIENT', user);
-    ++id;
-    return Promise.resolve(Object.assign({...user}, {id}));
+    // console.log('INSERT USER CLIENT', user);
+    // ++id;
+    // return Promise.resolve(Object.assign({...user}, {id}));
+    return users.create(user)
+      .then(result => {
+        console.log('USER CREATED', user);
+        return user;
+      });
   }
 
   authenticateUser(credentials) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { loginUser } from '../actions';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom'
 // import { users, app } from '../../client/feathers';
 // import simpleAuth from '../../common/simpleAuth';
 

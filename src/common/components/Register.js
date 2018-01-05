@@ -1,6 +1,8 @@
 import React from 'react';
+import { registerUser } from '../actions';
+import { connect } from 'react-redux';
 
-export default class Register extends React.Component {
+class Register extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
@@ -40,14 +42,7 @@ export default class Register extends React.Component {
     if(! this.state.passwordsMatch) {
       return;
     }
-    fetch('/users', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.state)
-    });
+    this.props.registerUser(this.state);
   }
 
   render() {
@@ -122,3 +117,17 @@ export default class Register extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    errorMessage: state.users.registerError
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    registerUser: user => dispatch(registerUser(user))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
