@@ -2,11 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MyApp from '../common/components/MyApp';
 import {
-  BrowserRouter
+  Router
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import initStore from '../common/initStore';
 import api from '../common/api';
+import history from '../common/history';
 import clientAPI from './clientAPI';
 api.setStrategy(clientAPI);
 
@@ -18,9 +19,9 @@ const store = initStore(initialState);
 const MyRoutedApp = () => {
   return (
     <Provider store={store}>
-      <BrowserRouter>
+      <Router history={history}>
         <MyApp />
-      </BrowserRouter>
+      </Router>
     </Provider>
   );
 };

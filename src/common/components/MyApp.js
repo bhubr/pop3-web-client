@@ -41,7 +41,8 @@ const MyApp = () => (
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
 
     <Switch>
-      <PrivateRoute path="/profile" component={Profile}/>
+      {/*<PrivateRoute path="/profile" component={Profile}/>*/}
+      <Route path="/profile" component={Profile}/>
       <Route exact path="/" component={Home}/>
       <Route path="/register" component={Register}/>
       <Route path="/login" component={Login}/>

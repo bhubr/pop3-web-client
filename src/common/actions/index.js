@@ -4,7 +4,11 @@
 //   authenticateUser
 // } from '../api';
 import api from '../api';
-import { browserHistory, hashHistory } from 'react-router';
+// let history;
+// if(typeof window !== 'undefined') {
+//   history = require('../')
+// }
+import history from '../history';
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
@@ -21,6 +25,10 @@ export const LOGOUT_USER        = 'LOGOUT_USER';
 export const REGISTER_USER = 'REGISTER_USER';
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
+export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
 // export function increment() {
 //   return { type: INCREMENT };
@@ -74,6 +82,28 @@ export function registerUserError(error) {
   };
 }
 
+export function requestUpdateUser(user) {
+  return {
+    type: UPDATE_USER,
+    user
+  };
+}
+
+export function updateUserSuccess(user) {
+  console.log('registerUserSuccess', user);
+  return {
+    type: UPDATE_USER_SUCCESS,
+    user
+  };
+}
+
+export function updateUserError(error) {
+  return {
+    type: UPDATE_USER_ERROR,
+    error
+  };
+}
+
 export function requestLoginUser(user) {
   return {
     type: LOGIN_USER,
@@ -109,8 +139,8 @@ export function loginUser(user)  {
     return api.call('authenticateUser', user)
       .then(user => {
         dispatch(loginUserSuccess(user));
-        console.log('DISPATCHED LOGIN SUCCESS', browserHistory, hashHistory);
-        browserHistory.push('/profile');
+        console.log('DISPATCHED LOGIN SUCCESS', history);
+        history.push('/profile');
       })
       .catch(err => dispatch(loginUserError(err)));
   };
@@ -123,6 +153,16 @@ export function registerUser(user)  {
     return api.call('insertUser', user)
       .then(user => dispatch(registerUserSuccess(user)))
       .catch(err => dispatch(registerUserError(err)));
+  };
+}
+
+export function updateUser(user)  {
+  return dispatch => {
+    console.log('updateUser', user);
+    dispatch(requestUpdateUser(user));
+    return api.call('updateUser', user)
+      .then(user => dispatch(updateUserSuccess(user)))
+      .catch(err => dispatch(updateUserError(err)));
   };
 }
 

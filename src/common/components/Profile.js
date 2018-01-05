@@ -1,12 +1,22 @@
 import React from 'react';
 // import simpleAuth from '../../common/simpleAuth';
+import { connect } from 'react-redux';
+import {
+  updateUser
+} from '../actions';
 
-export default class Login extends React.Component {
+class Profile extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
-    // this.state = simpleAuth.user;
-    this.state =  {};
+    const {
+      id,
+      firstName,
+      lastName,
+      email
+    } = this.props.user;
+    this.state = { id, firstName, lastName, email };
+    console.log('Profile state', this.state);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,6 +35,7 @@ export default class Login extends React.Component {
     console.log('submit profile', {
       ...this.state
     });
+    this.props.updateUser(this.state);
 
   }
 
@@ -92,3 +103,17 @@ export default class Login extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.session.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    updateUser: props => dispatch(updateUser(props))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

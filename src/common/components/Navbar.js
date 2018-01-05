@@ -2,6 +2,8 @@ import React from 'react';
 import {
   Link
 } from 'react-router-dom';
+import { logoutUser } from '../actions';
+import { connect } from 'react-redux';
 
 function LinkItem(props) {
   return (
@@ -9,18 +11,38 @@ function LinkItem(props) {
   );
 }
 
-export default class Navbar extends React.Component {
+class RightMenuLoggedIn extends React.Component {
+  render() {
+    return (
+      <ul className="nav navbar-nav pull-right">
+        <li><Link to="/profile">{this.props.email}</Link></li>
+        <li><a href="#0" onClick={this.props.logout}>Logout</a></li>
+      </ul>
+    );
+  }
+}
+
+class RightMenuGuest extends React.Component {
+  render() {
+    return (
+      <ul className="nav navbar-nav pull-right">
+        <li><Link to="/login">Login</Link></li>
+        <li><Link to="/register">Register</Link></li>
+      </ul>
+    );
+  }
+}
+
+class Navbar extends React.Component {
   render() {
     const { user } = this.props;
-    const rightMenu = user ? [
-      { href: '/profile', label: user.email }
-    ] : [
-      { href: '/login', label: 'Login' },
-      { href: '/register', label: 'Register' }
-    ];
-    const menuItems = rightMenu.map((link, index) => (
-      <LinkItem key={index} href={link.href} label={link.label} />
-    ));
+    const rightMenu = user ?
+      <RightMenuLoggedIn email={user.email} logout={this.props.onLogout} /> :
+      <RightMenuGuest />;
+    //
+    // const menuItems = rightMenu.map((link, index) => (
+    //   <LinkItem key={index} href={link.href} label={link.label} onClick={link.onClick} />
+    // ));
     // key={index.toString()}
     //  (
     //   <li><a href="/profile/">{this.props.user.email}</a></li>
@@ -47,7 +69,7 @@ export default class Navbar extends React.Component {
               <li><a href="/courses">Courses</a></li>
             </ul>
             <ul className="nav navbar-nav pull-right">
-              {menuItems}
+              {rightMenu}
             </ul>
           </div>
         </div>
@@ -55,3 +77,24 @@ export default class Navbar extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    user: state.session.user
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    // onLogin: () => dispatch(loginUser({ email: 'jonsnow.tv' })),
+    onLogout: event => {
+      event.preventDefault();
+      dispatch(logoutUser());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navbar);

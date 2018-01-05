@@ -34,6 +34,15 @@ class clientAPI {
     // });
   }
 
+  updateUser(user) {
+    const { id, firstName, lastName, email } = user;
+    return users.patch(id, user)
+      .then(user => {
+        console.log('got UPDATED user', user);
+        return user;
+      });
+  }
+
 }
 
 const client = new clientAPI();

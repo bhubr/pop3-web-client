@@ -1402,7 +1402,7 @@ const application = {
 
 module.exports = application;
 
-},{"./events":15,"./hooks":16,"./version":18,"@feathersjs/commons":9,"debug":34,"uberproto":189}],15:[function(require,module,exports){
+},{"./events":15,"./hooks":16,"./version":18,"@feathersjs/commons":9,"debug":34,"uberproto":188}],15:[function(require,module,exports){
 const { EventEmitter } = require('events');
 const Proto = require('uberproto');
 
@@ -1489,7 +1489,7 @@ module.exports = function () {
   };
 };
 
-},{"events":50,"uberproto":189}],16:[function(require,module,exports){
+},{"events":50,"uberproto":188}],16:[function(require,module,exports){
 const { hooks, validateArguments, isPromise } = require('@feathersjs/commons');
 
 const {
@@ -1655,7 +1655,7 @@ module.exports = createApplication;
 // For better ES module (TypeScript) compatibility
 module.exports.default = createApplication;
 
-},{"./application":14,"./version":18,"uberproto":189}],18:[function(require,module,exports){
+},{"./application":14,"./version":18,"uberproto":188}],18:[function(require,module,exports){
 module.exports = '3.0.3';
 
 },{}],19:[function(require,module,exports){
@@ -2198,7 +2198,7 @@ function cloneArrayDeep(arr, instanceClone) {
 
 module.exports = cloneDeep;
 
-},{"for-own":29,"is-plain-object":84,"kind-of":30,"shallow-clone":168}],29:[function(require,module,exports){
+},{"for-own":29,"is-plain-object":84,"kind-of":30,"shallow-clone":167}],29:[function(require,module,exports){
 /*!
  * for-own <https://github.com/jonschlinkert/for-own>
  *
@@ -4853,7 +4853,7 @@ Polling.prototype.uri = function () {
   return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
 };
 
-},{"../transport":38,"component-inherit":33,"debug":45,"engine.io-parser":47,"parseqs":103,"xmlhttprequest-ssl":44,"yeast":192}],43:[function(require,module,exports){
+},{"../transport":38,"component-inherit":33,"debug":45,"engine.io-parser":47,"parseqs":103,"xmlhttprequest-ssl":44,"yeast":191}],43:[function(require,module,exports){
 (function (global){
 /**
  * Module dependencies.
@@ -5144,7 +5144,7 @@ WS.prototype.check = function () {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../transport":38,"component-inherit":33,"debug":45,"engine.io-parser":47,"parseqs":103,"ws":27,"yeast":192}],44:[function(require,module,exports){
+},{"../transport":38,"component-inherit":33,"debug":45,"engine.io-parser":47,"parseqs":103,"ws":27,"yeast":191}],44:[function(require,module,exports){
 (function (global){
 // browser shim for xmlhttprequest module
 
@@ -7699,7 +7699,7 @@ module.exports = function init (options) {
 
 module.exports.Service = Service;
 
-},{"@feathersjs/commons":9,"@feathersjs/errors":13,"clone-deep":28,"sift":171,"uberproto":189}],69:[function(require,module,exports){
+},{"@feathersjs/commons":9,"@feathersjs/errors":13,"clone-deep":28,"sift":170,"uberproto":188}],69:[function(require,module,exports){
 /*!
  * for-in <https://github.com/jonschlinkert/for-in>
  *
@@ -7945,7 +7945,7 @@ var createLocation = exports.createLocation = function createLocation(path, stat
 var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a, b) {
   return a.pathname === b.pathname && a.search === b.search && a.hash === b.hash && a.key === b.key && (0, _valueEqual2.default)(a.state, b.state);
 };
-},{"./PathUtils":75,"resolve-pathname":167,"value-equal":190}],75:[function(require,module,exports){
+},{"./PathUtils":75,"resolve-pathname":166,"value-equal":189}],75:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -8315,7 +8315,7 @@ var createBrowserHistory = function createBrowserHistory() {
 };
 
 exports.default = createBrowserHistory;
-},{"./DOMUtils":73,"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"invariant":83,"warning":191}],77:[function(require,module,exports){
+},{"./DOMUtils":73,"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"invariant":83,"warning":190}],77:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -8640,7 +8640,7 @@ var createHashHistory = function createHashHistory() {
 };
 
 exports.default = createHashHistory;
-},{"./DOMUtils":73,"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"invariant":83,"warning":191}],78:[function(require,module,exports){
+},{"./DOMUtils":73,"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"invariant":83,"warning":190}],78:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -8811,7 +8811,7 @@ var createMemoryHistory = function createMemoryHistory() {
 };
 
 exports.default = createMemoryHistory;
-},{"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"warning":191}],79:[function(require,module,exports){
+},{"./LocationUtils":74,"./PathUtils":75,"./createTransitionManager":79,"warning":190}],79:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -8897,7 +8897,7 @@ var createTransitionManager = function createTransitionManager() {
 };
 
 exports.default = createTransitionManager;
-},{"warning":191}],80:[function(require,module,exports){
+},{"warning":190}],80:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26172,7 +26172,7 @@ module.exports = reactDom;
 
 }).call(this,require('_process'))
 
-},{"_process":105,"fbjs/lib/EventListener":51,"fbjs/lib/ExecutionEnvironment":52,"fbjs/lib/camelizeStyleName":54,"fbjs/lib/containsNode":55,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/focusNode":58,"fbjs/lib/getActiveElement":59,"fbjs/lib/hyphenateStyleName":61,"fbjs/lib/invariant":62,"fbjs/lib/shallowEqual":65,"fbjs/lib/warning":66,"object-assign":102,"prop-types/checkPropTypes":106,"react":157}],112:[function(require,module,exports){
+},{"_process":105,"fbjs/lib/EventListener":51,"fbjs/lib/ExecutionEnvironment":52,"fbjs/lib/camelizeStyleName":54,"fbjs/lib/containsNode":55,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/focusNode":58,"fbjs/lib/getActiveElement":59,"fbjs/lib/hyphenateStyleName":61,"fbjs/lib/invariant":62,"fbjs/lib/shallowEqual":65,"fbjs/lib/warning":66,"object-assign":102,"prop-types/checkPropTypes":106,"react":156}],112:[function(require,module,exports){
 /** @license React v16.2.0
  * react-dom.production.min.js
  *
@@ -26403,7 +26403,7 @@ var Sg={createPortal:Qg,findDOMNode:function(a){if(null==a)return null;if(1===a.
 E("40");return a._reactRootContainer?(Z.unbatchedUpdates(function(){Pg(null,null,a,!1,function(){a._reactRootContainer=null})}),!0):!1},unstable_createPortal:Qg,unstable_batchedUpdates:tc,unstable_deferredUpdates:Z.deferredUpdates,flushSync:Z.flushSync,__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{EventPluginHub:mb,EventPluginRegistry:Va,EventPropagators:Cb,ReactControlledComponent:qc,ReactDOMComponentTree:sb,ReactDOMEventListener:xd}};
 Z.injectIntoDevTools({findFiberByHostInstance:pb,bundleType:0,version:"16.2.0",rendererPackageName:"react-dom"});var Tg=Object.freeze({default:Sg}),Ug=Tg&&Sg||Tg;module.exports=Ug["default"]?Ug["default"]:Ug;
 
-},{"fbjs/lib/EventListener":51,"fbjs/lib/ExecutionEnvironment":52,"fbjs/lib/containsNode":55,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/focusNode":58,"fbjs/lib/getActiveElement":59,"fbjs/lib/shallowEqual":65,"object-assign":102,"react":157}],113:[function(require,module,exports){
+},{"fbjs/lib/EventListener":51,"fbjs/lib/ExecutionEnvironment":52,"fbjs/lib/containsNode":55,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/focusNode":58,"fbjs/lib/getActiveElement":59,"fbjs/lib/shallowEqual":65,"object-assign":102,"react":156}],113:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -26536,7 +26536,7 @@ function createProvider() {
 exports.default = createProvider();
 }).call(this,require('_process'))
 
-},{"../utils/PropTypes":124,"../utils/warning":128,"_process":105,"prop-types":109,"react":157}],115:[function(require,module,exports){
+},{"../utils/PropTypes":124,"../utils/warning":128,"_process":105,"prop-types":109,"react":156}],115:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -26846,7 +26846,7 @@ selectorFactory) {
 }
 }).call(this,require('_process'))
 
-},{"../utils/PropTypes":124,"../utils/Subscription":125,"_process":105,"hoist-non-react-statics":81,"invariant":83,"react":157}],116:[function(require,module,exports){
+},{"../utils/PropTypes":124,"../utils/Subscription":125,"_process":105,"hoist-non-react-statics":81,"invariant":83,"react":156}],116:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27004,7 +27004,7 @@ function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
 }
 
 exports.default = [whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject];
-},{"./wrapMapToProps":122,"redux":165}],118:[function(require,module,exports){
+},{"./wrapMapToProps":122,"redux":164}],118:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27609,7 +27609,7 @@ BrowserRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = BrowserRouter;
-},{"./Router":137,"history/createBrowserHistory":76,"prop-types":109,"react":157,"warning":191}],130:[function(require,module,exports){
+},{"./Router":137,"history/createBrowserHistory":76,"prop-types":109,"react":156,"warning":190}],130:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27678,7 +27678,7 @@ HashRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = HashRouter;
-},{"./Router":137,"history/createHashHistory":77,"prop-types":109,"react":157,"warning":191}],131:[function(require,module,exports){
+},{"./Router":137,"history/createHashHistory":77,"prop-types":109,"react":156,"warning":190}],131:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27789,7 +27789,7 @@ Link.contextTypes = {
   }).isRequired
 };
 exports.default = Link;
-},{"invariant":83,"prop-types":109,"react":157}],132:[function(require,module,exports){
+},{"invariant":83,"prop-types":109,"react":156}],132:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27888,7 +27888,7 @@ NavLink.defaultProps = {
 };
 
 exports.default = NavLink;
-},{"./Link":131,"./Route":136,"prop-types":109,"react":157}],134:[function(require,module,exports){
+},{"./Link":131,"./Route":136,"prop-types":109,"react":156}],134:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28045,7 +28045,7 @@ var _matchPath2 = _interopRequireDefault(_matchPath);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _matchPath2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/matchPath":151}],142:[function(require,module,exports){
+},{"react-router/matchPath":150}],142:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28057,7 +28057,7 @@ var _withRouter2 = _interopRequireDefault(_withRouter);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _withRouter2.default; // Written in this round about way for babel-transform-imports
-},{"react-router/withRouter":154}],143:[function(require,module,exports){
+},{"react-router/withRouter":153}],143:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28127,7 +28127,7 @@ MemoryRouter.propTypes = {
   children: _propTypes2.default.node
 };
 exports.default = MemoryRouter;
-},{"./Router":147,"history/createMemoryHistory":78,"prop-types":109,"react":157,"warning":191}],144:[function(require,module,exports){
+},{"./Router":147,"history/createMemoryHistory":78,"prop-types":109,"react":156,"warning":190}],144:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28218,7 +28218,7 @@ Prompt.contextTypes = {
   }).isRequired
 };
 exports.default = Prompt;
-},{"invariant":83,"prop-types":109,"react":157}],145:[function(require,module,exports){
+},{"invariant":83,"prop-types":109,"react":156}],145:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28327,7 +28327,7 @@ Redirect.contextTypes = {
   }).isRequired
 };
 exports.default = Redirect;
-},{"history":80,"invariant":83,"prop-types":109,"react":157,"warning":191}],146:[function(require,module,exports){
+},{"history":80,"invariant":83,"prop-types":109,"react":156,"warning":190}],146:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28480,7 +28480,7 @@ Route.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = Route;
-},{"./matchPath":151,"invariant":83,"prop-types":109,"react":157,"warning":191}],147:[function(require,module,exports){
+},{"./matchPath":150,"invariant":83,"prop-types":109,"react":156,"warning":190}],147:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28600,7 +28600,7 @@ Router.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = Router;
-},{"invariant":83,"prop-types":109,"react":157,"warning":191}],148:[function(require,module,exports){
+},{"invariant":83,"prop-types":109,"react":156,"warning":190}],148:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28786,7 +28786,7 @@ StaticRouter.childContextTypes = {
   router: _propTypes2.default.object.isRequired
 };
 exports.default = StaticRouter;
-},{"./Router":147,"history/PathUtils":75,"invariant":83,"prop-types":109,"react":157,"warning":191}],149:[function(require,module,exports){
+},{"./Router":147,"history/PathUtils":75,"invariant":83,"prop-types":109,"react":156,"warning":190}],149:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28883,60 +28883,7 @@ Switch.propTypes = {
   location: _propTypes2.default.object
 };
 exports.default = Switch;
-},{"./matchPath":151,"invariant":83,"prop-types":109,"react":157,"warning":191}],150:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports.withRouter = exports.matchPath = exports.Switch = exports.StaticRouter = exports.Router = exports.Route = exports.Redirect = exports.Prompt = exports.MemoryRouter = undefined;
-
-var _MemoryRouter2 = require('./MemoryRouter');
-
-var _MemoryRouter3 = _interopRequireDefault(_MemoryRouter2);
-
-var _Prompt2 = require('./Prompt');
-
-var _Prompt3 = _interopRequireDefault(_Prompt2);
-
-var _Redirect2 = require('./Redirect');
-
-var _Redirect3 = _interopRequireDefault(_Redirect2);
-
-var _Route2 = require('./Route');
-
-var _Route3 = _interopRequireDefault(_Route2);
-
-var _Router2 = require('./Router');
-
-var _Router3 = _interopRequireDefault(_Router2);
-
-var _StaticRouter2 = require('./StaticRouter');
-
-var _StaticRouter3 = _interopRequireDefault(_StaticRouter2);
-
-var _Switch2 = require('./Switch');
-
-var _Switch3 = _interopRequireDefault(_Switch2);
-
-var _matchPath2 = require('./matchPath');
-
-var _matchPath3 = _interopRequireDefault(_matchPath2);
-
-var _withRouter2 = require('./withRouter');
-
-var _withRouter3 = _interopRequireDefault(_withRouter2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.MemoryRouter = _MemoryRouter3.default;
-exports.Prompt = _Prompt3.default;
-exports.Redirect = _Redirect3.default;
-exports.Route = _Route3.default;
-exports.Router = _Router3.default;
-exports.StaticRouter = _StaticRouter3.default;
-exports.Switch = _Switch3.default;
-exports.matchPath = _matchPath3.default;
-exports.withRouter = _withRouter3.default;
-},{"./MemoryRouter":143,"./Prompt":144,"./Redirect":145,"./Route":146,"./Router":147,"./StaticRouter":148,"./Switch":149,"./matchPath":151,"./withRouter":154}],151:[function(require,module,exports){
+},{"./matchPath":150,"invariant":83,"prop-types":109,"react":156,"warning":190}],150:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29014,12 +28961,12 @@ var matchPath = function matchPath(pathname) {
 };
 
 exports.default = matchPath;
-},{"path-to-regexp":153}],152:[function(require,module,exports){
+},{"path-to-regexp":152}],151:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],153:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 var isarray = require('isarray')
 
 /**
@@ -29447,7 +29394,7 @@ function pathToRegexp (path, keys, options) {
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
 
-},{"isarray":152}],154:[function(require,module,exports){
+},{"isarray":151}],153:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29497,7 +29444,7 @@ var withRouter = function withRouter(Component) {
 };
 
 exports.default = withRouter;
-},{"./Route":146,"hoist-non-react-statics":81,"prop-types":109,"react":157}],155:[function(require,module,exports){
+},{"./Route":146,"hoist-non-react-statics":81,"prop-types":109,"react":156}],154:[function(require,module,exports){
 (function (process){
 /** @license React v16.2.0
  * react.development.js
@@ -30859,7 +30806,7 @@ module.exports = react;
 
 }).call(this,require('_process'))
 
-},{"_process":105,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/invariant":62,"fbjs/lib/warning":66,"object-assign":102,"prop-types/checkPropTypes":106}],156:[function(require,module,exports){
+},{"_process":105,"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"fbjs/lib/invariant":62,"fbjs/lib/warning":66,"object-assign":102,"prop-types/checkPropTypes":106}],155:[function(require,module,exports){
 /** @license React v16.2.0
  * react.production.min.js
  *
@@ -30882,7 +30829,7 @@ var U={Children:{map:function(a,b,e){if(null==a)return a;var c=[];T(a,c,null,b,e
 d=a.key,g=a.ref,k=a._owner;if(null!=b){void 0!==b.ref&&(g=b.ref,k=G.current);void 0!==b.key&&(d=""+b.key);if(a.type&&a.type.defaultProps)var f=a.type.defaultProps;for(h in b)H.call(b,h)&&!I.hasOwnProperty(h)&&(c[h]=void 0===b[h]&&void 0!==f?f[h]:b[h])}var h=arguments.length-2;if(1===h)c.children=e;else if(1<h){f=Array(h);for(var l=0;l<h;l++)f[l]=arguments[l+2];c.children=f}return{$$typeof:r,type:a.type,key:d,ref:g,props:c,_owner:k}},createFactory:function(a){var b=J.bind(null,a);b.type=a;return b},
 isValidElement:K,version:"16.2.0",__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED:{ReactCurrentOwner:G,assign:m}},V=Object.freeze({default:U}),W=V&&U||V;module.exports=W["default"]?W["default"]:W;
 
-},{"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"object-assign":102}],157:[function(require,module,exports){
+},{"fbjs/lib/emptyFunction":56,"fbjs/lib/emptyObject":57,"object-assign":102}],156:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -30894,13 +30841,13 @@ if (process.env.NODE_ENV === 'production') {
 
 }).call(this,require('_process'))
 
-},{"./cjs/react.development.js":155,"./cjs/react.production.min.js":156,"_process":105}],158:[function(require,module,exports){
+},{"./cjs/react.development.js":154,"./cjs/react.production.min.js":155,"_process":105}],157:[function(require,module,exports){
 (function (global){
 !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.reduxLogger=e.reduxLogger||{})}(this,function(e){"use strict";function t(e,t){e.super_=t,e.prototype=Object.create(t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}})}function r(e,t){Object.defineProperty(this,"kind",{value:e,enumerable:!0}),t&&t.length&&Object.defineProperty(this,"path",{value:t,enumerable:!0})}function n(e,t,r){n.super_.call(this,"E",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0}),Object.defineProperty(this,"rhs",{value:r,enumerable:!0})}function o(e,t){o.super_.call(this,"N",e),Object.defineProperty(this,"rhs",{value:t,enumerable:!0})}function i(e,t){i.super_.call(this,"D",e),Object.defineProperty(this,"lhs",{value:t,enumerable:!0})}function a(e,t,r){a.super_.call(this,"A",e),Object.defineProperty(this,"index",{value:t,enumerable:!0}),Object.defineProperty(this,"item",{value:r,enumerable:!0})}function f(e,t,r){var n=e.slice((r||t)+1||e.length);return e.length=t<0?e.length+t:t,e.push.apply(e,n),e}function u(e){var t="undefined"==typeof e?"undefined":N(e);return"object"!==t?t:e===Math?"math":null===e?"null":Array.isArray(e)?"array":"[object Date]"===Object.prototype.toString.call(e)?"date":"function"==typeof e.toString&&/^\/.*\//.test(e.toString())?"regexp":"object"}function l(e,t,r,c,s,d,p){s=s||[],p=p||[];var g=s.slice(0);if("undefined"!=typeof d){if(c){if("function"==typeof c&&c(g,d))return;if("object"===("undefined"==typeof c?"undefined":N(c))){if(c.prefilter&&c.prefilter(g,d))return;if(c.normalize){var h=c.normalize(g,d,e,t);h&&(e=h[0],t=h[1])}}}g.push(d)}"regexp"===u(e)&&"regexp"===u(t)&&(e=e.toString(),t=t.toString());var y="undefined"==typeof e?"undefined":N(e),v="undefined"==typeof t?"undefined":N(t),b="undefined"!==y||p&&p[p.length-1].lhs&&p[p.length-1].lhs.hasOwnProperty(d),m="undefined"!==v||p&&p[p.length-1].rhs&&p[p.length-1].rhs.hasOwnProperty(d);if(!b&&m)r(new o(g,t));else if(!m&&b)r(new i(g,e));else if(u(e)!==u(t))r(new n(g,e,t));else if("date"===u(e)&&e-t!==0)r(new n(g,e,t));else if("object"===y&&null!==e&&null!==t)if(p.filter(function(t){return t.lhs===e}).length)e!==t&&r(new n(g,e,t));else{if(p.push({lhs:e,rhs:t}),Array.isArray(e)){var w;e.length;for(w=0;w<e.length;w++)w>=t.length?r(new a(g,w,new i(void 0,e[w]))):l(e[w],t[w],r,c,g,w,p);for(;w<t.length;)r(new a(g,w,new o(void 0,t[w++])))}else{var x=Object.keys(e),S=Object.keys(t);x.forEach(function(n,o){var i=S.indexOf(n);i>=0?(l(e[n],t[n],r,c,g,n,p),S=f(S,i)):l(e[n],void 0,r,c,g,n,p)}),S.forEach(function(e){l(void 0,t[e],r,c,g,e,p)})}p.length=p.length-1}else e!==t&&("number"===y&&isNaN(e)&&isNaN(t)||r(new n(g,e,t)))}function c(e,t,r,n){return n=n||[],l(e,t,function(e){e&&n.push(e)},r),n.length?n:void 0}function s(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":s(o[r.path[n]],r.index,r.item);break;case"D":delete o[r.path[n]];break;case"E":case"N":o[r.path[n]]=r.rhs}}else switch(r.kind){case"A":s(e[t],r.index,r.item);break;case"D":e=f(e,t);break;case"E":case"N":e[t]=r.rhs}return e}function d(e,t,r){if(e&&t&&r&&r.kind){for(var n=e,o=-1,i=r.path?r.path.length-1:0;++o<i;)"undefined"==typeof n[r.path[o]]&&(n[r.path[o]]="number"==typeof r.path[o]?[]:{}),n=n[r.path[o]];switch(r.kind){case"A":s(r.path?n[r.path[o]]:n,r.index,r.item);break;case"D":delete n[r.path[o]];break;case"E":case"N":n[r.path[o]]=r.rhs}}}function p(e,t,r){if(r.path&&r.path.length){var n,o=e[t],i=r.path.length-1;for(n=0;n<i;n++)o=o[r.path[n]];switch(r.kind){case"A":p(o[r.path[n]],r.index,r.item);break;case"D":o[r.path[n]]=r.lhs;break;case"E":o[r.path[n]]=r.lhs;break;case"N":delete o[r.path[n]]}}else switch(r.kind){case"A":p(e[t],r.index,r.item);break;case"D":e[t]=r.lhs;break;case"E":e[t]=r.lhs;break;case"N":e=f(e,t)}return e}function g(e,t,r){if(e&&t&&r&&r.kind){var n,o,i=e;for(o=r.path.length-1,n=0;n<o;n++)"undefined"==typeof i[r.path[n]]&&(i[r.path[n]]={}),i=i[r.path[n]];switch(r.kind){case"A":p(i[r.path[n]],r.index,r.item);break;case"D":i[r.path[n]]=r.lhs;break;case"E":i[r.path[n]]=r.lhs;break;case"N":delete i[r.path[n]]}}}function h(e,t,r){if(e&&t){var n=function(n){r&&!r(e,t,n)||d(e,t,n)};l(e,t,n)}}function y(e){return"color: "+F[e].color+"; font-weight: bold"}function v(e){var t=e.kind,r=e.path,n=e.lhs,o=e.rhs,i=e.index,a=e.item;switch(t){case"E":return[r.join("."),n,"→",o];case"N":return[r.join("."),o];case"D":return[r.join(".")];case"A":return[r.join(".")+"["+i+"]",a];default:return[]}}function b(e,t,r,n){var o=c(e,t);try{n?r.groupCollapsed("diff"):r.group("diff")}catch(e){r.log("diff")}o?o.forEach(function(e){var t=e.kind,n=v(e);r.log.apply(r,["%c "+F[t].text,y(t)].concat(P(n)))}):r.log("—— no diff ——");try{r.groupEnd()}catch(e){r.log("—— diff end —— ")}}function m(e,t,r,n){switch("undefined"==typeof e?"undefined":N(e)){case"object":return"function"==typeof e[n]?e[n].apply(e,P(r)):e[n];case"function":return e(t);default:return e}}function w(e){var t=e.timestamp,r=e.duration;return function(e,n,o){var i=["action"];return i.push("%c"+String(e.type)),t&&i.push("%c@ "+n),r&&i.push("%c(in "+o.toFixed(2)+" ms)"),i.join(" ")}}function x(e,t){var r=t.logger,n=t.actionTransformer,o=t.titleFormatter,i=void 0===o?w(t):o,a=t.collapsed,f=t.colors,u=t.level,l=t.diff,c="undefined"==typeof t.titleFormatter;e.forEach(function(o,s){var d=o.started,p=o.startedTime,g=o.action,h=o.prevState,y=o.error,v=o.took,w=o.nextState,x=e[s+1];x&&(w=x.prevState,v=x.started-d);var S=n(g),k="function"==typeof a?a(function(){return w},g,o):a,j=D(p),E=f.title?"color: "+f.title(S)+";":"",A=["color: gray; font-weight: lighter;"];A.push(E),t.timestamp&&A.push("color: gray; font-weight: lighter;"),t.duration&&A.push("color: gray; font-weight: lighter;");var O=i(S,j,v);try{k?f.title&&c?r.groupCollapsed.apply(r,["%c "+O].concat(A)):r.groupCollapsed(O):f.title&&c?r.group.apply(r,["%c "+O].concat(A)):r.group(O)}catch(e){r.log(O)}var N=m(u,S,[h],"prevState"),P=m(u,S,[S],"action"),C=m(u,S,[y,h],"error"),F=m(u,S,[w],"nextState");if(N)if(f.prevState){var L="color: "+f.prevState(h)+"; font-weight: bold";r[N]("%c prev state",L,h)}else r[N]("prev state",h);if(P)if(f.action){var T="color: "+f.action(S)+"; font-weight: bold";r[P]("%c action    ",T,S)}else r[P]("action    ",S);if(y&&C)if(f.error){var M="color: "+f.error(y,h)+"; font-weight: bold;";r[C]("%c error     ",M,y)}else r[C]("error     ",y);if(F)if(f.nextState){var _="color: "+f.nextState(w)+"; font-weight: bold";r[F]("%c next state",_,w)}else r[F]("next state",w);l&&b(h,w,r,k);try{r.groupEnd()}catch(e){r.log("—— log end ——")}})}function S(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=Object.assign({},L,e),r=t.logger,n=t.stateTransformer,o=t.errorTransformer,i=t.predicate,a=t.logErrors,f=t.diffPredicate;if("undefined"==typeof r)return function(){return function(e){return function(t){return e(t)}}};if(e.getState&&e.dispatch)return console.error("[redux-logger] redux-logger not installed. Make sure to pass logger instance as middleware:\n// Logger with default options\nimport { logger } from 'redux-logger'\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n// Or you can create your own logger with custom options http://bit.ly/redux-logger-options\nimport createLogger from 'redux-logger'\nconst logger = createLogger({\n  // ...options\n});\nconst store = createStore(\n  reducer,\n  applyMiddleware(logger)\n)\n"),function(){return function(e){return function(t){return e(t)}}};var u=[];return function(e){var r=e.getState;return function(e){return function(l){if("function"==typeof i&&!i(r,l))return e(l);var c={};u.push(c),c.started=O.now(),c.startedTime=new Date,c.prevState=n(r()),c.action=l;var s=void 0;if(a)try{s=e(l)}catch(e){c.error=o(e)}else s=e(l);c.took=O.now()-c.started,c.nextState=n(r());var d=t.diff&&"function"==typeof f?f(r,l):t.diff;if(x(u,Object.assign({},t,{diff:d})),u.length=0,c.error)throw c.error;return s}}}}var k,j,E=function(e,t){return new Array(t+1).join(e)},A=function(e,t){return E("0",t-e.toString().length)+e},D=function(e){return A(e.getHours(),2)+":"+A(e.getMinutes(),2)+":"+A(e.getSeconds(),2)+"."+A(e.getMilliseconds(),3)},O="undefined"!=typeof performance&&null!==performance&&"function"==typeof performance.now?performance:Date,N="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},P=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}return Array.from(e)},C=[];k="object"===("undefined"==typeof global?"undefined":N(global))&&global?global:"undefined"!=typeof window?window:{},j=k.DeepDiff,j&&C.push(function(){"undefined"!=typeof j&&k.DeepDiff===c&&(k.DeepDiff=j,j=void 0)}),t(n,r),t(o,r),t(i,r),t(a,r),Object.defineProperties(c,{diff:{value:c,enumerable:!0},observableDiff:{value:l,enumerable:!0},applyDiff:{value:h,enumerable:!0},applyChange:{value:d,enumerable:!0},revertChange:{value:g,enumerable:!0},isConflict:{value:function(){return"undefined"!=typeof j},enumerable:!0},noConflict:{value:function(){return C&&(C.forEach(function(e){e()}),C=null),c},enumerable:!0}});var F={E:{color:"#2196F3",text:"CHANGED:"},N:{color:"#4CAF50",text:"ADDED:"},D:{color:"#F44336",text:"DELETED:"},A:{color:"#2196F3",text:"ARRAY:"}},L={level:"log",logger:console,logErrors:!0,collapsed:void 0,predicate:void 0,duration:!1,timestamp:!0,stateTransformer:function(e){return e},actionTransformer:function(e){return e},errorTransformer:function(e){return e},colors:{title:function(){return"inherit"},prevState:function(){return"#9E9E9E"},action:function(){return"#03A9F4"},nextState:function(){return"#4CAF50"},error:function(){return"#F20404"}},diff:!1,diffPredicate:void 0,transformer:void 0},T=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=e.dispatch,r=e.getState;return"function"==typeof t||"function"==typeof r?S()({dispatch:t,getState:r}):void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n")};e.defaults=L,e.createLogger=S,e.logger=T,e.default=T,Object.defineProperty(e,"__esModule",{value:!0})});
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],159:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30924,7 +30871,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-},{}],160:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30983,7 +30930,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":163}],161:[function(require,module,exports){
+},{"./compose":162}],160:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31035,7 +30982,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],162:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -31182,7 +31129,7 @@ function combineReducers(reducers) {
 }
 }).call(this,require('_process'))
 
-},{"./createStore":164,"./utils/warning":166,"_process":105,"lodash/isPlainObject":98}],163:[function(require,module,exports){
+},{"./createStore":163,"./utils/warning":165,"_process":105,"lodash/isPlainObject":98}],162:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -31219,7 +31166,7 @@ function compose() {
     };
   });
 }
-},{}],164:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31481,7 +31428,7 @@ var ActionTypes = exports.ActionTypes = {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":98,"symbol-observable":185}],165:[function(require,module,exports){
+},{"lodash/isPlainObject":98,"symbol-observable":184}],164:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -31531,7 +31478,7 @@ exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
 
-},{"./applyMiddleware":160,"./bindActionCreators":161,"./combineReducers":162,"./compose":163,"./createStore":164,"./utils/warning":166,"_process":105}],166:[function(require,module,exports){
+},{"./applyMiddleware":159,"./bindActionCreators":160,"./combineReducers":161,"./compose":162,"./createStore":163,"./utils/warning":165,"_process":105}],165:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31557,7 +31504,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],167:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31632,7 +31579,7 @@ function resolvePathname(to) {
 
 exports.default = resolvePathname;
 module.exports = exports['default'];
-},{}],168:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 /*!
  * shallow-clone <https://github.com/jonschlinkert/shallow-clone>
  *
@@ -31699,11 +31646,11 @@ clone.set = function cloneSet(val) {
 
 module.exports = clone;
 
-},{"is-extendable":169,"kind-of":170,"mixin-object":99}],169:[function(require,module,exports){
+},{"is-extendable":168,"kind-of":169,"mixin-object":99}],168:[function(require,module,exports){
 arguments[4][100][0].apply(exports,arguments)
-},{"dup":100,"is-plain-object":84}],170:[function(require,module,exports){
+},{"dup":100,"is-plain-object":84}],169:[function(require,module,exports){
 arguments[4][30][0].apply(exports,arguments)
-},{"dup":30}],171:[function(require,module,exports){
+},{"dup":30}],170:[function(require,module,exports){
 /*
  * Sift 3.x
  *
@@ -32288,7 +32235,7 @@ arguments[4][30][0].apply(exports,arguments)
   }
 })();
 
-},{}],172:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -32384,7 +32331,7 @@ exports.connect = lookup;
 exports.Manager = require('./manager');
 exports.Socket = require('./socket');
 
-},{"./manager":173,"./socket":175,"./url":176,"debug":177,"socket.io-parser":180}],173:[function(require,module,exports){
+},{"./manager":172,"./socket":174,"./url":175,"debug":176,"socket.io-parser":179}],172:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -32959,7 +32906,7 @@ Manager.prototype.onreconnect = function () {
   this.emitAll('reconnect', attempt);
 };
 
-},{"./on":174,"./socket":175,"backo2":24,"component-bind":31,"component-emitter":32,"debug":177,"engine.io-client":36,"indexof":82,"socket.io-parser":180}],174:[function(require,module,exports){
+},{"./on":173,"./socket":174,"backo2":24,"component-bind":31,"component-emitter":32,"debug":176,"engine.io-client":36,"indexof":82,"socket.io-parser":179}],173:[function(require,module,exports){
 
 /**
  * Module exports.
@@ -32985,7 +32932,7 @@ function on (obj, ev, fn) {
   };
 }
 
-},{}],175:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -33405,7 +33352,7 @@ Socket.prototype.compress = function (compress) {
   return this;
 };
 
-},{"./on":174,"component-bind":31,"component-emitter":32,"debug":177,"parseqs":103,"socket.io-parser":180,"to-array":188}],176:[function(require,module,exports){
+},{"./on":173,"component-bind":31,"component-emitter":32,"debug":176,"parseqs":103,"socket.io-parser":179,"to-array":187}],175:[function(require,module,exports){
 (function (global){
 
 /**
@@ -33485,7 +33432,7 @@ function url (uri, loc) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"debug":177,"parseuri":104}],177:[function(require,module,exports){
+},{"debug":176,"parseuri":104}],176:[function(require,module,exports){
 (function (process){
 /**
  * This is the web browser implementation of `debug()`.
@@ -33675,9 +33622,9 @@ function localstorage() {
 
 }).call(this,require('_process'))
 
-},{"./debug":178,"_process":105}],178:[function(require,module,exports){
+},{"./debug":177,"_process":105}],177:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"dup":46,"ms":101}],179:[function(require,module,exports){
+},{"dup":46,"ms":101}],178:[function(require,module,exports){
 (function (global){
 /*global Blob,File*/
 
@@ -33823,7 +33770,7 @@ exports.removeBlobs = function(data, callback) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./is-buffer":181,"isarray":184}],180:[function(require,module,exports){
+},{"./is-buffer":180,"isarray":183}],179:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -34225,7 +34172,7 @@ function error() {
   };
 }
 
-},{"./binary":179,"./is-buffer":181,"component-emitter":32,"debug":182,"has-binary2":70}],181:[function(require,module,exports){
+},{"./binary":178,"./is-buffer":180,"component-emitter":32,"debug":181,"has-binary2":70}],180:[function(require,module,exports){
 (function (global){
 
 module.exports = isBuf;
@@ -34243,7 +34190,7 @@ function isBuf(obj) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],182:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 (function (process){
 /**
  * This is the web browser implementation of `debug()`.
@@ -34433,14 +34380,14 @@ function localstorage() {
 
 }).call(this,require('_process'))
 
-},{"./debug":183,"_process":105}],183:[function(require,module,exports){
+},{"./debug":182,"_process":105}],182:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"dup":46,"ms":101}],184:[function(require,module,exports){
+},{"dup":46,"ms":101}],183:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"dup":71}],185:[function(require,module,exports){
+},{"dup":71}],184:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":186}],186:[function(require,module,exports){
+},{"./lib/index":185}],185:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -34473,7 +34420,7 @@ var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./ponyfill.js":187}],187:[function(require,module,exports){
+},{"./ponyfill.js":186}],186:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34497,7 +34444,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],188:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 module.exports = toArray
 
 function toArray(list, index) {
@@ -34512,7 +34459,7 @@ function toArray(list, index) {
     return array
 }
 
-},{}],189:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 /* global define */
 /**
  * A base object for ECMAScript 5 style prototypal inheritance.
@@ -34656,7 +34603,7 @@ function toArray(list, index) {
 
 }));
 
-},{}],190:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34700,7 +34647,7 @@ function valueEqual(a, b) {
 
 exports.default = valueEqual;
 module.exports = exports['default'];
-},{}],191:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -34765,7 +34712,7 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 
-},{"_process":105}],192:[function(require,module,exports){
+},{"_process":105}],191:[function(require,module,exports){
 'use strict';
 
 var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
@@ -34835,7 +34782,7 @@ yeast.encode = encode;
 yeast.decode = decode;
 module.exports = yeast;
 
-},{}],193:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34887,6 +34834,19 @@ var clientAPI = function () {
       //   console.error('Error authenticating!', error);
       // });
     }
+  }, {
+    key: 'updateUser',
+    value: function updateUser(user) {
+      var id = user.id,
+          firstName = user.firstName,
+          lastName = user.lastName,
+          email = user.email;
+
+      return _feathers.users.patch(id, user).then(function (user) {
+        console.log('got UPDATED user', user);
+        return user;
+      });
+    }
   }]);
 
   return clientAPI;
@@ -34895,7 +34855,7 @@ var clientAPI = function () {
 var client = new clientAPI();
 exports.default = client;
 
-},{"./feathers":194}],194:[function(require,module,exports){
+},{"./feathers":193}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34935,7 +34895,7 @@ var users = app.service('users');
 exports.users = users;
 exports.app = app;
 
-},{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"socket.io-client":172}],195:[function(require,module,exports){
+},{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"socket.io-client":171}],194:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -34962,6 +34922,10 @@ var _api = require('../common/api');
 
 var _api2 = _interopRequireDefault(_api);
 
+var _history = require('../common/history');
+
+var _history2 = _interopRequireDefault(_history);
+
 var _clientAPI = require('./clientAPI');
 
 var _clientAPI2 = _interopRequireDefault(_clientAPI);
@@ -34980,8 +34944,8 @@ var MyRoutedApp = function MyRoutedApp() {
     _reactRedux.Provider,
     { store: store },
     _react2.default.createElement(
-      _reactRouterDom.BrowserRouter,
-      null,
+      _reactRouterDom.Router,
+      { history: _history2.default },
       _react2.default.createElement(_MyApp2.default, null)
     )
   );
@@ -34989,28 +34953,34 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":197,"../common/components/MyApp":202,"../common/initStore":209,"./clientAPI":193,"react":157,"react-dom":113,"react-redux":123,"react-router-dom":140}],196:[function(require,module,exports){
+},{"../common/api":196,"../common/components/MyApp":201,"../common/history":208,"../common/initStore":209,"./clientAPI":192,"react":156,"react-dom":113,"react-redux":123,"react-router-dom":140}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
 exports.requestRegisterUser = requestRegisterUser;
 exports.registerUserSuccess = registerUserSuccess;
 exports.registerUserError = registerUserError;
+exports.requestUpdateUser = requestUpdateUser;
+exports.updateUserSuccess = updateUserSuccess;
+exports.updateUserError = updateUserError;
 exports.requestLoginUser = requestLoginUser;
 exports.logoutUser = logoutUser;
 exports.loginUserSuccess = loginUserSuccess;
 exports.loginUserError = loginUserError;
 exports.loginUser = loginUser;
 exports.registerUser = registerUser;
+exports.updateUser = updateUser;
 
 var _api = require('../api');
 
 var _api2 = _interopRequireDefault(_api);
 
-var _reactRouter = require('react-router');
+var _history = require('../history');
+
+var _history2 = _interopRequireDefault(_history);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35024,6 +34994,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //   authenticateUser
 // } from '../api';
 var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
+// let history;
+// if(typeof window !== 'undefined') {
+//   history = require('../')
+// }
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -35035,6 +35009,10 @@ var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
 var REGISTER_USER = exports.REGISTER_USER = 'REGISTER_USER';
 var REGISTER_USER_SUCCESS = exports.REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 var REGISTER_USER_ERROR = exports.REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+var UPDATE_USER = exports.UPDATE_USER = 'UPDATE_USER';
+var UPDATE_USER_SUCCESS = exports.UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
+var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
 // export function increment() {
 //   return { type: INCREMENT };
@@ -35088,6 +35066,28 @@ function registerUserError(error) {
   };
 }
 
+function requestUpdateUser(user) {
+  return {
+    type: UPDATE_USER,
+    user: user
+  };
+}
+
+function updateUserSuccess(user) {
+  console.log('registerUserSuccess', user);
+  return {
+    type: UPDATE_USER_SUCCESS,
+    user: user
+  };
+}
+
+function updateUserError(error) {
+  return {
+    type: UPDATE_USER_ERROR,
+    error: error
+  };
+}
+
 function requestLoginUser(user) {
   return {
     type: LOGIN_USER,
@@ -35122,8 +35122,8 @@ function loginUser(user) {
     dispatch(requestLoginUser(user));
     return _api2.default.call('authenticateUser', user).then(function (user) {
       dispatch(loginUserSuccess(user));
-      console.log('DISPATCHED LOGIN SUCCESS', _reactRouter.browserHistory, _reactRouter.hashHistory);
-      _reactRouter.browserHistory.push('/profile');
+      console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
+      _history2.default.push('/profile');
     }).catch(function (err) {
       return dispatch(loginUserError(err));
     });
@@ -35138,6 +35138,18 @@ function registerUser(user) {
       return dispatch(registerUserSuccess(user));
     }).catch(function (err) {
       return dispatch(registerUserError(err));
+    });
+  };
+}
+
+function updateUser(user) {
+  return function (dispatch) {
+    console.log('updateUser', user);
+    dispatch(requestUpdateUser(user));
+    return _api2.default.call('updateUser', user).then(function (user) {
+      return dispatch(updateUserSuccess(user));
+    }).catch(function (err) {
+      return dispatch(updateUserError(err));
     });
   };
 }
@@ -35178,7 +35190,7 @@ function registerUser(user) {
 //   };
 // }
 
-},{"../api":197,"react-router":150}],197:[function(require,module,exports){
+},{"../api":196,"../history":208}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35227,7 +35239,7 @@ var API = function () {
 var api = new API();
 exports.default = api;
 
-},{}],198:[function(require,module,exports){
+},{}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35254,7 +35266,7 @@ var Dashboard = function Dashboard() {
 
 exports.default = Dashboard;
 
-},{"react":157}],199:[function(require,module,exports){
+},{"react":156}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35281,7 +35293,7 @@ var Home = function Home() {
 
 exports.default = Home;
 
-},{"react":157}],200:[function(require,module,exports){
+},{"react":156}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35444,7 +35456,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":196,"react":157,"react-redux":123}],201:[function(require,module,exports){
+},{"../actions":195,"react":156,"react-redux":123}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35546,7 +35558,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":157}],202:[function(require,module,exports){
+},{"react":156}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35641,7 +35653,7 @@ var MyApp = function MyApp() {
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
-      _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/profile', component: _Profile2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
@@ -35656,7 +35668,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":198,"./Home":199,"./Login":200,"./Navbar":203,"./PrivateRoute":204,"./Profile":205,"./RedirectWithStatus":206,"./Register":207,"./routes":208,"react":157,"react-router-dom":140}],203:[function(require,module,exports){
+},{"./Dashboard":197,"./Home":198,"./Login":199,"./Navbar":202,"./PrivateRoute":203,"./Profile":204,"./RedirectWithStatus":205,"./Register":206,"./routes":207,"react":156,"react-router-dom":140}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35670,6 +35682,10 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = require('react-router-dom');
+
+var _actions = require('../actions');
+
+var _reactRedux = require('react-redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35691,8 +35707,88 @@ function LinkItem(props) {
   );
 }
 
-var Navbar = function (_React$Component) {
-  _inherits(Navbar, _React$Component);
+var RightMenuLoggedIn = function (_React$Component) {
+  _inherits(RightMenuLoggedIn, _React$Component);
+
+  function RightMenuLoggedIn() {
+    _classCallCheck(this, RightMenuLoggedIn);
+
+    return _possibleConstructorReturn(this, (RightMenuLoggedIn.__proto__ || Object.getPrototypeOf(RightMenuLoggedIn)).apply(this, arguments));
+  }
+
+  _createClass(RightMenuLoggedIn, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'ul',
+        { className: 'nav navbar-nav pull-right' },
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/profile' },
+            this.props.email
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            'a',
+            { href: '#0', onClick: this.props.logout },
+            'Logout'
+          )
+        )
+      );
+    }
+  }]);
+
+  return RightMenuLoggedIn;
+}(_react2.default.Component);
+
+var RightMenuGuest = function (_React$Component2) {
+  _inherits(RightMenuGuest, _React$Component2);
+
+  function RightMenuGuest() {
+    _classCallCheck(this, RightMenuGuest);
+
+    return _possibleConstructorReturn(this, (RightMenuGuest.__proto__ || Object.getPrototypeOf(RightMenuGuest)).apply(this, arguments));
+  }
+
+  _createClass(RightMenuGuest, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'ul',
+        { className: 'nav navbar-nav pull-right' },
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/login' },
+            'Login'
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/register' },
+            'Register'
+          )
+        )
+      );
+    }
+  }]);
+
+  return RightMenuGuest;
+}(_react2.default.Component);
+
+var Navbar = function (_React$Component3) {
+  _inherits(Navbar, _React$Component3);
 
   function Navbar() {
     _classCallCheck(this, Navbar);
@@ -35705,10 +35801,11 @@ var Navbar = function (_React$Component) {
     value: function render() {
       var user = this.props.user;
 
-      var rightMenu = user ? [{ href: '/profile', label: user.email }] : [{ href: '/login', label: 'Login' }, { href: '/register', label: 'Register' }];
-      var menuItems = rightMenu.map(function (link, index) {
-        return _react2.default.createElement(LinkItem, { key: index, href: link.href, label: link.label });
-      });
+      var rightMenu = user ? _react2.default.createElement(RightMenuLoggedIn, { email: user.email, logout: this.props.onLogout }) : _react2.default.createElement(RightMenuGuest, null);
+      //
+      // const menuItems = rightMenu.map((link, index) => (
+      //   <LinkItem key={index} href={link.href} label={link.label} onClick={link.onClick} />
+      // ));
       // key={index.toString()}
       //  (
       //   <li><a href="/profile/">{this.props.user.email}</a></li>
@@ -35771,7 +35868,7 @@ var Navbar = function (_React$Component) {
             _react2.default.createElement(
               'ul',
               { className: 'nav navbar-nav pull-right' },
-              menuItems
+              rightMenu
             )
           )
         )
@@ -35782,9 +35879,25 @@ var Navbar = function (_React$Component) {
   return Navbar;
 }(_react2.default.Component);
 
-exports.default = Navbar;
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.session.user
+  };
+};
 
-},{"react":157,"react-router-dom":140}],204:[function(require,module,exports){
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    // onLogin: () => dispatch(loginUser({ email: 'jonsnow.tv' })),
+    onLogout: function onLogout(event) {
+      event.preventDefault();
+      dispatch((0, _actions.logoutUser)());
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
+
+},{"../actions":195,"react":156,"react-redux":123,"react-router-dom":140}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35813,21 +35926,22 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 //     state: { from: props.location }
 //   }}/>
 
+// <Redirect to={{
+//   pathname: '/login',
+//   state: { from: props.location }
+// }}/>
 var PrivateRoute = function PrivateRoute(_ref) {
   var Component = _ref.component,
       rest = _objectWithoutProperties(_ref, ['component']);
 
   return _react2.default.createElement(_reactRouterDom.Route, _extends({}, rest, { render: function render(props) {
-      return _react2.default.createElement(_reactRouterDom.Redirect, { to: {
-          pathname: '/login',
-          state: { from: props.location }
-        } });
+      return _react2.default.createElement(Component, props);
     } }));
 };
 
 exports.default = PrivateRoute;
 
-},{"react":157,"react-router-dom":140}],205:[function(require,module,exports){
+},{"react":156,"react-router-dom":140}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35842,6 +35956,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = require('react-redux');
+
+var _actions = require('../actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -35851,27 +35969,33 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 // import simpleAuth from '../../common/simpleAuth';
 
-var Login = function (_React$Component) {
-  _inherits(Login, _React$Component);
+
+var Profile = function (_React$Component) {
+  _inherits(Profile, _React$Component);
 
   // https://reactjs.org/docs/forms.html#controlled-components
-  function Login(props) {
-    _classCallCheck(this, Login);
+  function Profile(props) {
+    _classCallCheck(this, Profile);
 
-    // this.state = simpleAuth.user;
-    var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this, props));
 
-    _this.state = {};
+    var _this$props$user = _this.props.user,
+        id = _this$props$user.id,
+        firstName = _this$props$user.firstName,
+        lastName = _this$props$user.lastName,
+        email = _this$props$user.email;
+
+    _this.state = { id: id, firstName: firstName, lastName: lastName, email: email };
+    console.log('Profile state', _this.state);
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
     return _this;
   }
 
-  _createClass(Login, [{
+  _createClass(Profile, [{
     key: 'handleChange',
     value: function handleChange(event) {
       var _event$target = event.target,
@@ -35888,6 +36012,7 @@ var Login = function (_React$Component) {
     value: function handleSubmit(event) {
       event.preventDefault();
       console.log('submit profile', _extends({}, this.state));
+      this.props.updateUser(this.state);
     }
   }, {
     key: 'render',
@@ -35978,12 +36103,26 @@ var Login = function (_React$Component) {
     }
   }]);
 
-  return Login;
+  return Profile;
 }(_react2.default.Component);
 
-exports.default = Login;
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.session.user
+  };
+};
 
-},{"react":157}],206:[function(require,module,exports){
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    updateUser: function updateUser(props) {
+      return dispatch((0, _actions.updateUser)(props));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
+
+},{"../actions":195,"react":156,"react-redux":123}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36017,7 +36156,7 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":157,"react-router-dom":140}],207:[function(require,module,exports){
+},{"react":156,"react-router-dom":140}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36220,7 +36359,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Register);
 
-},{"../actions":196,"react":157,"react-redux":123}],208:[function(require,module,exports){
+},{"../actions":195,"react":156,"react-redux":123}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36238,7 +36377,32 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":201}],209:[function(require,module,exports){
+},{"./Messages":200}],208:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createBrowserHistory = require('history/createBrowserHistory');
+
+var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
+
+var _createMemoryHistory = require('history/createMemoryHistory');
+
+var _createMemoryHistory2 = _interopRequireDefault(_createMemoryHistory);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// export default createBrowserHistory();
+// history.js
+// https://github.com/ReactTraining/react-router/blob/master/FAQ.md#how-do-i-access-the-history-object-outside-of-components
+// AND (fixed "Invariant Violation: Browser history needs a DOM")
+// https://github.com/ReactTraining/react-router/issues/4977
+// import { createBrowserHistory } from 'history';
+exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.default)() : (0, _createMemoryHistory2.default)();
+
+},{"history/createBrowserHistory":76,"history/createMemoryHistory":78}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36266,7 +36430,7 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware));
 }
 
-},{"./reducers":210,"redux":165,"redux-logger":158,"redux-thunk":159}],210:[function(require,module,exports){
+},{"./reducers":210,"redux":164,"redux-logger":157,"redux-thunk":158}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36288,7 +36452,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var reducers = (0, _redux.combineReducers)({ session: _session2.default, users: _users2.default });
 exports.default = reducers;
 
-},{"./session":211,"./users":212,"redux":165}],211:[function(require,module,exports){
+},{"./session":211,"./users":212,"redux":164}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36299,7 +36463,8 @@ var _actions = require('../actions');
 
 var initialState = {
   user: null,
-  loginError: ''
+  loginError: '',
+  updateError: ''
 };
 
 exports.default = function () {
@@ -36316,23 +36481,46 @@ exports.default = function () {
       {
         var _state = state,
             user = _state.user,
-            loginError = _state.loginError;
+            loginError = _state.loginError,
+            updateError = _state.updateError;
         // console.log(state, { items: [ ...items, action.user ] });
 
-        return { user: action.user, loginError: '' };
+        return { user: action.user, loginError: '', updateError: updateError };
       }
     case _actions.LOGIN_USER_ERROR:
       {
         return {
           user: null,
-          loginError: action.error.message
+          loginError: action.error.message,
+          updateError: ''
         };
       }
     case _actions.LOGOUT_USER:
       {
         return {
           user: null,
-          loginError: ''
+          loginError: '',
+          updateError: ''
+        };
+      }
+    case _actions.UPDATE_USER_SUCCESS:
+      {
+        var _state2 = state,
+            _user = _state2.user,
+            _loginError = _state2.loginError,
+            _updateError = _state2.updateError;
+
+        return { user: action.user, loginError: '', updateError: '' };
+      }
+    case _actions.UPDATE_USER_ERROR:
+      {
+        var _state3 = state,
+            _user2 = _state3.user;
+
+        return {
+          user: null,
+          loginError: '',
+          updateError: action.error.message
         };
       }
     default:
@@ -36340,7 +36528,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":196}],212:[function(require,module,exports){
+},{"../actions":195}],212:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36383,6 +36571,6 @@ exports.default = function () {
   }
 };
 
-},{"../actions":196}]},{},[195])
+},{"../actions":195}]},{},[194])
 
 //# sourceMappingURL=build.js.map

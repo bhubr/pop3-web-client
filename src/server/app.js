@@ -160,6 +160,12 @@ app.service('users').hooks({
         console.log(context.data, arguments);
         context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
       }
+    ],
+    patch: [
+      function(context) {
+        console.log(context.data, arguments);
+        context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
+      }
     ]
   },
   after: {
