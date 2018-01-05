@@ -41,11 +41,12 @@ const MyApp = () => (
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
 
     <Switch>
-      {/*<PrivateRoute path="/profile" component={Profile}/>*/}
-      <Route path="/profile" component={Profile}/>
+      <PrivateRoute path="/profile" component={Profile}/>
+      {/*<Route path="/profile" component={Profile}/>*/}
       <Route exact path="/" component={Home}/>
       <Route path="/register" component={Register}/>
       <Route path="/login" component={Login}/>
+      <Route path="/dashboard" component={Dashboard}/>
       {/*<Route path="/messages" component={Messages}/>*/}
       {routes.map(route => (
         <Route key={route.path} {...route}/>

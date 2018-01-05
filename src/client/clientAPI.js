@@ -1,7 +1,7 @@
 import { users, app } from './feathers';
 
 let id = 0;
-
+// app.logout();
 class clientAPI {
 
   insertUser(user) {
@@ -29,6 +29,7 @@ class clientAPI {
         ...credentials, strategy: 'local'
       })
     })
+      .then(response => response.json())
     // return app.authenticate({
     //   ...credentials,
     //   strategy: 'local'

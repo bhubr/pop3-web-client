@@ -34798,6 +34798,7 @@ var _feathers = require('./feathers');
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var id = 0;
+// app.logout();
 
 var clientAPI = function () {
   function clientAPI() {
@@ -34830,6 +34831,8 @@ var clientAPI = function () {
         credentials: 'same-origin',
         body: JSON.stringify(_extends({}, credentials, { strategy: 'local'
         }))
+      }).then(function (response) {
+        return response.json();
       })
       // return app.authenticate({
       //   ...credentials,
@@ -35666,10 +35669,11 @@ var MyApp = function MyApp() {
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/profile', component: _Profile2.default }),
+      _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
       _routes2.default.map(function (route) {
         return _react2.default.createElement(_reactRouterDom.Route, _extends({ key: route.path }, route));
       }),
@@ -35848,8 +35852,8 @@ var Navbar = function (_React$Component3) {
               _react2.default.createElement('span', { className: 'icon-bar' })
             ),
             _react2.default.createElement(
-              'a',
-              { className: 'navbar-brand', href: '/' },
+              _reactRouterDom.Link,
+              { to: '/', className: 'navbar-brand' },
               'Swatch it!'
             )
           ),
@@ -35875,6 +35879,15 @@ var Navbar = function (_React$Component3) {
                   'a',
                   { href: '/courses' },
                   'Courses'
+                )
+              ),
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  _reactRouterDom.Link,
+                  { to: '/dashboard' },
+                  'Dashboard'
                 )
               )
             ),
@@ -35919,42 +35932,80 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = require('react-router-dom');
 
+var _reactRedux = require('react-redux');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 // import simpleAuth from '../../common/simpleAuth';
 
-
-// simpleAuth.user ? (
-//   <Component {...props}/>
-// ) : (
-//   <Redirect to={{
-//     pathname: '/login',
-//     state: { from: props.location }
-//   }}/>
 
 // <Redirect to={{
 //   pathname: '/login',
 //   state: { from: props.location }
 // }}/>
-var PrivateRoute = function PrivateRoute(_ref) {
-  var Component = _ref.component,
-      rest = _objectWithoutProperties(_ref, ['component']);
+// const PrivateRoute = ({ component: Component, ...rest }) => {
+//   console.log('PrivateRoute', rest, this);
+//   return (
+//     <Route {...rest} render={props => (
+//       <Component {...props}/>
+//     )}/>
+//   );
+// };
 
-  return _react2.default.createElement(_reactRouterDom.Route, _extends({}, rest, { render: function render(props) {
-      return _react2.default.createElement(Component, props);
-    } }));
+var PrivateRoute = function (_React$Component) {
+  _inherits(PrivateRoute, _React$Component);
+
+  function PrivateRoute() {
+    _classCallCheck(this, PrivateRoute);
+
+    return _possibleConstructorReturn(this, (PrivateRoute.__proto__ || Object.getPrototypeOf(PrivateRoute)).apply(this, arguments));
+  }
+
+  _createClass(PrivateRoute, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          Component = _props.component,
+          user = _props.user,
+          rest = _objectWithoutProperties(_props, ['component', 'user']);
+
+      console.log('PrivateRoute', arguments, this, Component, user, rest);
+      return user ? _react2.default.createElement(_reactRouterDom.Route, _extends({}, rest, { render: function render(props) {
+          return _react2.default.createElement(Component, props);
+        } })) : _react2.default.createElement(_reactRouterDom.Redirect, { to: {
+          pathname: '/login',
+          state: { from: this.props.location }
+        } });
+    }
+  }]);
+
+  return PrivateRoute;
+}(_react2.default.Component);
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    user: state.session.user
+  };
 };
 
-exports.default = PrivateRoute;
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(PrivateRoute);
 
-},{"react":156,"react-router-dom":140}],204:[function(require,module,exports){
+},{"react":156,"react-redux":123,"react-router-dom":140}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36421,6 +36472,9 @@ exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.def
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 exports.default = initStore;
 
 var _redux = require('redux');
@@ -36439,8 +36493,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var loggerMiddleware = (0, _reduxLogger.createLogger)();
 
+var composeEnhancers = (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || _redux.compose;
+
 function initStore(initialState) {
-  return (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware));
+  return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware)));
 }
 
 },{"./reducers":210,"redux":164,"redux-logger":157,"redux-thunk":158}],210:[function(require,module,exports){

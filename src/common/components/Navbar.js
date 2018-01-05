@@ -60,13 +60,14 @@ class Navbar extends React.Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="/">Swatch it!</a>
+            <Link to="/" className="navbar-brand">Swatch it!</Link>
           </div>
 
           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
               <li><a href="/brands">Brands</a></li>
               <li><a href="/courses">Courses</a></li>
+              <li><Link to="/dashboard">Dashboard</Link></li>
             </ul>
             <ul className="nav navbar-nav pull-right">
               {rightMenu}
