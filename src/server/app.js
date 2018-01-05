@@ -223,7 +223,7 @@ app.get('*', (req, res, next) => {
   jsonwebtoken.verify(token, config.secret, function(err, data) {
     console.log('##### jsonwebtoken.verify err/data', err, data);
     if(! err) {
-      usersSrv.get(data.userId)
+      usersSrv.get(data.userId, {})
         .then(user => {
           console.log("#### got USER", user, req.user);
           req.user = user;
@@ -252,15 +252,17 @@ app.get('*', (req, res, next) => {
   });
 
   Promise.all(promises).then(data => {
-
-    const state = JSON.stringify(data[0] || {});
-    console.log('Got data', data, state);
-
     const { user } = req;
     const session = { user };
-    const store = initStore({
+    let initialState = {
       session
-    });
+    };
+
+    // const state = JSON.stringify(data[0] || {});
+    const stateJSON = JSON.stringify(initialState);
+    console.log('Got data', data, stateJSON);
+
+    const store = initStore(initialState);
     // do something w/ the data so the client
     // can access it then render the app
 
@@ -284,7 +286,7 @@ app.get('*', (req, res, next) => {
       res.redirect(status, context.url);
     } else {
       // we're good, send the response
-      res.status(status).render('app.html.twig', { markup, state });
+      res.status(status).render('app.html.twig', { markup, state: stateJSON });
     }
   });
 

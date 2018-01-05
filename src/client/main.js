@@ -13,8 +13,9 @@ api.setStrategy(clientAPI);
 
 const mountNode = document.getElementById('app');
 
-const initialState = {};
-const store = initStore(initialState);
+const state = window.initialState || {};
+console.log('CLIENT initialState', window.initialState);
+const store = initStore(state);
 
 const MyRoutedApp = () => {
   return (

@@ -34948,8 +34948,9 @@ _api2.default.setStrategy(_clientAPI2.default);
 
 var mountNode = document.getElementById('app');
 
-var initialState = {};
-var store = (0, _initStore2.default)(initialState);
+var state = window.initialState || {};
+console.log('CLIENT initialState', window.initialState);
+var store = (0, _initStore2.default)(state);
 
 var MyRoutedApp = function MyRoutedApp() {
   return _react2.default.createElement(
