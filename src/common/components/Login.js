@@ -1,6 +1,7 @@
 import React from 'react';
 import { loginUser } from '../actions';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom'
 // import { users, app } from '../../client/feathers';
 // import simpleAuth from '../../common/simpleAuth';
 
@@ -12,6 +13,7 @@ class Login extends React.Component {
       email: '',
       password: ''
     };
+    console.log('Login props', this.props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);

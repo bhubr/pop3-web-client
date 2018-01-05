@@ -1,8 +1,9 @@
 // import config from '../config';
-import {
-  insertUser,
-  authenticateUser
-} from '../api';
+// import {
+//   insertUser,
+//   authenticateUser
+// } from '../api';
+import api from '../api';
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
@@ -86,7 +87,7 @@ export function logoutUser() {
 }
 
 export function loginUserSuccess(user) {
-  console.log('registerUserSuccess', user);
+  console.log('loginUserSuccess', user);
   return {
     type: LOGIN_USER_SUCCESS,
     user
@@ -104,7 +105,7 @@ export function loginUser(user)  {
   return dispatch => {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
-    return authenticateUser(user)
+    return api.call('authenticateUser', user)
       .then(user => dispatch(loginUserSuccess(user)))
       .catch(err => dispatch(loginUserError(err)));
   };

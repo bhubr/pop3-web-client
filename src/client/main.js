@@ -6,6 +6,9 @@ import {
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import initStore from '../common/initStore';
+import api from '../common/api';
+import clientAPI from './clientAPI';
+api.setStrategy(clientAPI);
 
 const mountNode = document.getElementById('app');
 

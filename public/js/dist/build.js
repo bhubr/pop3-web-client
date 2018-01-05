@@ -34788,6 +34788,62 @@ module.exports = yeast;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _feathers = require('./feathers');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var id = 0;
+
+var clientAPI = function () {
+  function clientAPI() {
+    _classCallCheck(this, clientAPI);
+  }
+
+  _createClass(clientAPI, [{
+    key: 'insertUser',
+    value: function insertUser(user) {
+      console.log('INSERT USER CLIENT', user);
+      ++id;
+      return Promise.resolve(Object.assign(_extends({}, user), { id: id }));
+    }
+  }, {
+    key: 'authenticateUser',
+    value: function authenticateUser(credentials) {
+      var self = this;
+      var email = credentials.email;
+
+      return _feathers.app.authenticate(_extends({}, credentials, {
+        strategy: 'local'
+      })).then(function (result) {
+        console.log('Authenticated!', result);
+        return _feathers.users.get(result.userId).then(function (user) {
+          console.log('got user', user);
+          return user;
+        });
+      });
+      // .catch(function(error){
+      //   console.error('Error authenticating!', error);
+      // });
+    }
+  }]);
+
+  return clientAPI;
+}();
+
+var client = new clientAPI();
+exports.default = client;
+
+},{"./feathers":193}],193:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.app = exports.users = undefined;
 
 var _socket = require('socket.io-client');
@@ -34822,7 +34878,7 @@ var users = app.service('users');
 exports.users = users;
 exports.app = app;
 
-},{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"socket.io-client":171}],193:[function(require,module,exports){
+},{"@feathersjs/authentication-client":5,"@feathersjs/feathers":17,"@feathersjs/socketio-client":21,"feathers-localstorage":67,"socket.io-client":171}],194:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -34845,7 +34901,17 @@ var _initStore = require('../common/initStore');
 
 var _initStore2 = _interopRequireDefault(_initStore);
 
+var _api = require('../common/api');
+
+var _api2 = _interopRequireDefault(_api);
+
+var _clientAPI = require('./clientAPI');
+
+var _clientAPI2 = _interopRequireDefault(_clientAPI);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_api2.default.setStrategy(_clientAPI2.default);
 
 var mountNode = document.getElementById('app');
 
@@ -34866,7 +34932,7 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/components/MyApp":202,"../common/initStore":209,"react":156,"react-dom":113,"react-redux":123,"react-router-dom":140}],194:[function(require,module,exports){
+},{"../common/api":196,"../common/components/MyApp":201,"../common/initStore":208,"./clientAPI":192,"react":156,"react-dom":113,"react-redux":123,"react-router-dom":140}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34885,11 +34951,19 @@ exports.registerUser = registerUser;
 
 var _api = require('../api');
 
+var _api2 = _interopRequireDefault(_api);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
 // export const DECREMENT = 'DECREMENT';
 var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER'; // import config from '../config';
+// import {
+//   insertUser,
+//   authenticateUser
+// } from '../api';
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -34968,7 +35042,7 @@ function logoutUser() {
 }
 
 function loginUserSuccess(user) {
-  console.log('registerUserSuccess', user);
+  console.log('loginUserSuccess', user);
   return {
     type: LOGIN_USER_SUCCESS,
     user: user
@@ -34986,7 +35060,7 @@ function loginUser(user) {
   return function (dispatch) {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
-    return (0, _api.authenticateUser)(user).then(function (user) {
+    return _api2.default.call('authenticateUser', user).then(function (user) {
       return dispatch(loginUserSuccess(user));
     }).catch(function (err) {
       return dispatch(loginUserError(err));
@@ -34998,7 +35072,7 @@ function registerUser(user) {
   return function (dispatch) {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return (0, _api.insertUser)(user).then(function (user) {
+    return insertUser(user).then(function (user) {
       return dispatch(registerUserSuccess(user));
     }).catch(function (err) {
       return dispatch(registerUserError(err));
@@ -35042,78 +35116,54 @@ function registerUser(user) {
 //   };
 // }
 
-},{"../api":197}],195:[function(require,module,exports){
+},{"../api":196}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-exports.insertUser = insertUser;
-exports.authenticateUser = authenticateUser;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _feathers = require('../../client/feathers');
+// if (typeof window !== 'undefined') {
+//   module.exports = require('./api.client');
+// } else {
+//   module.exports = require('./api.server');
+// }
 
-var id = 0;
-function insertUser(user) {
-  console.log('INSERT USER CLIENT', user);
-  ++id;
-  return Promise.resolve(Object.assign(_extends({}, user), { id: id }));
-}
+var API = function () {
+  function API() {
+    _classCallCheck(this, API);
+  }
 
-function authenticateUser(credentials) {
-  var self = this;
-  var email = credentials.email;
+  _createClass(API, [{
+    key: 'setStrategy',
+    value: function setStrategy(strategy) {
+      this.strategy = strategy;
+    }
+  }, {
+    key: 'call',
+    value: function call(action) {
+      var which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
 
-  return _feathers.app.authenticate(_extends({}, credentials, {
-    strategy: 'local'
-  })).then(function (result) {
-    console.log('Authenticated!', result);
-    return _feathers.users.get(result.userId).then(function (user) {
-      console.log('got user', user);
-      return user;
-    });
-  });
-  // .catch(function(error){
-  //   console.error('Error authenticating!', error);
-  // });
-}
+      for (var _len = arguments.length, actionArgs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        actionArgs[_key - 1] = arguments[_key];
+      }
 
-},{"../../client/feathers":192}],196:[function(require,module,exports){
-'use strict';
+      console.log('API CALL ' + which, action, actionArgs);
+      return this.strategy[action](actionArgs);
+    }
+  }]);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+  return API;
+}();
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.insertUser = insertUser;
-exports.authenticateUser = authenticateUser;
-var id = 0;
-function insertUser(user) {
-  console.log('INSERT USER SERVER', user);
-  ++id;
-  return Promise.resolve(Object.assign(_extends({}, user), { id: id }));
-}
-
-function authenticateUser(user) {
-  console.log('AUTHENTICATE USER SERVER', user);
-  return Promise.resolve(_extends({}, user));
-}
+var api = new API();
+exports.default = api;
 
 },{}],197:[function(require,module,exports){
-'use strict';
-
-if (typeof window !== 'undefined') {
-  module.exports = require('./api.client');
-} else {
-  module.exports = require('./api.server');
-}
-
-},{"./api.client":195,"./api.server":196}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35140,7 +35190,7 @@ var Dashboard = function Dashboard() {
 
 exports.default = Dashboard;
 
-},{"react":156}],199:[function(require,module,exports){
+},{"react":156}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35167,7 +35217,7 @@ var Home = function Home() {
 
 exports.default = Home;
 
-},{"react":156}],200:[function(require,module,exports){
+},{"react":156}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35185,6 +35235,8 @@ var _react2 = _interopRequireDefault(_react);
 var _actions = require('../actions');
 
 var _reactRedux = require('react-redux');
+
+var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35212,6 +35264,7 @@ var Login = function (_React$Component) {
       email: '',
       password: ''
     };
+    console.log('Login props', _this.props);
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
@@ -35329,7 +35382,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":194,"react":156,"react-redux":123}],201:[function(require,module,exports){
+},{"../actions":195,"react":156,"react-redux":123,"react-router-dom":140}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35431,7 +35484,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":156}],202:[function(require,module,exports){
+},{"react":156}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35541,7 +35594,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":198,"./Home":199,"./Login":200,"./Navbar":203,"./PrivateRoute":204,"./Profile":205,"./RedirectWithStatus":206,"./Register":207,"./routes":208,"react":156,"react-router-dom":140}],203:[function(require,module,exports){
+},{"./Dashboard":197,"./Home":198,"./Login":199,"./Navbar":202,"./PrivateRoute":203,"./Profile":204,"./RedirectWithStatus":205,"./Register":206,"./routes":207,"react":156,"react-router-dom":140}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35669,7 +35722,7 @@ var Navbar = function (_React$Component) {
 
 exports.default = Navbar;
 
-},{"react":156,"react-router-dom":140}],204:[function(require,module,exports){
+},{"react":156,"react-router-dom":140}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35712,7 +35765,7 @@ var PrivateRoute = function PrivateRoute(_ref) {
 
 exports.default = PrivateRoute;
 
-},{"react":156,"react-router-dom":140}],205:[function(require,module,exports){
+},{"react":156,"react-router-dom":140}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35868,7 +35921,7 @@ var Login = function (_React$Component) {
 
 exports.default = Login;
 
-},{"react":156}],206:[function(require,module,exports){
+},{"react":156}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35902,7 +35955,7 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":156,"react-router-dom":140}],207:[function(require,module,exports){
+},{"react":156,"react-router-dom":140}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36094,7 +36147,7 @@ var Register = function (_React$Component) {
 
 exports.default = Register;
 
-},{"react":156}],208:[function(require,module,exports){
+},{"react":156}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36112,7 +36165,7 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":201}],209:[function(require,module,exports){
+},{"./Messages":200}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36140,7 +36193,7 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, (0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware));
 }
 
-},{"./reducers":210,"redux":164,"redux-logger":157,"redux-thunk":158}],210:[function(require,module,exports){
+},{"./reducers":209,"redux":164,"redux-logger":157,"redux-thunk":158}],209:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36162,7 +36215,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var reducers = (0, _redux.combineReducers)({ session: _session2.default, users: _users2.default });
 exports.default = reducers;
 
-},{"./session":211,"./users":212,"redux":164}],211:[function(require,module,exports){
+},{"./session":210,"./users":211,"redux":164}],210:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36214,7 +36267,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":194}],212:[function(require,module,exports){
+},{"../actions":195}],211:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -36257,6 +36310,6 @@ exports.default = function () {
   }
 };
 
-},{"../actions":194}]},{},[193])
+},{"../actions":195}]},{},[194])
 
 //# sourceMappingURL=build.js.map

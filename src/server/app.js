@@ -15,6 +15,9 @@ import { Provider } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import MyApp from './components/MyApp';
 import initStore from './initStore';
+import api from './api';
+import serverAPI from './serverAPI';
+api.setStrategy(serverAPI);
 
 function transformFields(fields) {
   return function(data) {
