@@ -1,4 +1,5 @@
 import React from 'react';
+import MailList from './MailList';
 import Navbar from './Navbar';
 import Register from './Register';
 import Login from './Login';
@@ -36,9 +37,13 @@ const NotFound = () => (
 );
 
 const MyApp = () => (
-  <div>
+  <div id="layout" className="content pure-g">
+
+
     <Navbar user={null}/>
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
+
+    <MailList />
 
     <Switch>
       <PrivateRoute path="/profile" component={Profile}/>

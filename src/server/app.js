@@ -1,16 +1,8 @@
-const feathers = require('@feathersjs/feathers');
-const express  = require('@feathersjs/express');
-const auth     = require('@feathersjs/authentication');
-const local    = require('@feathersjs/authentication-local');
-const jwt      = require('@feathersjs/authentication-jwt');
-const socketio = require('@feathersjs/socketio');
-const config   = require('./config');
-const usersSrv = require('./services/users');
-const _        = require('lodash');
-const Promise  = require('bluebird');
-const cookieParser = require('cookie-parser');
+// Express and related stuff
+import express from 'express';
+import bodyParser from 'body-parser';
 
-import jsonwebtoken from 'jsonwebtoken';
+// React and related stuff
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router';
@@ -18,250 +10,103 @@ import { Provider } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import MyApp from './components/MyApp';
 import initStore from './initStore';
-import api from './api';
-import serverAPI from './serverAPI';
-api.setStrategy(serverAPI);
 
-function transformFields(fields) {
-  return function(data) {
-    let output = {};
-    fields.forEach(f => {
-      output[ _.snakeCase(f) ] = data[f];
-    });
-    console.log('transformed', data, output);
-    return output;
-  };
+// Other
+import Promise from 'bluebird';
+import chain from 'store-chain';
+import Pop3Command from 'node-pop3';
+import charsetDetector from 'node-icu-charset-detector';
+import iconvlite from 'iconv-lite';
+import credentials from './credentials.json';
+const simpleParser = require('mailparser').simpleParser;
+
+
+// https://stackoverflow.com/questions/28594498/converting-a-string-from-utf8-to-latin1-in-nodejs
+// function getBufferContentsInUTF8(buffer) {
+//   var originalCharset = charsetDetector.detectCharset(buffer);
+//   var jsString = iconvlite.decode(buffer, originalCharset.toString());
+//   return jsString;
+// }
+
+
+function extractMessageId(entry) {
+  const [msgId, uidl] = entry;
+  return parseInt(msgId);
 }
 
-class Messages {
-  constructor() {
-    this.messages = [{
-      id: 1,
-      text: 'This is a dummy message'
-    }, {
-      id: 2,
-      text: 'This is another dummy text'
-    }];
-    this.currentId = 2;
-  }
-
-  async find(params) {
-    // Return the list of all messages
-    return this.messages;
-  }
-
-  async get(id, params) {
-    // Find the message by id
-    const message = this.messages.find(message => message.id === parseInt(id, 10));
-
-    // Throw an error if it wasn't found
-    if(!message) {
-      throw new Error(`Message with id ${id} not found`);
-    }
-
-    // Otherwise return the message
-    return message;
-  }
-
-  async create(data, params) {
-    // Create a new object with the original data and an id
-    // taken from the incrementing `currentId` counter
-    const message = Object.assign({
-      id: ++this.currentId,
-      text: 'N/A'
-    }, data);
-
-    this.messages.push(message);
-
-    return message;
-  }
-
-  async patch(id, data, params) {
-    // Get the existing message. Will throw an error if not found
-    const message = await this.get(id);
-
-    // Merge the existing message with the new data
-    // and return the result
-    return Object.assign(message, data);
-  }
-
-  async remove(id, params) {
-    // Get the message by id (will throw an error if not found)
-    const message = await this.get(id);
-    // Find the index of the message in our message array
-    const index = this.messages.indexOf(message);
-
-    // Remove the found message from our array
-    this.messages.splice(index, 1);
-
-    // Return the removed message
-    return message;
-  }
+function extractMessageIds(entries) {
+  return entries.map(extractMessageId);
 }
 
-const app = express(feathers());
-
-const messagesSrv = new Messages();
-
-// Turn on JSON parser for REST services
-app
-  .use(cookieParser())
-  .use(express.json())
-  // Turn on URL-encoded parser for REST services
-  .use(express.urlencoded({ extended: true }))
-  // Static assets
-  .use(express.static(__dirname + '/public'))
-  // Set up REST transport
-  .configure(express.rest())
-  // Socket IO
-  .configure(socketio())
-
-  // Local&JWT auth
-  .configure(auth({
-    secret: config.secret,
-    cookie: {
-      enabled: true, // whether cookie creation is enabled
-      name: 'feathers-jwt', // the cookie name
-      httpOnly: process.env.NODE_ENV === 'production', // when enabled, prevents the client from reading the cookie.
-      secure: process.env.NODE_ENV === 'production' // whether cookies should only be available over HTTPS
-    }
-  }))
-  .configure(local())
-  .configure(jwt())
-
-  // Initialize the messages service by creating
-  // a new instance of our class
-  .use('api/messages', messagesSrv)
-  .use('users', usersSrv)
-
-  // Set Twig.js as view engine
-  .set('view engine', 'twig');
-
-// app.post('/login', auth.express.authenticate('local', {}),
-//   auth.express.setCookie({ enabled: true }),
-//   function(req, res, next) {
-//     console.log("putain c'est laborieux", req.session, req.feathers, req.cookie);
-//     res.json({ success: true });
-//   }
-// );
-
-// Auth hooks
-app.service('authentication').hooks({
-  before: {
-    create: [
-      // You can chain multiple strategies
-      auth.hooks.authenticate(['jwt', 'local'])
-    ],
-    remove: [
-      auth.hooks.authenticate('jwt')
-    ]
-  },
-  after: {
-    create: [
-      context => {
-        context.result.userId = context.params.user.id;
-      }
-    ]
-  }
-});
-
-// Add a hook to the user service that automatically replaces
-// the password with a hash of the password before saving it.
-app.service('users').hooks({
-  before: {
-    find: [
-      auth.hooks.authenticate('jwt')
-    ],
-    create: [
-      local.hooks.hashPassword({ passwordField: 'password' }),
-      function(context) {
-        console.log(context.data, arguments);
-        context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
-      }
-    ],
-    patch: [
-      function(context) {
-        console.log(context.data, arguments);
-        context.data = transformFields(['firstName', 'lastName', 'email', 'password'])(context.data);
-      }
-    ]
-  },
-  after: {
-    get: [
-      context => {
-        context.result.firstName = context.result.first_name;
-        context.result.lastName = context.result.last_name;
-        delete context.result.password;
-        delete context.result.first_name;
-        delete context.result.last_name;
-      }
-    ]
-  }
-});
-
-// server (not the complete story)
-// <StaticRouter
-//   location={req.url}
-//   context={context}
-// >
-//   <App/>
-// </StaticRouter>
-const routes = [{
-  path: '/messages',
-  loadData: async function() {
-    const messages = await messagesSrv.find();
-    return { messages };
-  }
-}];
-
-app.get('*', (req, res, next) => {
-  console.log('GET ALL', req.headers, req.cookies);
-  const token = req.cookies['feathers-jwt'];
-  if(! token) {
-    return next();
-  }
-  jsonwebtoken.verify(token, config.secret, function(err, data) {
-    console.log('##### jsonwebtoken.verify err/data', err, data);
-    if(! err) {
-      usersSrv.get(data.userId, {})
-        .then(user => {
-          console.log("#### got USER", user, req.user);
-          req.user = user;
-
-          next();
+function getFetchMessage(pop3) {
+  return (carry, msgId) => {
+    // console.log('getFetchMessage', carry, msgId);
+    return new Promise((resolve, reject) => {
+      pop3.RETR(msgId)
+      .then((stream) => {
+        // console.log(stream);
+        // stream.on('data', (chunk) => {
+        //   console.log(`Received ${chunk.length} bytes of data.`);
+        // });
+        // stream.on('end', (chunk) => {
+        //   console.log('chunk end');
+        // });
+        // console.log(stream);
+        // stream.on('data', (chunk) => {
+        //   console.log(`Received ${chunk.length} bytes of data.`, chunk.toString('hex'), chunk.toString(), getBufferContentsInUTF8(chunk));
+        // });
+        // deal with mail stream
+        simpleParser(stream, (err, mail)=>{
+          if (err) {
+            return reject(err);
+          }
+          console.log(mail);
+          resolve(carry.concat([mail]));
         })
-    }
-  });
-},
- (req, res) => {
+      });
+      // .then(() => pop3.QUIT());
+    });
+  }
+}
+
+function getFetchMessages(pop3) {
+  const fetchMessage = getFetchMessage(pop3);
+  return ids => Promise.reduce(ids, fetchMessage, []);
+}
 
 
-  // inside a request
-  const promises = [];
-  // use `some` to imitate `<Switch>` behavior of selecting only
-  // the first to match
-  routes.some(route => {
-    // console.log('route', req.url, route);
-    // use `matchPath` here
-    const match = matchPath(req.url, route);
-    if (match) {
-      // console.log('it matches!', match);
-      promises.push(route.loadData(match));
-    }
-    return match;
-  });
+function getMessages(start = 0, num = 2) {
+  const pop3 = new Pop3Command(credentials);
+  const fetchMessages = getFetchMessages(pop3);
+  let messages;
 
-  Promise.all(promises).then(data => {
-    const { user } = req;
-    const session = { user };
-    let initialState = {
-      session
-    };
+  return chain(pop3.UIDL())
+  .then(extractMessageIds)
+  .then(ids => ids.slice(start, num))
+  .then(fetchMessages)
+  .set('messages')
+  .then(() => pop3.QUIT())
+  .get(({ messages }) => (messages));
 
-    // const state = JSON.stringify(data[0] || {});
+}
+
+
+
+
+const app = express();
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+app.get('/messages', (req, res) => {
+  getMessages()
+  .then(messages => res.json(messages));
+
+});
+
+app.get('*', (req, res) => {
+
+    const initialState = {};
     const stateJSON = JSON.stringify(initialState);
-    console.log('Got data', data, stateJSON);
-
     const store = initStore(initialState);
     // do something w/ the data so the client
     // can access it then render the app
@@ -290,19 +135,4 @@ app.get('*', (req, res, next) => {
     }
   });
 
-
-});
-
-// app.get('/login', (req, res) => {
-//   res.render('login.html.twig');
-// });
-//
-// app.get('/register', (req, res) => {
-//   res.render('register.html.twig');
-// });
-
-
-
-const server = app.listen(3008);
-
-server.on('listening', () => console.log('Feathers application started'));
+app.listen(3000);

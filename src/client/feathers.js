@@ -6,12 +6,14 @@ import socketio from '@feathersjs/socketio-client';
 import localstorage from 'feathers-localstorage';
 import authentication from '@feathersjs/authentication-client';
 
-const socket = io('http://localhost:3008/');
-const app = feathers()
-  .configure(socketio(socket)) // you could use Primus or REST instead
-  .configure(authentication({ storage: window.localStorage }));
+// const socket = io('http://localhost:3008/');
+// const app = feathers()
+//   .configure(socketio(socket)) // you could use Primus or REST instead
+//   .configure(authentication({ storage: window.localStorage }));
 
-const users = app.service('users');
+// const users = app.service('users');
+const users = {};
+const app = {};
 export {
   users, app
 };
