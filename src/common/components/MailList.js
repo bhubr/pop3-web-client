@@ -1,10 +1,35 @@
 import React from 'react';
 
+class EmailItem extends React.Component {
+
+  render() {
+    const { from, subject, html, textAsHtml, body } = this.props.message;
+    // const content = html ? html : textAsHtml;
+    return (
+      <div className="email-item email-item-selected pure-g">
+        <div className="pure-u">
+          <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="img/common/tilo-avatar.png" />
+        </div>
+
+        <div className="pure-u-3-4">
+          <h5 className="email-name">{ from.text }</h5>
+          <h4 className="email-subject">{ subject }</h4>
+          <p className="email-desc" dangerouslySetInnerHTML={{ __html: body.substr(0, 200) + ' [...]' }}></p>
+        </div>
+      </div>
+    );
+  }
+}
+
 export default class MailList extends React.Component {
 
   render() {
+    const { messages } = this.props;
     return (
       <div id="list" className="pure-u-1">
+
+        {messages.map((m, i) => <EmailItem key={i} message={m} />)}
+
         <div className="email-item email-item-selected pure-g">
           <div className="pure-u">
             <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="img/common/tilo-avatar.png" />

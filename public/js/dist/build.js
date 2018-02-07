@@ -34806,6 +34806,13 @@ var clientAPI = function () {
   }
 
   _createClass(clientAPI, [{
+    key: 'getMessages',
+    value: function getMessages() {
+      return fetch('/messages').then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
     key: 'insertUser',
     value: function insertUser(user) {
       // console.log('INSERT USER CLIENT', user);
@@ -35247,7 +35254,7 @@ var API = function () {
         actionArgs[_key - 1] = arguments[_key];
       }
 
-      (_console = console).log.apply(_console, ['API CALL ' + which, action].concat(actionArgs));
+      (_console = console).log.apply(_console, ['API CALL ' + which, action].concat(actionArgs, [this.strategy]));
       return (_strategy = this.strategy)[action].apply(_strategy, actionArgs);
     }
   }]);
@@ -35286,7 +35293,7 @@ var Dashboard = function Dashboard() {
 exports.default = Dashboard;
 
 },{"react":156}],198:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -35294,9 +35301,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _api = require('../api');
+
+var _api2 = _interopRequireDefault(_api);
+
+var _MailList = require('./MailList');
+
+var _MailList2 = _interopRequireDefault(_MailList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35309,98 +35324,122 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MailBody = function (_React$Component) {
   _inherits(MailBody, _React$Component);
 
-  function MailBody() {
+  function MailBody(props) {
     _classCallCheck(this, MailBody);
 
-    return _possibleConstructorReturn(this, (MailBody.__proto__ || Object.getPrototypeOf(MailBody)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (MailBody.__proto__ || Object.getPrototypeOf(MailBody)).call(this, props));
+
+    _this.state = {
+      messages: []
+    };
+    return _this;
   }
 
   _createClass(MailBody, [{
-    key: "render",
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      console.log(_api2.default);
+      _api2.default.call('getMessages').then(function (messages) {
+        return _this2.setState(function (prevState, props) {
+          return { messages: messages };
+        });
+      });
+    }
+  }, {
+    key: 'render',
     value: function render() {
+      var messages = this.state.messages;
+
       return _react2.default.createElement(
-        "div",
-        { id: "main", className: "pure-u-1" },
+        'div',
+        null,
+        _react2.default.createElement(_MailList2.default, { messages: messages }),
         _react2.default.createElement(
-          "div",
-          { className: "email-content" },
+          'div',
+          { id: 'main', className: 'pure-u-1' },
           _react2.default.createElement(
-            "div",
-            { className: "email-content-header pure-g" },
+            'div',
+            { className: 'email-content' },
             _react2.default.createElement(
-              "div",
-              { className: "pure-u-1-2" },
+              'div',
+              { className: 'email-content-header pure-g' },
               _react2.default.createElement(
-                "h1",
-                { className: "email-content-title" },
-                "Hello from Toronto"
+                'div',
+                { className: 'pure-u-1-2' },
+                _react2.default.createElement(
+                  'h1',
+                  { className: 'email-content-title' },
+                  'Hello from Toronto'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  { className: 'email-content-subtitle' },
+                  'From ',
+                  _react2.default.createElement(
+                    'a',
+                    null,
+                    'Tilo Mitra'
+                  ),
+                  ' at ',
+                  _react2.default.createElement(
+                    'span',
+                    null,
+                    '3:56pm, April 3, 2012'
+                  )
+                )
               ),
               _react2.default.createElement(
-                "p",
-                { className: "email-content-subtitle" },
-                "From ",
+                'div',
+                { className: 'email-content-controls pure-u-1-2' },
                 _react2.default.createElement(
-                  "a",
-                  null,
-                  "Tilo Mitra"
+                  'button',
+                  { className: 'secondary-button pure-button' },
+                  'Reply'
                 ),
-                " at ",
                 _react2.default.createElement(
-                  "span",
-                  null,
-                  "3:56pm, April 3, 2012"
+                  'button',
+                  { className: 'secondary-button pure-button' },
+                  'Forward'
+                ),
+                _react2.default.createElement(
+                  'button',
+                  { className: 'secondary-button pure-button' },
+                  'Move to'
                 )
               )
             ),
             _react2.default.createElement(
-              "div",
-              { className: "email-content-controls pure-u-1-2" },
+              'div',
+              { className: 'email-content-body' },
               _react2.default.createElement(
-                "button",
-                { className: "secondary-button pure-button" },
-                "Reply"
+                'p',
+                null,
+                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
               ),
               _react2.default.createElement(
-                "button",
-                { className: "secondary-button pure-button" },
-                "Forward"
+                'p',
+                null,
+                'Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
               ),
               _react2.default.createElement(
-                "button",
-                { className: "secondary-button pure-button" },
-                "Move to"
+                'p',
+                null,
+                'Aliquam ac feugiat dolor. Proin mattis massa sit amet enim iaculis tincidunt. Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris. Curabitur ornare arcu quis mi blandit laoreet. Vivamus imperdiet fermentum mauris, ac posuere urna tempor at. Duis pellentesque justo ac sapien aliquet egestas. Morbi enim mi, porta eget ullamcorper at, pharetra id lorem.'
+              ),
+              _react2.default.createElement(
+                'p',
+                null,
+                'Donec sagittis dolor ut quam pharetra pretium varius in nibh. Suspendisse potenti. Donec imperdiet, velit vel adipiscing bibendum, leo eros tristique augue, eu rutrum lacus sapien vel quam. Nam orci arcu, luctus quis vestibulum ut, ullamcorper ut enim. Morbi semper erat quis orci aliquet condimentum. Nam interdum mauris sed massa dignissim rhoncus.'
+              ),
+              _react2.default.createElement(
+                'p',
+                null,
+                'Regards,',
+                _react2.default.createElement('br', null),
+                'Tilo'
               )
-            )
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "email-content-body" },
-            _react2.default.createElement(
-              "p",
-              null,
-              "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-            ),
-            _react2.default.createElement(
-              "p",
-              null,
-              "Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            ),
-            _react2.default.createElement(
-              "p",
-              null,
-              "Aliquam ac feugiat dolor. Proin mattis massa sit amet enim iaculis tincidunt. Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris. Curabitur ornare arcu quis mi blandit laoreet. Vivamus imperdiet fermentum mauris, ac posuere urna tempor at. Duis pellentesque justo ac sapien aliquet egestas. Morbi enim mi, porta eget ullamcorper at, pharetra id lorem."
-            ),
-            _react2.default.createElement(
-              "p",
-              null,
-              "Donec sagittis dolor ut quam pharetra pretium varius in nibh. Suspendisse potenti. Donec imperdiet, velit vel adipiscing bibendum, leo eros tristique augue, eu rutrum lacus sapien vel quam. Nam orci arcu, luctus quis vestibulum ut, ullamcorper ut enim. Morbi semper erat quis orci aliquet condimentum. Nam interdum mauris sed massa dignissim rhoncus."
-            ),
-            _react2.default.createElement(
-              "p",
-              null,
-              "Regards,",
-              _react2.default.createElement("br", null),
-              "Tilo"
             )
           )
         )
@@ -35413,7 +35452,7 @@ var MailBody = function (_React$Component) {
 
 exports.default = MailBody;
 
-},{"react":156}],199:[function(require,module,exports){
+},{"../api":196,"./MailList":200,"react":156}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35597,8 +35636,58 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MailList = function (_React$Component) {
-  _inherits(MailList, _React$Component);
+var EmailItem = function (_React$Component) {
+  _inherits(EmailItem, _React$Component);
+
+  function EmailItem() {
+    _classCallCheck(this, EmailItem);
+
+    return _possibleConstructorReturn(this, (EmailItem.__proto__ || Object.getPrototypeOf(EmailItem)).apply(this, arguments));
+  }
+
+  _createClass(EmailItem, [{
+    key: "render",
+    value: function render() {
+      var _props$message = this.props.message,
+          from = _props$message.from,
+          subject = _props$message.subject,
+          html = _props$message.html,
+          textAsHtml = _props$message.textAsHtml,
+          body = _props$message.body;
+      // const content = html ? html : textAsHtml;
+
+      return _react2.default.createElement(
+        "div",
+        { className: "email-item email-item-selected pure-g" },
+        _react2.default.createElement(
+          "div",
+          { className: "pure-u" },
+          _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "img/common/tilo-avatar.png" })
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "pure-u-3-4" },
+          _react2.default.createElement(
+            "h5",
+            { className: "email-name" },
+            from.text
+          ),
+          _react2.default.createElement(
+            "h4",
+            { className: "email-subject" },
+            subject
+          ),
+          _react2.default.createElement("p", { className: "email-desc", dangerouslySetInnerHTML: { __html: body.substr(0, 200) + ' [...]' } })
+        )
+      );
+    }
+  }]);
+
+  return EmailItem;
+}(_react2.default.Component);
+
+var MailList = function (_React$Component2) {
+  _inherits(MailList, _React$Component2);
 
   function MailList() {
     _classCallCheck(this, MailList);
@@ -35609,9 +35698,14 @@ var MailList = function (_React$Component) {
   _createClass(MailList, [{
     key: "render",
     value: function render() {
+      var messages = this.props.messages;
+
       return _react2.default.createElement(
         "div",
         { id: "list", className: "pure-u-1" },
+        messages.map(function (m, i) {
+          return _react2.default.createElement(EmailItem, { key: i, message: m });
+        }),
         _react2.default.createElement(
           "div",
           { className: "email-item email-item-selected pure-g" },
@@ -36015,7 +36109,6 @@ var MyApp = function MyApp() {
     'div',
     { id: 'layout', className: 'content pure-g' },
     _react2.default.createElement(_Navbar2.default, { user: null }),
-    _react2.default.createElement(_MailList2.default, null),
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,

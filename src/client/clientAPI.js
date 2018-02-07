@@ -4,6 +4,11 @@ let id = 0;
 // app.logout();
 class clientAPI {
 
+  getMessages() {
+    return fetch('/messages')
+    .then(response => response.json())
+  }
+
   insertUser(user) {
     // console.log('INSERT USER CLIENT', user);
     // ++id;

@@ -43,8 +43,6 @@ const MyApp = () => (
     <Navbar user={null}/>
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
 
-    <MailList />
-
     <Switch>
       <PrivateRoute path="/profile" component={Profile}/>
       {/*<Route path="/profile" component={Profile}/>*/}
