@@ -13,6 +13,8 @@ import initStore from './initStore';
 
 import api from './api';
 import serverAPI from './serverAPI';
+import User from './models/user';
+
 console.log(serverAPI);
 api.setStrategy(serverAPI);
 

@@ -49,7 +49,7 @@ function buildServer() {
           }]
         ]
       }))
-      .pipe(gulp.dest('./'))
+      .pipe(gulp.dest('./dist'))
       .on('end', resolve);
   });
 }
