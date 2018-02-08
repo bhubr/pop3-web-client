@@ -1,4 +1,5 @@
 import React from 'react';
+import MailList from './MailList';
 import Navbar from './Navbar';
 import Register from './Register';
 import Login from './Login';
@@ -36,22 +37,26 @@ const NotFound = () => (
 );
 
 const MyApp = () => (
-  <div>
+  <div id="layout" className="content pure-g">
+
+
     <Navbar user={null}/>
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
 
     <Switch>
       <PrivateRoute path="/profile" component={Profile}/>
+      {/*<Route path="/profile" component={Profile}/>*/}
       <Route exact path="/" component={Home}/>
       <Route path="/register" component={Register}/>
       <Route path="/login" component={Login}/>
+      <Route path="/dashboard" component={Dashboard}/>
       {/*<Route path="/messages" component={Messages}/>*/}
       {routes.map(route => (
         <Route key={route.path} {...route}/>
       ))}
 
       <Route path="/dashboard" component={Dashboard}/>
-      {/* some other routes */}
+      {/* some other routes
       <RedirectWithStatus
         status={301}
         from="/brands"
@@ -61,7 +66,7 @@ const MyApp = () => (
         status={302}
         from="/courses"
         to="/dashboard"
-      />
+      /> */}
       <Route component={NotFound}/>
     </Switch>
   </div>

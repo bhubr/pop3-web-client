@@ -2,15 +2,28 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MyApp from '../common/components/MyApp';
 import {
-  BrowserRouter
+  Router
 } from 'react-router-dom';
-var mountNode = document.getElementById('app');
+import { Provider } from 'react-redux';
+import initStore from '../common/initStore';
+import api from '../common/api';
+import history from '../common/history';
+import clientAPI from './clientAPI';
+api.setStrategy(clientAPI);
+
+const mountNode = document.getElementById('app');
+
+const state = window.initialState || {};
+console.log('CLIENT initialState', window.initialState);
+const store = initStore(state);
 
 const MyRoutedApp = () => {
   return (
-    <BrowserRouter>
-      <MyApp />
-    </BrowserRouter>
+    <Provider store={store}>
+      <Router history={history}>
+        <MyApp />
+      </Router>
+    </Provider>
   );
 };
 

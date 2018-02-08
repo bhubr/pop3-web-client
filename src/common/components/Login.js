@@ -1,8 +1,10 @@
 import React from 'react';
+import { loginUser } from '../actions';
+import { connect } from 'react-redux';
 // import { users, app } from '../../client/feathers';
 // import simpleAuth from '../../common/simpleAuth';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
@@ -10,6 +12,7 @@ export default class Login extends React.Component {
       email: '',
       password: ''
     };
+    // console.log('Login props', this.props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,7 +28,8 @@ export default class Login extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-
+    console.log('handleSubmit');
+    this.props.loginUser(this.state);
     // simpleAuth.authenticate(this.state)
     //   .then(function(result){
     //     console.log('Authenticated!', result);
@@ -79,3 +83,18 @@ export default class Login extends React.Component {
     );
   }
 }
+
+
+const mapStateToProps = state => {
+  return {
+    errorMessage: state.users.loginError
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loginUser: user => dispatch(loginUser(user))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
