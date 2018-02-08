@@ -4,12 +4,12 @@ const User = {
 
   readAll: function() {
     return  pool
-      .query('select `id`, `name` from users');
+      .query('select `id`, `email` from users');
   },
 
-  create: function(name) {
-    const insertQuery = "insert into users(name) values('" + name.trim() + "')";
-    let selectQuery = "select `id`, `name` from users where id = ";
+  create: function(email) {
+    const insertQuery = "insert into users(email) values('" + email.trim() + "')";
+    let selectQuery = "select `id`, `email` from users where id = ";
     return pool
       .query(insertQuery)
       .then(result => pool.query(selectQuery + result.insertId))

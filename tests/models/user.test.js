@@ -4,8 +4,11 @@ const User = require('../../dist/models/user');
 
 describe('User model test', () => {
 
-  it('', () => {
-
+  it('reads all users', () => {
+    User.readAll()
+    .then(users => {
+      expect(users.length).to.equal(0);
+    })
   });
 
 });
