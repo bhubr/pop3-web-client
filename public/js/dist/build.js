@@ -24130,8 +24130,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _feathers = require('./feathers');
@@ -24192,8 +24190,10 @@ var clientAPI = function () {
           Accept: 'application/json'
         },
         credentials: 'same-origin',
-        body: JSON.stringify(_extends({}, credentials, { strategy: 'local'
-        }))
+        body: JSON.stringify(credentials)
+        // body: JSON.stringify({
+        //   ...credentials, strategy: 'local'
+        // })
       }).then(function (response) {
         return response.json();
       })
@@ -24892,9 +24892,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import { users, app } from '../../client/feathers';
-// import simpleAuth from '../../common/simpleAuth';
-
 var Login = function (_React$Component) {
   _inherits(Login, _React$Component);
 
@@ -24905,10 +24902,13 @@ var Login = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
 
     _this.state = {
+      // firstName: '',
+      // lastName: '',
       email: '',
       password: ''
+      // passwordConfirm: '',
+      // passwordsMatch: true
     };
-    // console.log('Login props', this.props);
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
@@ -24922,84 +24922,83 @@ var Login = function (_React$Component) {
           name = _event$target.name,
           value = _event$target.value;
 
-      var changedValue = _defineProperty({}, name, value);
+      var changedValues = _defineProperty({}, name, value);
+      // if(name.startsWith('password')) {
+      //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
+      // }
       this.setState(function (prevState, props) {
-        return Object.assign(_extends({}, prevState), changedValue);
+        return Object.assign(_extends({}, prevState), changedValues);
       });
     }
+
+    // checkPasswordsMatch(name, value) {
+    //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
+    //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
+    //   return this.state[checkAgainst] === value;
+    // }
+
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
-      console.log('handleSubmit');
+      // if(! this.state.passwordsMatch) {
+      //   return;
+      // }
+      console.log(this.state);
       this.props.loginUser(this.state);
-      // simpleAuth.authenticate(this.state)
-      //   .then(function(result){
-      //     console.log('Authenticated!', result);
-      //   }).catch(function(error){
-      //     console.error('Error authenticating!', error);
-      //   });
     }
   }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'container' },
+        { className: 'pure-u-1' },
         _react2.default.createElement(
-          'section',
-          { className: 'row' },
+          'form',
+          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
           _react2.default.createElement(
-            'div',
-            { className: 'col-md-6 col-md-offset-3' },
+            'fieldset',
+            null,
             _react2.default.createElement(
-              'div',
-              { className: 'panel panel-default' },
-              _react2.default.createElement(
-                'div',
-                { className: 'panel-body' },
-                _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.handleSubmit, role: 'form' },
-                  _react2.default.createElement(
-                    'fieldset',
-                    null,
-                    _react2.default.createElement(
-                      'legend',
-                      null,
-                      'Login'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Email',
-                        name: 'email',
-                        type: 'email',
-                        value: this.state.email,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Password',
-                        name: 'password',
-                        type: 'password',
-                        value: this.state.password,
-                        onChange: this.handleChange })
-                    )
-                  ),
-                  _react2.default.createElement('i', { className: 'divider' }),
-                  _react2.default.createElement(
-                    'button',
-                    { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
-                    'Login'
-                  )
-                )
-              )
+              'legend',
+              null,
+              'Sign up'
+            ),
+            _react2.default.createElement(
+              'label',
+              { htmlFor: 'email' },
+              'Email'
+            ),
+            _react2.default.createElement('input', {
+              id: 'email',
+              name: 'email',
+              type: 'email',
+              className: 'form-control',
+              placeholder: 'Email',
+              value: this.state.email,
+              onChange: this.handleChange }),
+            _react2.default.createElement(
+              'span',
+              { className: 'pure-form-message' },
+              'This is a required field.'
+            ),
+            _react2.default.createElement(
+              'label',
+              { htmlFor: 'password' },
+              'Password'
+            ),
+            _react2.default.createElement('input', {
+              id: 'password',
+              name: 'password',
+              type: 'password',
+              className: 'form-control',
+              placeholder: 'Password',
+              value: this.state.password,
+              onChange: this.handleChange }),
+            _react2.default.createElement(
+              'button',
+              { type: 'submit', className: 'pure-button pure-button-primary' },
+              'Sign in'
             )
           )
         )
@@ -25012,7 +25011,7 @@ var Login = function (_React$Component) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    errorMessage: state.users.loginError
+    errorMessage: state.users.registerError
   };
 };
 

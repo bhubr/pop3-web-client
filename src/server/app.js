@@ -35,6 +35,12 @@ app.post('/api/users', (req, res) => {
   .then(user => res.json(user));
 });
 
+app.post('/authentication', (req, res) => {
+  User.authenticate(req.body)
+  .then(userOrFalse => (userOrFalse ?
+    res.json(userOrFalse) : res.status(401).json({ error: 'failed' })
+  ));
+});
 
 const routes = [{
   path: '/inbox/:acntId',

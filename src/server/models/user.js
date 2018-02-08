@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 
 const hashAsync = Promise.promisify(bcrypt.hash);
+const compareAsync = Promise.promisify(bcrypt.compare);
 const SALT_ROUNDS = 10;
 
 function trimAndQuote(v) {
@@ -30,6 +31,24 @@ export default class User {
       .then(password => Object.assign(user, {
         password
       }));
+  }
+
+  static getByEmail(email) {
+    const selectQuery = `select id, email, password from users where email = '${email}'`;
+    return pool
+      .query(selectQuery)
+      .then(records => (records[0]));
+  }
+
+  static checkPassword(dbUser, password) {
+    console.log('### checkPassword', dbUser, password);
+    return compareAsync(password, dbUser.password)
+    .then(matches => (matches ? dbUser : false));
+  }
+
+  static authenticate(credentials) {
+    return User.getByEmail(credentials.email)
+    .then(user => User.checkPassword(user, credentials.password))
   }
 
   static create(user) {

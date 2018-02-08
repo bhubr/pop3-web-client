@@ -43,9 +43,10 @@ class clientAPI {
         Accept: 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify({
-        ...credentials, strategy: 'local'
-      })
+      body: JSON.stringify(credentials),
+      // body: JSON.stringify({
+      //   ...credentials, strategy: 'local'
+      // })
     })
       .then(response => response.json())
     // return app.authenticate({

@@ -1,18 +1,19 @@
 import React from 'react';
 import { loginUser } from '../actions';
 import { connect } from 'react-redux';
-// import { users, app } from '../../client/feathers';
-// import simpleAuth from '../../common/simpleAuth';
 
 class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
     this.state = {
+      // firstName: '',
+      // lastName: '',
       email: '',
-      password: ''
+      password: '',
+      // passwordConfirm: '',
+      // passwordsMatch: true
     };
-    // console.log('Login props', this.props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,74 +21,71 @@ class Login extends React.Component {
 
   handleChange(event) {
     const { name, value } = event.target;
-    let changedValue = { [name]: value };
+    let changedValues = { [name]: value };
+    // if(name.startsWith('password')) {
+    //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
+    // }
     this.setState((prevState, props) => Object.assign(
-      { ...prevState }, changedValue
+      { ...prevState }, changedValues
     ));
   }
 
+  // checkPasswordsMatch(name, value) {
+  //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
+  //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
+  //   return this.state[checkAgainst] === value;
+  // }
+
   handleSubmit(event) {
     event.preventDefault();
-    console.log('handleSubmit');
+    // if(! this.state.passwordsMatch) {
+    //   return;
+    // }
+    console.log(this.state);
     this.props.loginUser(this.state);
-    // simpleAuth.authenticate(this.state)
-    //   .then(function(result){
-    //     console.log('Authenticated!', result);
-    //   }).catch(function(error){
-    //     console.error('Error authenticating!', error);
-    //   });
-
   }
 
   render() {
     return (
-      <div className="container">
-        <section className="row">
-          <div className="col-md-6 col-md-offset-3">
-            <div className="panel panel-default">
-              <div className="panel-body">
-                <form onSubmit={this.handleSubmit} role="form">
-                  <fieldset>
-                    <legend>Login</legend>
-                    <div className="col-md-12 form-group">
+      <div className="pure-u-1">
 
-                      <input
-                        className="form-control"
-                        placeholder="Email"
-                        name="email"
-                        type="email"
-                        value={this.state.email}
-                        onChange={this.handleChange} />
-                    </div>
+        <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
+            <fieldset>
+                <legend>Sign up</legend>
 
-                    <div className="col-md-12 form-group">
-                      <input
-                        className="form-control"
-                        placeholder="Password"
-                        name="password"
-                        type="password"
-                        value={this.state.password}
-                        onChange={this.handleChange} />
-                    </div>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
+                  value={this.state.email}
+                  onChange={this.handleChange} />
+                <span className="pure-form-message">This is a required field.</span>
 
-                  </fieldset>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  placeholder="Password"
+                  value={this.state.password}
+                  onChange={this.handleChange} />
 
-                  <i className="divider"></i>
-                  <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Login</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
+                <button type="submit" className="pure-button pure-button-primary">Sign in</button>
+            </fieldset>
+        </form>
+
       </div>
     );
   }
 }
 
-
 const mapStateToProps = state => {
   return {
-    errorMessage: state.users.loginError
+    errorMessage: state.users.registerError
   };
 };
 
