@@ -55,7 +55,6 @@ function getFetchMessage(pop3) {
           const $ = cheerio.load(html ? html : textAsHtml);
           const body = $('body').html();
           const style = $('style').html();
-          console.log(body, style);
           resolve(carry.concat([ { ...mail, body, style } ]));
         })
       });

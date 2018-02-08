@@ -8,7 +8,7 @@ class EmailItem extends React.Component {
     return (
       <div className="email-item email-item-selected pure-g">
         <div className="pure-u">
-          <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="img/common/tilo-avatar.png" />
+          <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
         </div>
 
         <div className="pure-u-3-4">
@@ -32,7 +32,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item email-item-selected pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="img/common/tilo-avatar.png" />
+            <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -46,7 +46,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item email-item-unread pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Eric Ferraiuolo&#x27;s avatar" className="email-avatar" src="img/common/ericf-avatar.png" />
+            <img width="64" height="64" alt="Eric Ferraiuolo&#x27;s avatar" className="email-avatar" src="/img/common/ericf-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -60,7 +60,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item email-item-unread pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="YUI&#x27;s avatar" className="email-avatar" src="img/common/yui-avatar.png" />
+            <img width="64" height="64" alt="YUI&#x27;s avatar" className="email-avatar" src="/img/common/yui-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -74,7 +74,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Reid Burke&#x27;s avatar" className="email-avatar" src="img/common/reid-avatar.png" />
+            <img width="64" height="64" alt="Reid Burke&#x27;s avatar" className="email-avatar" src="/img/common/reid-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -88,7 +88,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Andrew Wooldridge&#x27;s avatar" className="email-avatar" src="img/common/andrew-avatar.png" />
+            <img width="64" height="64" alt="Andrew Wooldridge&#x27;s avatar" className="email-avatar" src="/img/common/andrew-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -102,7 +102,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Yahoo! Finance&#x27;s Avatar" className="email-avatar" src="img/common/yfinance-avatar.png" />
+            <img width="64" height="64" alt="Yahoo! Finance&#x27;s Avatar" className="email-avatar" src="/img/common/yfinance-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">
@@ -116,7 +116,7 @@ export default class MailList extends React.Component {
 
         <div className="email-item pure-g">
           <div className="pure-u">
-            <img width="64" height="64" alt="Yahoo! News&#x27; avatar" className="email-avatar" src="img/common/ynews-avatar.png" />
+            <img width="64" height="64" alt="Yahoo! News&#x27; avatar" className="email-avatar" src="/img/common/ynews-avatar.png" />
           </div>
 
           <div className="pure-u-3-4">

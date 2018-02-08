@@ -30,10 +30,48 @@ app.get('/messages', (req, res) => {
 
 });
 
+app.post('/api/users', (req, res) => {
+  User.create(req.body)
+  .then(user => res.json(user));
+});
+
+
+const routes = [{
+  path: '/inbox/:acntId',
+  loadData: async function() {
+    const messages = await api.call('getMessages');
+    return messages;
+  }
+}];
+
 app.get('*', (req, res) => {
 
-    const initialState = {};
+  // inside a request
+  const promises = [];
+  // use `some` to imitate `<Switch>` behavior of selecting only
+  // the first to match
+  routes.some(route => {
+    // console.log('route', req.url, route);
+    // use `matchPath` here
+    const match = matchPath(req.url, route);
+    if (match) {
+      console.log('it matches!', match);
+      promises.push(route.loadData(match));
+    }
+    return match;
+  });
+
+  Promise.all(promises).then(data => {
+    const { user } = req;
+    const session = { user };
+    // let initialState = {
+    //   session
+    // };
+
+    const initialState = JSON.stringify(data[0] || {});
     const stateJSON = JSON.stringify(initialState);
+    console.log('Got data', data, stateJSON);
+
     const store = initStore(initialState);
     // do something w/ the data so the client
     // can access it then render the app
@@ -61,5 +99,6 @@ app.get('*', (req, res) => {
       res.status(status).render('app.html.twig', { markup, state: stateJSON });
     }
   });
+});
 
 app.listen(3000);

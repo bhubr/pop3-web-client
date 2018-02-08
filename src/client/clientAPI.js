@@ -13,11 +13,24 @@ class clientAPI {
     // console.log('INSERT USER CLIENT', user);
     // ++id;
     // return Promise.resolve(Object.assign({...user}, {id}));
-    return users.create(user)
-      .then(result => {
-        console.log('USER CREATED', user);
-        return user;
-      });
+    // return users.create(user)
+    //   .then(result => {
+    //     console.log('USER CREATED', user);
+    //     return user;
+    //   });
+
+    return fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json());
+    // .then(user => {
+    //   console.log(user);
+    // });
   }
 
   authenticateUser(credentials) {

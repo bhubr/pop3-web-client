@@ -24159,10 +24159,25 @@ var clientAPI = function () {
       // console.log('INSERT USER CLIENT', user);
       // ++id;
       // return Promise.resolve(Object.assign({...user}, {id}));
-      return _feathers.users.create(user).then(function (result) {
-        console.log('USER CREATED', user);
-        return user;
+      // return users.create(user)
+      //   .then(result => {
+      //     console.log('USER CREATED', user);
+      //     return user;
+      //   });
+
+      return fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
       });
+      // .then(user => {
+      //   console.log(user);
+      // });
     }
   }, {
     key: 'authenticateUser',
@@ -24302,7 +24317,7 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":109,"../common/components/MyApp":115,"../common/history":122,"../common/initStore":123,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],108:[function(require,module,exports){
+},{"../common/api":109,"../common/components/MyApp":116,"../common/history":123,"../common/initStore":124,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24539,7 +24554,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../api":109,"../history":122}],109:[function(require,module,exports){
+},{"../api":109,"../history":123}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24628,6 +24643,80 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = require('react-router-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Home = function (_React$Component) {
+  _inherits(Home, _React$Component);
+
+  function Home() {
+    _classCallCheck(this, Home);
+
+    return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
+  }
+
+  _createClass(Home, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'pure-u-1' },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Home'
+        ),
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { to: '/signup' },
+              'Sign up'
+            )
+          ),
+          _react2.default.createElement(
+            'li',
+            null,
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { to: '/signin' },
+              'Sign in'
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Home;
+}(_react2.default.Component);
+
+exports.default = Home;
+
+},{"react":89,"react-router-dom":73}],112:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 var _api = require('../api');
 
 var _api2 = _interopRequireDefault(_api);
@@ -24644,13 +24733,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MailBody = function (_React$Component) {
-  _inherits(MailBody, _React$Component);
+var Inbox = function (_React$Component) {
+  _inherits(Inbox, _React$Component);
 
-  function MailBody(props) {
-    _classCallCheck(this, MailBody);
+  function Inbox(props) {
+    _classCallCheck(this, Inbox);
 
-    var _this = _possibleConstructorReturn(this, (MailBody.__proto__ || Object.getPrototypeOf(MailBody)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Inbox.__proto__ || Object.getPrototypeOf(Inbox)).call(this, props));
 
     _this.state = {
       messages: []
@@ -24658,12 +24747,11 @@ var MailBody = function (_React$Component) {
     return _this;
   }
 
-  _createClass(MailBody, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
+  _createClass(Inbox, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
       var _this2 = this;
 
-      console.log(_api2.default);
       _api2.default.call('getMessages').then(function (messages) {
         return _this2.setState(function (prevState, props) {
           return { messages: messages };
@@ -24770,12 +24858,12 @@ var MailBody = function (_React$Component) {
     }
   }]);
 
-  return MailBody;
+  return Inbox;
 }(_react2.default.Component);
 
-exports.default = MailBody;
+exports.default = Inbox;
 
-},{"../api":109,"./MailList":113,"react":89}],112:[function(require,module,exports){
+},{"../api":109,"./MailList":114,"react":89}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24938,7 +25026,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":108,"react":89,"react-redux":56}],113:[function(require,module,exports){
+},{"../actions":108,"react":89,"react-redux":56}],114:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24985,7 +25073,7 @@ var EmailItem = function (_React$Component) {
         _react2.default.createElement(
           "div",
           { className: "pure-u" },
-          _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "img/common/tilo-avatar.png" })
+          _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "/img/common/tilo-avatar.png" })
         ),
         _react2.default.createElement(
           "div",
@@ -25035,7 +25123,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "img/common/tilo-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "/img/common/tilo-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25063,7 +25151,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Eric Ferraiuolo's avatar", className: "email-avatar", src: "img/common/ericf-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Eric Ferraiuolo's avatar", className: "email-avatar", src: "/img/common/ericf-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25091,7 +25179,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "YUI's avatar", className: "email-avatar", src: "img/common/yui-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "YUI's avatar", className: "email-avatar", src: "/img/common/yui-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25119,7 +25207,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Reid Burke's avatar", className: "email-avatar", src: "img/common/reid-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Reid Burke's avatar", className: "email-avatar", src: "/img/common/reid-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25147,7 +25235,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Andrew Wooldridge's avatar", className: "email-avatar", src: "img/common/andrew-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Andrew Wooldridge's avatar", className: "email-avatar", src: "/img/common/andrew-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25175,7 +25263,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! Finance's Avatar", className: "email-avatar", src: "img/common/yfinance-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! Finance's Avatar", className: "email-avatar", src: "/img/common/yfinance-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25203,7 +25291,7 @@ var MailList = function (_React$Component2) {
           _react2.default.createElement(
             "div",
             { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! News' avatar", className: "email-avatar", src: "img/common/ynews-avatar.png" })
+            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! News' avatar", className: "email-avatar", src: "/img/common/ynews-avatar.png" })
           ),
           _react2.default.createElement(
             "div",
@@ -25234,7 +25322,7 @@ var MailList = function (_React$Component2) {
 
 exports.default = MailList;
 
-},{"react":89}],114:[function(require,module,exports){
+},{"react":89}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25336,7 +25424,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":89}],115:[function(require,module,exports){
+},{"react":89}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25385,6 +25473,10 @@ var _RedirectWithStatus2 = _interopRequireDefault(_RedirectWithStatus);
 var _Home = require('./Home');
 
 var _Home2 = _interopRequireDefault(_Home);
+
+var _Inbox = require('./Inbox');
+
+var _Inbox2 = _interopRequireDefault(_Inbox);
 
 var _Dashboard = require('./Dashboard');
 
@@ -25435,10 +25527,11 @@ var MyApp = function MyApp() {
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
-      _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/register', component: _Register2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _Login2.default }),
+      _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/inbox/:acntId', component: _Inbox2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _Register2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/signin', component: _Login2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
       _routes2.default.map(function (route) {
         return _react2.default.createElement(_reactRouterDom.Route, _extends({ key: route.path }, route));
@@ -25451,7 +25544,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":110,"./Home":111,"./Login":112,"./MailList":113,"./Navbar":116,"./PrivateRoute":117,"./Profile":118,"./RedirectWithStatus":119,"./Register":120,"./routes":121,"react":89,"react-router-dom":73}],116:[function(require,module,exports){
+},{"./Dashboard":110,"./Home":111,"./Inbox":112,"./Login":113,"./MailList":114,"./Navbar":117,"./PrivateRoute":118,"./Profile":119,"./RedirectWithStatus":120,"./Register":121,"./routes":122,"react":89,"react-router-dom":73}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25731,7 +25824,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
 
-},{"../actions":108,"react":89,"react-redux":56,"react-router-dom":73}],117:[function(require,module,exports){
+},{"../actions":108,"react":89,"react-redux":56,"react-router-dom":73}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25813,7 +25906,7 @@ var mapStateToProps = function mapStateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PrivateRoute);
 
-},{"react":89,"react-redux":56,"react-router-dom":73}],118:[function(require,module,exports){
+},{"react":89,"react-redux":56,"react-router-dom":73}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25994,7 +26087,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
-},{"../actions":108,"react":89,"react-redux":56}],119:[function(require,module,exports){
+},{"../actions":108,"react":89,"react-redux":56}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26028,7 +26121,7 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":89,"react-router-dom":73}],120:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26067,17 +26160,16 @@ var Register = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Register.__proto__ || Object.getPrototypeOf(Register)).call(this, props));
 
     _this.state = {
-      firstName: '',
-      lastName: '',
+      // firstName: '',
+      // lastName: '',
       email: '',
-      password: '',
-      passwordConfirm: '',
-      passwordsMatch: true
+      password: ''
+      // passwordConfirm: '',
+      // passwordsMatch: true
     };
 
     _this.handleChange = _this.handleChange.bind(_this);
     _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.checkPasswordsMatch = _this.checkPasswordsMatch.bind(_this);
     return _this;
   }
 
@@ -26089,27 +26181,28 @@ var Register = function (_React$Component) {
           value = _event$target.value;
 
       var changedValues = _defineProperty({}, name, value);
-      if (name.startsWith('password')) {
-        changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
-      }
+      // if(name.startsWith('password')) {
+      //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
+      // }
       this.setState(function (prevState, props) {
         return Object.assign(_extends({}, prevState), changedValues);
       });
     }
-  }, {
-    key: 'checkPasswordsMatch',
-    value: function checkPasswordsMatch(name, value) {
-      var checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
-      console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
-      return this.state[checkAgainst] === value;
-    }
+
+    // checkPasswordsMatch(name, value) {
+    //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
+    //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
+    //   return this.state[checkAgainst] === value;
+    // }
+
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
-      if (!this.state.passwordsMatch) {
-        return;
-      }
+      // if(! this.state.passwordsMatch) {
+      //   return;
+      // }
+      console.log(this.state);
       this.props.registerUser(this.state);
     }
   }, {
@@ -26117,94 +26210,53 @@ var Register = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'container' },
+        { className: 'pure-u-1' },
         _react2.default.createElement(
-          'section',
-          { className: 'row' },
+          'form',
+          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
           _react2.default.createElement(
-            'div',
-            { className: 'col-md-6 col-md-offset-3' },
+            'fieldset',
+            null,
             _react2.default.createElement(
-              'div',
-              { className: 'panel panel-default' },
-              _react2.default.createElement(
-                'div',
-                { className: 'panel-body' },
-                _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.handleSubmit, role: 'form' },
-                  _react2.default.createElement(
-                    'fieldset',
-                    null,
-                    _react2.default.createElement(
-                      'legend',
-                      null,
-                      'Register'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'First name',
-                        name: 'firstName',
-                        type: 'text',
-                        value: this.state.firstName,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Last name',
-                        name: 'lastName',
-                        type: 'text',
-                        value: this.state.lastName,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Email',
-                        name: 'email',
-                        type: 'email',
-                        value: this.state.email,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group ' + (this.state.passwordsMatch ? '' : 'has-error') },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Password',
-                        name: 'password',
-                        type: 'password',
-                        value: this.state.password,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group ' + (this.state.passwordsMatch ? '' : 'has-error') },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Password',
-                        name: 'passwordConfirm',
-                        type: 'password',
-                        value: this.state.passwordConfirm,
-                        onChange: this.handleChange })
-                    )
-                  ),
-                  _react2.default.createElement('i', { className: 'divider' }),
-                  _react2.default.createElement(
-                    'button',
-                    { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
-                    'Join'
-                  )
-                )
-              )
+              'legend',
+              null,
+              'Sign up'
+            ),
+            _react2.default.createElement(
+              'label',
+              { htmlFor: 'email' },
+              'Email'
+            ),
+            _react2.default.createElement('input', {
+              id: 'email',
+              name: 'email',
+              type: 'email',
+              className: 'form-control',
+              placeholder: 'Email',
+              value: this.state.email,
+              onChange: this.handleChange }),
+            _react2.default.createElement(
+              'span',
+              { className: 'pure-form-message' },
+              'This is a required field.'
+            ),
+            _react2.default.createElement(
+              'label',
+              { htmlFor: 'password' },
+              'Password'
+            ),
+            _react2.default.createElement('input', {
+              id: 'password',
+              name: 'password',
+              type: 'password',
+              className: 'form-control',
+              placeholder: 'Password',
+              value: this.state.password,
+              onChange: this.handleChange }),
+            _react2.default.createElement(
+              'button',
+              { type: 'submit', className: 'pure-button pure-button-primary' },
+              'Sign in'
             )
           )
         )
@@ -26231,7 +26283,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Register);
 
-},{"../actions":108,"react":89,"react-redux":56}],121:[function(require,module,exports){
+},{"../actions":108,"react":89,"react-redux":56}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26249,7 +26301,7 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":114}],122:[function(require,module,exports){
+},{"./Messages":115}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26274,7 +26326,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { createBrowserHistory } from 'history';
 exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.default)() : (0, _createMemoryHistory2.default)();
 
-},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],123:[function(require,module,exports){
+},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26307,7 +26359,7 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware)));
 }
 
-},{"./reducers":124,"redux":97,"redux-logger":90,"redux-thunk":91}],124:[function(require,module,exports){
+},{"./reducers":125,"redux":97,"redux-logger":90,"redux-thunk":91}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26329,7 +26381,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var reducers = (0, _redux.combineReducers)({ session: _session2.default, users: _users2.default });
 exports.default = reducers;
 
-},{"./session":125,"./users":126,"redux":97}],125:[function(require,module,exports){
+},{"./session":126,"./users":127,"redux":97}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26405,7 +26457,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":108}],126:[function(require,module,exports){
+},{"../actions":108}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

@@ -7,6 +7,7 @@ import Profile from './Profile';
 import PrivateRoute from './PrivateRoute';
 import RedirectWithStatus from './RedirectWithStatus';
 import Home from './Home';
+import Inbox from './Inbox';
 import Dashboard from './Dashboard';
 // import Messages from './Messages';
 import routes from './routes';
@@ -44,11 +45,12 @@ const MyApp = () => (
     {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
 
     <Switch>
+      <Route exact path="/" component={Home}/>
       <PrivateRoute path="/profile" component={Profile}/>
       {/*<Route path="/profile" component={Profile}/>*/}
-      <Route exact path="/" component={Home}/>
-      <Route path="/register" component={Register}/>
-      <Route path="/login" component={Login}/>
+      <Route exact path="/inbox/:acntId" component={Inbox}/>
+      <Route path="/signup" component={Register}/>
+      <Route path="/signin" component={Login}/>
       <Route path="/dashboard" component={Dashboard}/>
       {/*<Route path="/messages" component={Messages}/>*/}
       {routes.map(route => (
