@@ -10,13 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@feathersjs/authentication": "^2.1.0",
-    "@feathersjs/authentication-client": "^1.0.1",
-    "@feathersjs/authentication-jwt": "^1.0.1",
-    "@feathersjs/authentication-local": "^1.0.2",
-    "@feathersjs/express": "^1.1.2",
-    "@feathersjs/feathers": "^3.0.3",
-    "@feathersjs/socketio": "^3.0.1",
+    "bcrypt": "^1.0.3",
     "bluebird": "^3.5.1",
     "chai": "^4.1.2",
     "cheerio": "^1.0.0-rc.2",
@@ -40,7 +34,6 @@
     "twig": "^1.10.5"
   },
   "devDependencies": {
-    "@feathersjs/socketio-client": "^1.0.1",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
