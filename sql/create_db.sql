@@ -31,6 +31,9 @@ CREATE TABLE `messages` (
   `id` int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `accountId` int(10) UNSIGNED NOT NULL,
   `uidl` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `senderName` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `senderEmail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` text COLLATE utf8_unicode_ci NOT NULL,
   `raw` text COLLATE utf8_unicode_ci NOT NULL,
   `html` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -39,3 +42,7 @@ CREATE TABLE `messages` (
 
 ALTER TABLE messages
 ADD FOREIGN KEY (accountId) REFERENCES accounts(id);
+
+-- alter table messages add column subject text;
+-- alter table messages add column senderName varchar(255);
+-- alter table messages add column senderEmail varchar(255);

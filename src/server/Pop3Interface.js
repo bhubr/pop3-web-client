@@ -37,7 +37,8 @@ function getFetchMessage(pop3, accountId) {
             if (err) {
               return reject(err);
             }
-            const { html, textAsHtml } = mail;
+            const { html, textAsHtml, subject, from } = mail;
+            const [{ address, name }] = from.value;
             const theHtml = html ? html : textAsHtml;
             const $ = cheerio.load(theHtml);
             const body = $('body').html();
@@ -47,13 +48,15 @@ function getFetchMessage(pop3, accountId) {
             resolve({
               accountId,
               uidl,
+              senderName: name,
+              senderEmail: address,
+              subject,
               raw: JSON.stringify(mail),
               html: theHtml
             });
           })
         )
       })
-      .then(passLog)
       .then(props => Message.create(props))
       .then(message => carry.concat([message]))
     });

@@ -39,9 +39,9 @@ function passLog(v) {
 }
 
 function extractMessageBody(message) {
+  // console.log(message.raw);
   const $ = cheerio.load(message.html);
-  console.log(message.html);
-  message.body = $('body').html();
+  message.body = $('body').html().trim();
   return message;
 }
 
@@ -51,32 +51,35 @@ export default class Message {
     this.id = props.id;
     this.accountId = props.accountId;
     this.uidl = props.uidl;
+    this.senderName = props.senderName;
+    this.senderEmail = props.senderEmail;
+    this.subject = props.subject;
     this.raw = props.raw;
     this.html = props.html;
   }
 
   static findAll(accountId) {
     return pool
-      .query(`select accountId, uidl, raw, html from messages where accountId = ${accountId}`)
-      .then(extractMessageBody);
+      .query(`select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where accountId = ${accountId}`)
+      .then(messages => messages.map(extractMessageBody));
   }
 
   static findOne(id) {
-    const selectQuery = `select accountId, uidl, raw, html from messages where id = ${id}`;
+    const selectQuery = `select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => new Message(props));
   }
 
   static findOneByUidl(uidl) {
-    const selectQuery = `select accountId, uidl, raw, html from messages where uidl = '${uidl}'`;
+    const selectQuery = `select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where uidl = '${uidl}'`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => (props ? new Message(props) : undefined));
   }
 
   static create(message) {
-    const requiredKeys = ['accountId', 'uidl', 'raw', 'html'];
+    const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html'];
     for(let i = 0 ; i < requiredKeys.length ; i++) {
       const k = requiredKeys[i];
       if(! message[k]) {
