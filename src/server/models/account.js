@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import { encrypt, decrypt } from '../utils';
 import {
-  listMessages
+  listRemoteMessages,
+  fetchRemoteMessages
 } from '../Pop3Interface';
 
 function trimAndQuote(v) {
@@ -20,6 +21,7 @@ export default class Account {
   constructor(props) {
     this.id = props.id;
     this.userId = props.userId;
+    this.type = props.type;
     this.host = props.host;
     this.identifier = props.identifier;
     this.password = props.password;
@@ -35,13 +37,13 @@ export default class Account {
 
   static findAll() {
     return pool
-      .query('select id, userId, host, identifier, password from accounts');
+      .query('select id, userId, type, host, identifier, password from accounts');
   }
 
   static findOne(id, userPass) {
     const doDecrypt = typeof userPass === 'string';
 
-    const selectQuery = `select id, userId, host, identifier, password from accounts where id = ${id}`;
+    const selectQuery = `select id, userId, type, host, identifier, password from accounts where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(account => (! doDecrypt ? account : Object.assign(account, {
@@ -56,7 +58,7 @@ export default class Account {
   }
 
   static create(account, userPass) {
-    const requiredKeys = ['userId', 'host', 'identifier', 'password'];
+    const requiredKeys = ['userId', 'host', 'identifier', 'password', 'type'];
     for(let i = 0 ; i < requiredKeys.length ; i++) {
       const k = requiredKeys[i];
       if(! account[k]) {
@@ -90,8 +92,12 @@ export default class Account {
       .query(deleteQuery);
   }
 
-  listMessages() {
-    return listMessages(this.getPop3Credentials());
+  listRemoteMessages() {
+    return listRemoteMessages(this.getPop3Credentials());
+  }
+
+  fetchRemoteMessages() {
+    return fetchRemoteMessages(this);
   }
 
 }

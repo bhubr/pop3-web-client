@@ -4,7 +4,8 @@ import chain from 'store-chain';
 import Pop3Command from 'node-pop3';
 import { simpleParser } from 'mailparser';
 import cheerio from 'cheerio';
-import credentials from './credentials.json';
+import Message from './models/message';
+// import credentials from './credentials.json';
 
 
 function extractMessageId(entry) {
@@ -16,32 +17,55 @@ function extractMessageIds(entries) {
   return entries.map(extractMessageId);
 }
 
-function getFetchMessage(pop3) {
-  return (carry, msgId) => {
-    return new Promise((resolve, reject) => {
-      pop3.RETR(msgId)
-      .then((stream) => {
-        simpleParser(stream, (err, mail) => {
-          if (err) {
-            return reject(err);
-          }
-          const { html, textAsHtml } = mail;
-          const $ = cheerio.load(html ? html : textAsHtml);
-          const body = $('body').html();
-          const style = $('style').html();
-          resolve(carry.concat([ { ...mail, body, style } ]));
-        })
-      });
+function passLog(v) {
+  console.log(v); return v;
+}
+
+
+function getFetchMessage(pop3, accountId) {
+  return (carry, msgIdUidl) => {
+    const [msgId, uidl] = msgIdUidl;
+    return Message.findOneByUidl(uidl)
+    .then(message => {
+      if(message) {
+        return message;
+      }
+      return new Promise((resolve, reject) => {
+        pop3.RETR(msgId)
+        .then(stream => simpleParser(stream,
+          (err, mail) => {
+            if (err) {
+              return reject(err);
+            }
+            const { html, textAsHtml } = mail;
+            const theHtml = html ? html : textAsHtml;
+            const $ = cheerio.load(theHtml);
+            const body = $('body').html();
+
+            // console.log(accountId, theHtml.substr(0, 40));
+            // const style = $('style').html();
+            resolve({
+              accountId,
+              uidl,
+              raw: JSON.stringify(mail),
+              html: theHtml
+            });
+          })
+        )
+      })
+      .then(passLog)
+      .then(props => Message.create(props))
+      .then(message => carry.concat([message]))
     });
   }
 }
 
-function getFetchMessages(pop3) {
-  const fetchMessage = getFetchMessage(pop3);
-  return ids => Promise.reduce(ids, fetchMessage, []);
+function getFetchMessages(pop3, accountId) {
+  const fetchMessage = getFetchMessage(pop3, accountId);
+  return idUidls => Promise.reduce(idUidls, fetchMessage, []);
 }
 
-export function listMessages(credentials) {
+export function listRemoteMessages(credentials) {
   const pop3 = new Pop3Command(credentials);
   return chain(pop3.UIDL())
   .set('messages')
@@ -49,17 +73,15 @@ export function listMessages(credentials) {
   .get(({ messages }) => (messages));
 }
 
-export function getMessages(start = 0, num = 2) {
-  const pop3 = new Pop3Command(credentials);
-  const fetchMessages = getFetchMessages(pop3);
+export function fetchRemoteMessages(account, start = 0, num = 2) {
+  const pop3 = new Pop3Command(account.getPop3Credentials());
+  const fetchFunc = getFetchMessages(pop3, account.id);
   let messages;
 
   return chain(pop3.UIDL())
-  .then(extractMessageIds)
-  .then(ids => ids.slice(start, num))
-  .then(fetchMessages)
+  .then(idUidls => idUidls.slice(start, num))
+  .then(fetchFunc)
   .set('messages')
   .then(() => pop3.QUIT())
   .get(({ messages }) => (messages));
-
 }
