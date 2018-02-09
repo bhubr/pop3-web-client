@@ -21,7 +21,7 @@ function getFetchMessage(pop3) {
     return new Promise((resolve, reject) => {
       pop3.RETR(msgId)
       .then((stream) => {
-        simpleParser(stream, (err, mail)=>{
+        simpleParser(stream, (err, mail) => {
           if (err) {
             return reject(err);
           }
@@ -39,6 +39,14 @@ function getFetchMessage(pop3) {
 function getFetchMessages(pop3) {
   const fetchMessage = getFetchMessage(pop3);
   return ids => Promise.reduce(ids, fetchMessage, []);
+}
+
+export function listMessages(credentials) {
+  const pop3 = new Pop3Command(credentials);
+  return chain(pop3.UIDL())
+  .set('messages')
+  .then(() => pop3.QUIT())
+  .get(({ messages }) => (messages));
 }
 
 export function getMessages(start = 0, num = 2) {

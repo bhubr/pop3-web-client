@@ -6,6 +6,8 @@ const Account = require('../../dist/models/account').default;
 const Promise = require('bluebird')
 const chain = require('store-chain');
 const { encrypt, decrypt } = require('../../dist/utils');
+const credentials = require('../../credentials.test.json');
+const __messages = require('./__messages');
 
 const getId = (() => {
   let id = 0;
@@ -21,6 +23,7 @@ describe('Account model test', () => {
 
   let accountId;
   let userId;
+  console.log(credentials);
 
   before(() => pool.query('delete from accounts')
     .then(() => pool.query('delete from users'))
@@ -42,7 +45,7 @@ describe('Account model test', () => {
     }))
     .set('user')
     .then(user => Account.create({
-      userId: user.id, identifier: user.email, password: 'somepass', host: 'pop.example.com'
+      userId: user.id, identifier: credentials.user, password: credentials.password, host: credentials.host
     }, 'unsecure'))
     .set('account')
     .get(({ account, user }) => {
@@ -50,10 +53,9 @@ describe('Account model test', () => {
       accountId = account.id;
       expect(account).to.be.a('object');
       expect(account.userId).to.equal(user.id);
-      expect(account.identifier).to.equal('test.user.1@example.com');
-      expect(account.host).to.equal('pop.example.com');
-      expect(account.identifier).to.equal('test.user.1@example.com');
-      expect(account.password).to.be.equal(encrypt('somepass', 'unsecure'));
+      expect(account.host).to.equal(credentials.host);
+      expect(account.identifier).to.equal(credentials.user);
+      expect(account.password).to.be.equal(encrypt(credentials.password, 'unsecure'));
     })
   );
 
@@ -67,14 +69,27 @@ describe('Account model test', () => {
   it('reads one account w/ decrypt', () =>
     Account.findOne(accountId, 'unsecure')
     .then(account => {
-      expect(account.password).to.equal('somepass');
+      expect(account.password).to.equal(credentials.password);
     })
   );
 
   it('reads one account w/o decrypt', () =>
     Account.findOne(accountId)
     .then(account => {
-      expect(account.password).to.equal(encrypt('somepass', 'unsecure'));
+      expect(account.password).to.equal(encrypt(credentials.password, 'unsecure'));
+    })
+  );
+
+  it('reads account messages', () =>
+    Account.findOne(accountId, 'unsecure')
+    .then(account => account.listMessages())
+    .then(messages => {
+      expect(messages.length).to.equal(__messages.length);
+      const [[m1id, m1uidl], [m2id, m2uidl]] = messages;
+      expect(m1id).to.equal(__messages[0][0]);
+      expect(m1uidl).to.equal(__messages[0][1]);
+      expect(m2id).to.equal(__messages[1][0]);
+      expect(m2uidl).to.equal(__messages[1][1]);
     })
   );
 });

@@ -2,7 +2,9 @@ import pool from '../db';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import { encrypt, decrypt } from '../utils';
-
+import {
+  listMessages
+} from '../Pop3Interface';
 
 function trimAndQuote(v) {
   return typeof v === 'string' ?
@@ -14,6 +16,22 @@ function passLog(v) {
 }
 
 export default class Account {
+
+  constructor(props) {
+    this.id = props.id;
+    this.userId = props.userId;
+    this.host = props.host;
+    this.identifier = props.identifier;
+    this.password = props.password;
+  }
+
+  getPop3Credentials() {
+    return {
+      host: this.host,
+      user: this.identifier,
+      password: this.password
+    };
+  }
 
   static findAll() {
     return pool
@@ -28,7 +46,8 @@ export default class Account {
       .then(records => (records[0]))
       .then(account => (! doDecrypt ? account : Object.assign(account, {
         password: decrypt(account.password, userPass)
-      })));
+      })))
+      .then(props => new Account(props));
   }
 
   static beforeCreate(account, userPass) {
@@ -60,7 +79,8 @@ export default class Account {
       const insertQuery = `insert into accounts(${fields}) values(${values})`;
       return pool
         .query(insertQuery)
-        .then(result => Account.findOne(result.insertId));
+        .then(result => Account.findOne(result.insertId))
+        .then(props => new Account(props));
     });
   }
 
@@ -68,6 +88,10 @@ export default class Account {
     const deleteQuery = 'delete from accounts where id = ' + id;
     return pool
       .query(deleteQuery);
+  }
+
+  listMessages() {
+    return listMessages(this.getPop3Credentials());
   }
 
 }
