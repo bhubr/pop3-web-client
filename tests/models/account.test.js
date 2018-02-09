@@ -5,6 +5,7 @@ const User = require('../../dist/models/user').default;
 const Account = require('../../dist/models/account').default;
 const Promise = require('bluebird')
 const chain = require('store-chain');
+const { encrypt, decrypt } = require('../../dist/utils');
 
 const getId = (() => {
   let id = 0;
@@ -17,6 +18,9 @@ const getEmail = (() => {
 
 
 describe('Account model test', () => {
+
+  let accountId;
+  let userId;
 
   before(() => pool.query('delete from accounts')
     .then(() => pool.query('delete from users'))
@@ -39,15 +43,17 @@ describe('Account model test', () => {
     .set('user')
     .then(user => Account.create({
       userId: user.id, identifier: user.email, password: 'somepass', host: 'pop.example.com'
-    }))
+    }, 'unsecure'))
     .set('account')
     .get(({ account, user }) => {
+      userId = user.id;
+      accountId = account.id;
       expect(account).to.be.a('object');
       expect(account.userId).to.equal(user.id);
       expect(account.identifier).to.equal('test.user.1@example.com');
       expect(account.host).to.equal('pop.example.com');
       expect(account.identifier).to.equal('test.user.1@example.com');
-      expect(account.password).to.be.equal('somepass');
+      expect(account.password).to.be.equal(encrypt('somepass', 'unsecure'));
     })
   );
 
@@ -58,4 +64,17 @@ describe('Account model test', () => {
     })
   );
 
+  it('reads one account w/ decrypt', () =>
+    Account.findOne(accountId, 'unsecure')
+    .then(account => {
+      expect(account.password).to.equal('somepass');
+    })
+  );
+
+  it('reads one account w/o decrypt', () =>
+    Account.findOne(accountId)
+    .then(account => {
+      expect(account.password).to.equal(encrypt('somepass', 'unsecure'));
+    })
+  );
 });
