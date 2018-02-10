@@ -7,13 +7,16 @@
 class API {
   setStrategy(strategy) {
     this.strategy = strategy;
+    for(let k in strategy) {
+      this[k] = strategy[k];
+    }
   }
 
-  call(action, ...actionArgs) {
-    const which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
-    console.log(`API CALL ${which}`, action, ...actionArgs, this.strategy);
-    return this.strategy[action](...actionArgs);
-  }
+  // call(action, ...actionArgs) {
+  //   const which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
+  //   console.log(`API CALL ${which}`, action, ...actionArgs, this.strategy);
+  //   return this.strategy[action](...actionArgs);
+  // }
 }
 
 const api = new API();

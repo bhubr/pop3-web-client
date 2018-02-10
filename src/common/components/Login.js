@@ -51,7 +51,7 @@ class Login extends React.Component {
 
         <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
             <fieldset>
-                <legend>Sign up</legend>
+                <legend>Sign in</legend>
 
                 <label htmlFor="email">Email</label>
                 <input

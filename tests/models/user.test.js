@@ -50,7 +50,7 @@ describe('User model test', () => {
   );
 
   it('reads all users', () =>
-    User.readAll()
+    User.findAll()
     .then(users => {
       expect(users.length).to.equal(1);
     })

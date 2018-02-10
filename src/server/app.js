@@ -32,7 +32,34 @@ app.get('/messages', (req, res) => {
 
 app.post('/api/users', (req, res) => {
   User.create(req.body)
-  .then(user => res.json(user));
+  .then(user => res.json(user))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.get('/api/users/:id', (req, res) => {
+  User.findOne(req.params.id)
+  .then(user => res.json(user))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.delete('/api/users/:id', (req, res) => {
+  User.delete(req.params.id)
+  .then(result => res.json(result))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.get('/api/users', (req, res) => {
+  User.findAll()
+  .then(users => res.json(users))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
 });
 
 app.post('/authentication', (req, res) => {

@@ -4,6 +4,8 @@
 //   authenticateUser
 // } from '../api';
 import api from '../api';
+const { User } = api;
+console.log('### User in actions/index', User);
 // let history;
 // if(typeof window !== 'undefined') {
 //   history = require('../')
@@ -150,7 +152,7 @@ export function registerUser(user)  {
   return dispatch => {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return api.call('insertUser', user)
+    return User.create(user)
       .then(user => dispatch(registerUserSuccess(user)))
       .catch(err => dispatch(registerUserError(err)));
   };

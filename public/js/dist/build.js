@@ -24130,135 +24130,96 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _User = require('./models/User');
 
-var _feathers = require('./feathers');
+var _User2 = _interopRequireDefault(_User);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var id = 0;
-// app.logout();
+exports.default = { User: _User2.default }; // // import { users, app } from './feathers';
 
-var clientAPI = function () {
-  function clientAPI() {
-    _classCallCheck(this, clientAPI);
-  }
 
-  _createClass(clientAPI, [{
-    key: 'getMessages',
-    value: function getMessages() {
-      return fetch('/messages').then(function (response) {
-        return response.json();
-      });
-    }
-  }, {
-    key: 'insertUser',
-    value: function insertUser(user) {
-      // console.log('INSERT USER CLIENT', user);
-      // ++id;
-      // return Promise.resolve(Object.assign({...user}, {id}));
-      // return users.create(user)
-      //   .then(result => {
-      //     console.log('USER CREATED', user);
-      //     return user;
-      //   });
+// let id = 0;
+// // app.logout();
+// class clientAPI {
 
-      return fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify(user)
-      }).then(function (response) {
-        return response.json();
-      });
-      // .then(user => {
-      //   console.log(user);
-      // });
-    }
-  }, {
-    key: 'authenticateUser',
-    value: function authenticateUser(credentials) {
-      var self = this;
-      var email = credentials.email;
+//   getMessages() {
+//     return fetch('/messages')
+//     .then(response => response.json())
+//   }
 
-      return fetch('/authentication', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify(credentials)
-        // body: JSON.stringify({
-        //   ...credentials, strategy: 'local'
-        // })
-      }).then(function (response) {
-        return response.json();
-      })
-      // return app.authenticate({
-      //   ...credentials,
-      //   strategy: 'local'
-      // })
-      .then(function (result) {
-        console.log('Authenticated!', result);
-        return _feathers.users.get(result.userId).then(function (user) {
-          console.log('got user', user);
-          return user;
-        });
-      });
-      // .catch(function(error){
-      //   console.error('Error authenticating!', error);
-      // });
-    }
-  }, {
-    key: 'updateUser',
-    value: function updateUser(user) {
-      var id = user.id,
-          firstName = user.firstName,
-          lastName = user.lastName,
-          email = user.email;
+//   insertUser(user) {
+//     // console.log('INSERT USER CLIENT', user);
+//     // ++id;
+//     // return Promise.resolve(Object.assign({...user}, {id}));
+//     // return users.create(user)
+//     //   .then(result => {
+//     //     console.log('USER CREATED', user);
+//     //     return user;
+//     //   });
 
-      return _feathers.users.patch(id, user).then(function (user) {
-        console.log('got UPDATED user', user);
-        return user;
-      });
-    }
-  }]);
+//     return fetch('/api/users', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Accept: 'application/json'
+//       },
+//       body: JSON.stringify(user)
+//     })
+//     .then(response => response.json());
+//     // .then(user => {
+//     //   console.log(user);
+//     // });
+//   }
 
-  return clientAPI;
-}();
+//   authenticateUser(credentials) {
+//     const self = this;
+//     const { email } = credentials;
+//     return fetch('/authentication', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Accept: 'application/json'
+//       },
+//       credentials: 'same-origin',
+//       body: JSON.stringify(credentials),
+//       // body: JSON.stringify({
+//       //   ...credentials, strategy: 'local'
+//       // })
+//     })
+//       .then(response => response.json())
+//     // return app.authenticate({
+//     //   ...credentials,
+//     //   strategy: 'local'
+//     // })
+//       .then(function(result){
+//         console.log('Authenticated!', result);
+//         return users.get(result.userId)
+//           .then(user => {
+//             console.log('got user', user);
+//             return user;
+//           });
+//       });
+//     // .catch(function(error){
+//     //   console.error('Error authenticating!', error);
+//     // });
+//   }
 
-var client = new clientAPI();
-exports.default = client;
+//   updateUser(user) {
+//     const { id, firstName, lastName, email } = user;
+//     return users.patch(id, user)
+//       .then(user => {
+//         console.log('got UPDATED user', user);
+//         return user;
+//       });
+//   }
 
-},{"./feathers":106}],106:[function(require,module,exports){
-"use strict";
+// }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// Inspired by FeathersJS docs and:
-// https://github.com/Alexisvt/featherjs-react-seed/blob/master/app/common/index.js
-// import io from 'socket.io-client';
-// import feathers from '@feathersjs/feathers';
-// import socketio from '@feathersjs/socketio-client';
-// import localstorage from 'feathers-localstorage';
-// import authentication from '@feathersjs/authentication-client';
+// const client = new clientAPI();
+// export default client;
 
-// const socket = io('http://localhost:3008/');
-// const app = feathers()
-//   .configure(socketio(socket)) // you could use Primus or REST instead
-//   .configure(authentication({ storage: window.localStorage }));
-
-// const users = app.service('users');
-var users = {};
-var app = {};
-exports.users = users;
-exports.app = app;
-
-},{}],107:[function(require,module,exports){
+},{"./models/User":107}],106:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -24295,7 +24256,25 @@ var _clientAPI2 = _interopRequireDefault(_clientAPI);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+console.log('clientAPI', _clientAPI2.default);
 _api2.default.setStrategy(_clientAPI2.default);
+
+/// TEST API
+var User = _api2.default.User;
+
+console.log('### User in main', User);
+User.create({ email: 'toto' + Date.now() + '@example.com', password: 'pouet' }).then(function (user) {
+  return User.findOne(user.id);
+}).then(function () {
+  return User.findAll();
+}).then(function (users) {
+  return users.pop();
+}).then(function (user) {
+  return User.delete(user.id);
+});
+
+///
+
 
 var mountNode = document.getElementById('app');
 
@@ -24317,7 +24296,92 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":109,"../common/components/MyApp":116,"../common/history":123,"../common/initStore":124,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],108:[function(require,module,exports){
+},{"../common/api":109,"../common/components/MyApp":116,"../common/history":123,"../common/initStore":124,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
+var User = function () {
+  function User() {
+    _classCallCheck(this, User);
+  }
+
+  _createClass(User, null, [{
+    key: 'findOne',
+    value: function findOne(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'findAll',
+    value: function findAll() {
+
+      return fetch('/api/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'create',
+    value: function create(user) {
+
+      return fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'delete',
+    value: function _delete(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }]);
+
+  return User;
+}();
+
+exports.default = User;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24348,20 +24412,23 @@ var _history2 = _interopRequireDefault(_history);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const { tmdbApiKey } = config;
-
-// export const INCREMENT = 'INCREMENT';
-// export const DECREMENT = 'DECREMENT';
-// import config from '../config';
+var User = _api2.default.User; // import config from '../config';
 // import {
 //   insertUser,
 //   authenticateUser
 // } from '../api';
-var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
+
+console.log('### User in actions/index', User);
 // let history;
 // if(typeof window !== 'undefined') {
 //   history = require('../')
 // }
+
+// const { tmdbApiKey } = config;
+
+// export const INCREMENT = 'INCREMENT';
+// export const DECREMENT = 'DECREMENT';
+var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -24498,7 +24565,7 @@ function registerUser(user) {
   return function (dispatch) {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return _api2.default.call('insertUser', user).then(function (user) {
+    return User.create(user).then(function (user) {
       return dispatch(registerUserSuccess(user));
     }).catch(function (err) {
       return dispatch(registerUserError(err));
@@ -24555,7 +24622,7 @@ function updateUser(user) {
 // }
 
 },{"../api":109,"../history":123}],109:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -24577,24 +24644,20 @@ var API = function () {
   }
 
   _createClass(API, [{
-    key: 'setStrategy',
+    key: "setStrategy",
     value: function setStrategy(strategy) {
       this.strategy = strategy;
-    }
-  }, {
-    key: 'call',
-    value: function call(action) {
-      var _console, _strategy;
-
-      var which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
-
-      for (var _len = arguments.length, actionArgs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        actionArgs[_key - 1] = arguments[_key];
+      for (var k in strategy) {
+        this[k] = strategy[k];
       }
-
-      (_console = console).log.apply(_console, ['API CALL ' + which, action].concat(actionArgs, [this.strategy]));
-      return (_strategy = this.strategy)[action].apply(_strategy, actionArgs);
     }
+
+    // call(action, ...actionArgs) {
+    //   const which = typeof window !== 'undefined' ? 'CLIENT ' : 'SERVER';
+    //   console.log(`API CALL ${which}`, action, ...actionArgs, this.strategy);
+    //   return this.strategy[action](...actionArgs);
+    // }
+
   }]);
 
   return API;
@@ -24962,7 +25025,7 @@ var Login = function (_React$Component) {
             _react2.default.createElement(
               'legend',
               null,
-              'Sign up'
+              'Sign in'
             ),
             _react2.default.createElement(
               'label',
@@ -26499,6 +26562,6 @@ exports.default = function () {
   }
 };
 
-},{"../actions":108}]},{},[107])
+},{"../actions":108}]},{},[106])
 
 //# sourceMappingURL=build.js.map

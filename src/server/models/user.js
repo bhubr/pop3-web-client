@@ -21,9 +21,15 @@ export default class User {
     return hashAsync(password, SALT_ROUNDS);
   }
 
-  static readAll() {
+  static findAll() {
     return pool
       .query('select `id`, `email` from users');
+  }
+
+  static findOne(id) {
+    const selectQuery = `select id, email from users where id = ${id}`;
+    return pool.query(selectQuery)
+      .then(records => (records[0]));
   }
 
   static beforeCreate(user) {
@@ -71,11 +77,9 @@ export default class User {
         const fields = Object.keys(user).join(',');
         const values = Object.values(user).map(trimAndQuote).join(',');
         const insertQuery = `insert into users(${fields}) values(${values})`;
-        let selectQuery = "select `id`, `email` from users where id = ";
         return pool
           .query(insertQuery)
-          .then(result => pool.query(selectQuery + result.insertId))
-          .then(records => (records[0]));
+          .then(result => User.findOne(result.insertId));
       })
   }
 

@@ -9,7 +9,21 @@ import initStore from '../common/initStore';
 import api from '../common/api';
 import history from '../common/history';
 import clientAPI from './clientAPI';
+
+console.log('clientAPI', clientAPI);
 api.setStrategy(clientAPI);
+
+/// TEST API
+const { User } = api;
+console.log('### User in main', User);
+User.create({ email: 'toto' + Date.now() + '@example.com', password: 'pouet' })
+.then(user => User.findOne(user.id))
+.then(() => User.findAll())
+.then(users => users.pop())
+.then(user => User.delete(user.id));
+
+///
+
 
 const mountNode = document.getElementById('app');
 
