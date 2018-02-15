@@ -2,7 +2,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const pool = require('../../dist/db');
 const User = require('../../dist/models/user').default;
-
+const clearDatabase = require('../_utils/clearDatabase');
 
 const getId = (() => {
   let id = 0;
@@ -16,7 +16,8 @@ const getEmail = (() => {
 
 describe('User model test', () => {
 
-  before(() => pool.query('truncate table users'));
+  before(clearDatabase);
+  after(done => done());
 
   it('hashes password', () =>
     User.hashPassword('unsecure')

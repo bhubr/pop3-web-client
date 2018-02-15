@@ -1,14 +1,21 @@
 const chai = require('chai');
 const expect = chai.expect;
-const pool = require('../../dist/db');
 const User = require('../../dist/models/user').default;
 const Account = require('../../dist/models/account').default;
 const Message = require('../../dist/models/message').default;
-const Promise = require('bluebird')
+const Promise = require('bluebird');
+const { spawn } = require('child_process');
 const chain = require('store-chain');
 const { encrypt, decrypt } = require('../../dist/utils');
 const credentials = require('../../credentials.test.json');
-const __messages = require('./__messages');
+const clearDatabase = require('../_utils/clearDatabase');
+const path = require('path');
+const {
+  createEmail, killServer
+} = require('../_resources/redis-pub');
+
+
+const UIDL_DATE = 1514764800000;
 
 const getId = (() => {
   let id = 0;
@@ -19,17 +26,35 @@ const getEmail = (() => {
   return () => 'test.user.' + getId() + '@example.com';
 })();
 
+function getExpectedUidl(index) {
+  return ('uid' + index) + (UIDL_DATE + index * 1000);
+}
+
 
 describe('Account model test', () => {
 
   let accountId;
   let userId;
-  console.log(credentials);
 
-  before(() => pool.query('delete from messages')
-    .then(() => pool.query('delete from accounts'))
-    .then(() => pool.query('delete from users'))
+  before(() => clearDatabase()
+    .then(() => {
+      const child = spawn('node', [path.normalize(__dirname + '/../_resources/pop3_server')]);
+
+      child.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+      });
+
+      child.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`);
+      });
+
+      child.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+      });
+    })
   );
+
+  after(killServer);
 
   it('creates an account with empty fields', () =>
     Account.create({})
@@ -46,13 +71,12 @@ describe('Account model test', () => {
       email: getEmail(), password: 'unsecure'
     }))
     .set('user')
-    .then(user => Account.create({
-      userId: user.id,
-      type: 'POP3',
-      identifier: credentials.user,
-      password: credentials.password,
-      host: credentials.host
-    }, 'unsecure'))
+    .then(user => Account.create(
+      Object.assign({
+        userId: user.id,
+        type: 'POP3'
+      }, credentials), 'unsecure')
+    )
     .set('account')
     .get(({ account, user }) => {
       userId = user.id;
@@ -61,7 +85,7 @@ describe('Account model test', () => {
       expect(account.userId).to.equal(user.id);
       expect(account.type).to.equal('POP3');
       expect(account.host).to.equal(credentials.host);
-      expect(account.identifier).to.equal(credentials.user);
+      expect(account.identifier).to.equal(credentials.identifier);
       expect(account.password).to.be.equal(encrypt(credentials.password, 'unsecure'));
     })
   );
@@ -88,31 +112,29 @@ describe('Account model test', () => {
   );
 
   it('reads account remote messages', () =>
-    Account.findOne(accountId, 'unsecure')
+    chain(Account.findOne(accountId, 'unsecure'))
+    .set('account')
     .then(account => account.listRemoteMessages())
+    .then(() => Promise.all([
+      createEmail(1, 'John Difool', 'johndifool@example.com'),
+      createEmail(2, 'John Difool', 'johndifool@example.com'),
+      createEmail(3, 'John Difool', 'johndifool@example.com'),
+    ]))
+    .get(({ account }) => account.listRemoteMessages())
     .then(messages => {
-      expect(messages.length).to.equal(__messages.length);
-      const [[m1id, m1uidl], [m2id, m2uidl]] = messages;
-      expect(m1id).to.equal(__messages[0][0]);
-      expect(m1uidl).to.equal(__messages[0][1]);
-      expect(m2id).to.equal(__messages[1][0]);
-      expect(m2uidl).to.equal(__messages[1][1]);
+      console.log(`GOT ${messages.length} MESSAGES`);
+      expect(messages.length).to.equal(3);
+      const [[m1id, m1uidl], [m2id, m2uidl], [m3id, m3uidl]] = messages;
+      expect(m1id).to.equal('1');
+      expect(m1uidl).to.equal(getExpectedUidl(1));
+      expect(m2id).to.equal('2');
+      expect(m2uidl).to.equal(getExpectedUidl(2));
+      expect(m3id).to.equal('3');
+      expect(m3uidl).to.equal(getExpectedUidl(3));
     })
+    // .get(({ account }) => account.closePop3Session())
   );
 
-
-  it('reads account messages', () =>
-    Account.findOne(accountId, 'unsecure')
-    .then(account => account.listRemoteMessages())
-    .then(messages => {
-      expect(messages.length).to.equal(__messages.length);
-      const [[m1id, m1uidl], [m2id, m2uidl]] = messages;
-      expect(m1id).to.equal(__messages[0][0]);
-      expect(m1uidl).to.equal(__messages[0][1]);
-      expect(m2id).to.equal(__messages[1][0]);
-      expect(m2uidl).to.equal(__messages[1][1]);
-    })
-  );
 
   it('checks that message does not exist', () =>
     Message.findOneByUidl('0123456789abcdef0123456789abcdef')
@@ -130,12 +152,20 @@ describe('Account model test', () => {
       return account.fetchRemoteMessages();
     })
     .then(messages => {
-      // console.log(messages);
+      expect(messages.length).to.equal(3);
+      const [ m1, m2, m3 ] = messages;
+      expect(m1.id).to.equal(1);
+      expect(m1.uidl).to.equal(getExpectedUidl(1));
+      expect(m2.id).to.equal(2);
+      expect(m2.uidl).to.equal(getExpectedUidl(2));
+      expect(m3.id).to.equal(3);
+      expect(m3.uidl).to.equal(getExpectedUidl(3));
     })
     .then(() => Message.findAll(account.id))
     .then(messages => {
       // console.log(messages);
     })
-    
+
   });
+
 });

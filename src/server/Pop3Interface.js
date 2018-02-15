@@ -69,10 +69,11 @@ function getFetchMessages(pop3, accountId) {
 }
 
 export function listRemoteMessages(credentials) {
+  console.log(credentials);
   const pop3 = new Pop3Command(credentials);
   return chain(pop3.UIDL())
   .set('messages')
-  .then(() => pop3.QUIT())
+  // .then(() => pop3.QUIT())
   .get(({ messages }) => (messages));
 }
 

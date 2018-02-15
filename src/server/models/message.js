@@ -60,19 +60,19 @@ export default class Message {
 
   static findAll(accountId) {
     return pool
-      .query(`select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where accountId = ${accountId}`)
+      .query(`select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where accountId = ${accountId}`)
       .then(messages => messages.map(extractMessageBody));
   }
 
   static findOne(id) {
-    const selectQuery = `select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where id = ${id}`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => new Message(props));
   }
 
   static findOneByUidl(uidl) {
-    const selectQuery = `select accountId, uidl, senderName, senderEmail, subject, raw, html from messages where uidl = '${uidl}'`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where uidl = '${uidl}'`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => (props ? new Message(props) : undefined));

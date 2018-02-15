@@ -18,6 +18,7 @@ CREATE TABLE `accounts` (
   `userId` int(10) UNSIGNED NOT NULL,
   `type` ENUM('POP3', 'IMAP'),
   `host` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `port` int(10) UNSIGNED NOT NULL,
   `identifier` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
