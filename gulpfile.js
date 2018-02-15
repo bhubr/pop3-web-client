@@ -1,14 +1,39 @@
-var gulp = require('gulp');
-var sourcemaps = require('gulp-sourcemaps');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var browserify = require('browserify');
-var watchify = require('watchify');
-var babelify = require('babelify');
-var pathmod = require('pathmodify');
-var babel = require('gulp-babel');
-var gutil = require('gulp-util');
-//
+const gulp = require('gulp');
+const sourcemaps = require('gulp-sourcemaps');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const browserify = require('browserify');
+const watchify = require('watchify');
+const babelify = require('babelify');
+const pathmod = require('pathmodify');
+const babel = require('gulp-babel');
+const gutil = require('gulp-util');
+const Promise = require('bluebird');
+const fs = require('fs');
+Promise.promisifyAll(fs);
+
+const srcDir = __dirname + '/src/';
+
+
+function readModels(baseDir) {
+  return fs.readdirAsync(srcDir + baseDir + 'models');
+}
+
+function prepareTmpModelDir(baseDir) {
+  return readModels('')
+  .then(tmpModelFiles => Promise.map(tmpModelFiles,
+    f => fs.unlinkAsync(srcDir + 'dist/models/' +f)
+  ));
+}
+
+function copyTmpModels(baseDir) {
+  return readModels(baseDir)
+  .then(modelFiles => Promise.map(modelFiles,
+    f => fs.copyFileAsync(srcDir + baseDir + 'models/' + f, srcDir + 'dist/models/' + f)
+  ))
+}
+
+
 function buildClient(watch, done) {
   var bundler =
     browserify('./src/client/main.js', { debug: true })
@@ -19,7 +44,8 @@ function buildClient(watch, done) {
       // Fix unexpected ... https://github.com/babel/babel-loader/issues/170
       .transform(babelify, { presets: ['es2015', 'stage-0', 'react'] });
 
-  return new Promise(function (resolve, reject) {
+  return copyTmpModels('client/')
+  .then(() => new Promise(function (resolve, reject) {
     bundler.bundle()
       .on('error', function(err) { console.error(err); this.emit('end'); })
       .pipe(source('build.js'))
@@ -28,7 +54,7 @@ function buildClient(watch, done) {
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./public/js/dist'))
       .on('end', resolve);
-  });
+  }));
 }
 
 function buildServer() {

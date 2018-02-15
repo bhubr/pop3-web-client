@@ -24359,6 +24359,21 @@ var User = function () {
       });
     }
   }, {
+    key: 'authenticate',
+    value: function authenticate(user) {
+
+      return fetch('/api/authentication', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
     key: 'delete',
     value: function _delete(id) {
 
@@ -24402,9 +24417,7 @@ exports.loginUser = loginUser;
 exports.registerUser = registerUser;
 exports.updateUser = updateUser;
 
-var _api = require('../api');
-
-var _api2 = _interopRequireDefault(_api);
+var _models = require('../../dist/models');
 
 var _history = require('../history');
 
@@ -24412,23 +24425,20 @@ var _history2 = _interopRequireDefault(_history);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var User = _api2.default.User; // import config from '../config';
-// import {
-//   insertUser,
-//   authenticateUser
-// } from '../api';
-
-console.log('### User in actions/index', User);
-// let history;
-// if(typeof window !== 'undefined') {
-//   history = require('../')
-// }
-
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
 // export const DECREMENT = 'DECREMENT';
+// import config from '../config';
+// import {
+//   insertUser,
+//   authenticateUser
+// } from '../api';
 var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
+// let history;
+// if(typeof window !== 'undefined') {
+//   history = require('../')
+// }
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -24551,7 +24561,7 @@ function loginUser(user) {
   return function (dispatch) {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
-    return _api2.default.call('authenticateUser', user).then(function (user) {
+    return _models.User.authenticate(user).then(function (user) {
       dispatch(loginUserSuccess(user));
       console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
       _history2.default.push('/profile');
@@ -24565,7 +24575,7 @@ function registerUser(user) {
   return function (dispatch) {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return User.create(user).then(function (user) {
+    return _models.User.create(user).then(function (user) {
       return dispatch(registerUserSuccess(user));
     }).catch(function (err) {
       return dispatch(registerUserError(err));
@@ -24577,7 +24587,7 @@ function updateUser(user) {
   return function (dispatch) {
     console.log('updateUser', user);
     dispatch(requestUpdateUser(user));
-    return _api2.default.call('updateUser', user).then(function (user) {
+    return api.call('updateUser', user).then(function (user) {
       return dispatch(updateUserSuccess(user));
     }).catch(function (err) {
       return dispatch(updateUserError(err));
@@ -24621,7 +24631,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../api":109,"../history":123}],109:[function(require,module,exports){
+},{"../../dist/models":130,"../history":123}],109:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25019,15 +25029,20 @@ var Login = function (_React$Component) {
       // if(! this.state.passwordsMatch) {
       //   return;
       // }
-      console.log(this.state);
-      this.props.loginUser(this.state);
+      var _state = this.state,
+          email = _state.email,
+          password = _state.password;
+
+      this.props.loginUser({
+        email: email.value, password: password.value
+      });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _state = this.state,
-          email = _state.email,
-          password = _state.password;
+      var _state2 = this.state,
+          email = _state2.email,
+          password = _state2.password;
 
       return _react2.default.createElement(
         'div',
@@ -26631,6 +26646,122 @@ var Validator = function () {
 
 exports.default = new Validator();
 
-},{}]},{},[106])
+},{}],129:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
+var User = function () {
+  function User() {
+    _classCallCheck(this, User);
+  }
+
+  _createClass(User, null, [{
+    key: 'findOne',
+    value: function findOne(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'findAll',
+    value: function findAll() {
+
+      return fetch('/api/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'create',
+    value: function create(user) {
+
+      return fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'authenticate',
+    value: function authenticate(user) {
+
+      return fetch('/api/authentication', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'delete',
+    value: function _delete(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }]);
+
+  return User;
+}();
+
+exports.default = User;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],130:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.User = undefined;
+
+var _User = require('./User');
+
+var _User2 = _interopRequireDefault(_User);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.User = _User2.default;
+
+},{"./User":129}]},{},[106])
 
 //# sourceMappingURL=build.js.map

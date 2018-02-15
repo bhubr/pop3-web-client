@@ -45,8 +45,10 @@ class Login extends React.Component {
     // if(! this.state.passwordsMatch) {
     //   return;
     // }
-    console.log(this.state);
-    this.props.loginUser(this.state);
+    const { email, password } = this.state;
+    this.props.loginUser({
+      email: email.value, password: password.value
+    });
   }
 
   render() {

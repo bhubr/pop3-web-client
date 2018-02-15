@@ -62,7 +62,7 @@ app.get('/api/users', (req, res) => {
   }));
 });
 
-app.post('/authentication', (req, res) => {
+app.post('/api/authentication', (req, res) => {
   User.authenticate(req.body)
   .then(userOrFalse => (userOrFalse ?
     res.json(userOrFalse) : res.status(401).json({ error: 'failed' })

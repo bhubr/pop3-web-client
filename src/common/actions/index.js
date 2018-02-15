@@ -3,9 +3,7 @@
 //   insertUser,
 //   authenticateUser
 // } from '../api';
-import api from '../api';
-const { User } = api;
-console.log('### User in actions/index', User);
+import { User } from '../../dist/models';
 // let history;
 // if(typeof window !== 'undefined') {
 //   history = require('../')
@@ -138,7 +136,7 @@ export function loginUser(user)  {
   return dispatch => {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
-    return api.call('authenticateUser', user)
+    return User.authenticate(user)
       .then(user => {
         dispatch(loginUserSuccess(user));
         console.log('DISPATCHED LOGIN SUCCESS', history);
