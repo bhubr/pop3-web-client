@@ -146,12 +146,25 @@ export function loginUser(user)  {
   };
 }
 
+function timeoutPromise(timeout) {
+  return value => {
+    return new Promise((resolve, reject) => {
+      console.error('TIMEOUT');
+      setTimeout(() => resolve(value), timeout);
+    });
+  }
+}
+
 export function registerUser(user)  {
   return dispatch => {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
     return User.create(user)
-      .then(user => dispatch(registerUserSuccess(user)))
+      .then(timeoutPromise(300))
+      .then(user => {
+        dispatch(registerUserSuccess(user))
+        // (loginUser(user))(dispatch);
+      })
       .catch(err => dispatch(registerUserError(err)));
   };
 }

@@ -24296,7 +24296,7 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":110,"../common/components/MyApp":117,"../common/history":124,"../common/initStore":125,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
+},{"../common/api":110,"../common/components/MyApp":118,"../common/history":125,"../common/initStore":126,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24631,12 +24631,24 @@ function loginUser(user) {
   };
 }
 
+function timeoutPromise(timeout) {
+  return function (value) {
+    return new Promise(function (resolve, reject) {
+      console.error('TIMEOUT');
+      setTimeout(function () {
+        return resolve(value);
+      }, timeout);
+    });
+  };
+}
+
 function registerUser(user) {
   return function (dispatch) {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return _models.User.create(user).then(function (user) {
-      return dispatch(registerUserSuccess(user));
+    return _models.User.create(user).then(timeoutPromise(300)).then(function (user) {
+      dispatch(registerUserSuccess(user));
+      // (loginUser(user))(dispatch);
     }).catch(function (err) {
       return dispatch(registerUserError(err));
     });
@@ -24691,7 +24703,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../../dist/models":131,"../history":124}],110:[function(require,module,exports){
+},{"../../dist/models":132,"../history":125}],110:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24996,7 +25008,70 @@ var Inbox = function (_React$Component) {
 
 exports.default = Inbox;
 
-},{"../api":110,"./MailList":115,"react":89}],114:[function(require,module,exports){
+},{"../api":110,"./MailList":116,"react":89}],114:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _actions = require('../actions');
+
+var _LoginRegisterForm2 = require('./LoginRegisterForm');
+
+var _LoginRegisterForm3 = _interopRequireDefault(_LoginRegisterForm2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Login = function (_LoginRegisterForm) {
+  _inherits(Login, _LoginRegisterForm);
+
+  function Login() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    _classCallCheck(this, Login);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Login.__proto__ || Object.getPrototypeOf(Login)).call.apply(_ref, [this].concat(args))), _this), _this.title = 'Sign In', _temp), _possibleConstructorReturn(_this, _ret);
+  }
+
+  return Login;
+}(_LoginRegisterForm3.default);
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    errorMessage: state.session.authenticationError
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    onSubmit: function onSubmit(user) {
+      return dispatch((0, _actions.loginUser)(user));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
+
+},{"../actions":109,"./LoginRegisterForm":115,"react":89,"react-redux":56}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25013,10 +25088,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _actions = require('../actions');
-
-var _reactRedux = require('react-redux');
-
 var _validator = require('../utils/validator');
 
 var _validator2 = _interopRequireDefault(_validator);
@@ -25031,14 +25102,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Login = function (_React$Component) {
-  _inherits(Login, _React$Component);
+var LoginRegisterForm = function (_React$Component) {
+  _inherits(LoginRegisterForm, _React$Component);
 
   // https://reactjs.org/docs/forms.html#controlled-components
-  function Login(props) {
-    _classCallCheck(this, Login);
+  function LoginRegisterForm(props) {
+    _classCallCheck(this, LoginRegisterForm);
 
-    var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (LoginRegisterForm.__proto__ || Object.getPrototypeOf(LoginRegisterForm)).call(this, props));
 
     _this.state = {
       email: {
@@ -25054,7 +25125,7 @@ var Login = function (_React$Component) {
     return _this;
   }
 
-  _createClass(Login, [{
+  _createClass(LoginRegisterForm, [{
     key: 'handleChange',
     value: function handleChange(event) {
       var _event$target = event.target,
@@ -25067,33 +25138,20 @@ var Login = function (_React$Component) {
           validErrMsg = _validator$validate2[1];
 
       var changedValues = _defineProperty({}, name, { value: value, isValid: isValid, validErrMsg: validErrMsg });
-      console.log('Validate', name, value);
-      // if(name.startsWith('password')) {
-      //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
-      // }
       this.setState(function (prevState, props) {
         return Object.assign(_extends({}, prevState), changedValues);
       });
     }
-
-    // checkPasswordsMatch(name, value) {
-    //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
-    //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
-    //   return this.state[checkAgainst] === value;
-    // }
-
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
-      // if(! this.state.passwordsMatch) {
-      //   return;
-      // }
+
       var _state = this.state,
           email = _state.email,
           password = _state.password;
 
-      this.props.loginUser({
+      this.props.onSubmit({
         email: email.value, password: password.value
       });
     }
@@ -25103,7 +25161,10 @@ var Login = function (_React$Component) {
       var _state2 = this.state,
           email = _state2.email,
           password = _state2.password;
-      var errorMessage = this.props.errorMessage;
+      var _props = this.props,
+          title = _props.title,
+          errorMessage = _props.errorMessage,
+          isPending = _props.isPending;
 
       return _react2.default.createElement(
         'div',
@@ -25117,12 +25178,17 @@ var Login = function (_React$Component) {
             _react2.default.createElement(
               'legend',
               null,
-              'Sign in'
+              this.title
             ),
             errorMessage ? _react2.default.createElement(
               'div',
-              { className: 'alert-danger' },
+              { className: 'alert alert-danger' },
               errorMessage
+            ) : '',
+            isPending ? _react2.default.createElement(
+              'div',
+              { className: 'alert alert-loading' },
+              'LOADING'
             ) : '',
             _react2.default.createElement(
               'label',
@@ -25163,7 +25229,7 @@ var Login = function (_React$Component) {
             _react2.default.createElement(
               'button',
               { type: 'submit', className: 'pure-button pure-button-primary' },
-              'Sign in'
+              this.title
             )
           )
         )
@@ -25171,26 +25237,12 @@ var Login = function (_React$Component) {
     }
   }]);
 
-  return Login;
+  return LoginRegisterForm;
 }(_react2.default.Component);
 
-var mapStateToProps = function mapStateToProps(state) {
-  return {
-    errorMessage: state.session.authenticationError
-  };
-};
+exports.default = LoginRegisterForm;
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    loginUser: function loginUser(user) {
-      return dispatch((0, _actions.loginUser)(user));
-    }
-  };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
-
-},{"../actions":109,"../utils/validator":128,"react":89,"react-redux":56}],115:[function(require,module,exports){
+},{"../utils/validator":129,"react":89}],116:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25486,7 +25538,7 @@ var MailList = function (_React$Component2) {
 
 exports.default = MailList;
 
-},{"react":89}],116:[function(require,module,exports){
+},{"react":89}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25588,7 +25640,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":89}],117:[function(require,module,exports){
+},{"react":89}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25708,7 +25760,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":111,"./Home":112,"./Inbox":113,"./Login":114,"./MailList":115,"./Navbar":118,"./PrivateRoute":119,"./Profile":120,"./RedirectWithStatus":121,"./Register":122,"./routes":123,"react":89,"react-router-dom":73}],118:[function(require,module,exports){
+},{"./Dashboard":111,"./Home":112,"./Inbox":113,"./Login":114,"./MailList":116,"./Navbar":119,"./PrivateRoute":120,"./Profile":121,"./RedirectWithStatus":122,"./Register":123,"./routes":124,"react":89,"react-router-dom":73}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25988,7 +26040,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
 
-},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],119:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26070,7 +26122,7 @@ var mapStateToProps = function mapStateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PrivateRoute);
 
-},{"react":89,"react-redux":56,"react-router-dom":73}],120:[function(require,module,exports){
+},{"react":89,"react-redux":56,"react-router-dom":73}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26251,7 +26303,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
-},{"../actions":109,"react":89,"react-redux":56}],121:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26285,28 +26337,26 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":89,"react-router-dom":73}],122:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _actions = require('../actions');
-
 var _reactRedux = require('react-redux');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _actions = require('../actions');
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _LoginRegisterForm2 = require('./LoginRegisterForm');
+
+var _LoginRegisterForm3 = _interopRequireDefault(_LoginRegisterForm2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -26314,132 +26364,36 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Register = function (_React$Component) {
-  _inherits(Register, _React$Component);
+var Register = function (_LoginRegisterForm) {
+  _inherits(Register, _LoginRegisterForm);
 
-  // https://reactjs.org/docs/forms.html#controlled-components
-  function Register(props) {
+  function Register() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, Register);
 
-    var _this = _possibleConstructorReturn(this, (Register.__proto__ || Object.getPrototypeOf(Register)).call(this, props));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
 
-    _this.state = {
-      // firstName: '',
-      // lastName: '',
-      email: '',
-      password: ''
-      // passwordConfirm: '',
-      // passwordsMatch: true
-    };
-
-    _this.handleChange = _this.handleChange.bind(_this);
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    return _this;
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Register.__proto__ || Object.getPrototypeOf(Register)).call.apply(_ref, [this].concat(args))), _this), _this.title = 'Sign Up', _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  _createClass(Register, [{
-    key: 'handleChange',
-    value: function handleChange(event) {
-      var _event$target = event.target,
-          name = _event$target.name,
-          value = _event$target.value;
-
-      var changedValues = _defineProperty({}, name, value);
-      // if(name.startsWith('password')) {
-      //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
-      // }
-      this.setState(function (prevState, props) {
-        return Object.assign(_extends({}, prevState), changedValues);
-      });
-    }
-
-    // checkPasswordsMatch(name, value) {
-    //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
-    //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
-    //   return this.state[checkAgainst] === value;
-    // }
-
-  }, {
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      event.preventDefault();
-      // if(! this.state.passwordsMatch) {
-      //   return;
-      // }
-      console.log(this.state);
-      this.props.registerUser(this.state);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { className: 'pure-u-1' },
-        _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
-          _react2.default.createElement(
-            'fieldset',
-            null,
-            _react2.default.createElement(
-              'legend',
-              null,
-              'Sign up'
-            ),
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'email' },
-              'Email'
-            ),
-            _react2.default.createElement('input', {
-              id: 'email',
-              name: 'email',
-              type: 'email',
-              className: 'form-control',
-              placeholder: 'Email',
-              value: this.state.email,
-              onChange: this.handleChange }),
-            _react2.default.createElement(
-              'span',
-              { className: 'pure-form-message' },
-              'This is a required field.'
-            ),
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'password' },
-              'Password'
-            ),
-            _react2.default.createElement('input', {
-              id: 'password',
-              name: 'password',
-              type: 'password',
-              className: 'form-control',
-              placeholder: 'Password',
-              value: this.state.password,
-              onChange: this.handleChange }),
-            _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'pure-button pure-button-primary' },
-              'Sign in'
-            )
-          )
-        )
-      );
-    }
-  }]);
-
   return Register;
-}(_react2.default.Component);
+}(_LoginRegisterForm3.default);
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    errorMessage: state.users.registerError
+    errorMessage: state.session.registrationError,
+    isPending: state.session.isRegistering
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    registerUser: function registerUser(user) {
+    onSubmit: function onSubmit(user) {
       return dispatch((0, _actions.registerUser)(user));
     }
   };
@@ -26447,7 +26401,106 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Register);
 
-},{"../actions":109,"react":89,"react-redux":56}],123:[function(require,module,exports){
+// import React from 'react';
+// import { registerUser } from '../actions';
+// import { connect } from 'react-redux';
+
+// class Register extends React.Component {
+//   // https://reactjs.org/docs/forms.html#controlled-components
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       // firstName: '',
+//       // lastName: '',
+//       email: '',
+//       password: '',
+//       // passwordConfirm: '',
+//       // passwordsMatch: true
+//     };
+
+//     this.handleChange = this.handleChange.bind(this);
+//     this.handleSubmit = this.handleSubmit.bind(this);
+//   }
+
+//   handleChange(event) {
+//     const { name, value } = event.target;
+//     let changedValues = { [name]: value };
+//     // if(name.startsWith('password')) {
+//     //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
+//     // }
+//     this.setState((prevState, props) => Object.assign(
+//       { ...prevState }, changedValues
+//     ));
+//   }
+
+//   // checkPasswordsMatch(name, value) {
+//   //   const checkAgainst = name === 'password' ? 'passwordConfirm' : 'password';
+//   //   console.log('check', name, checkAgainst, this.state[checkAgainst] === value);
+//   //   return this.state[checkAgainst] === value;
+//   // }
+
+//   handleSubmit(event) {
+//     event.preventDefault();
+//     // if(! this.state.passwordsMatch) {
+//     //   return;
+//     // }
+//     console.log(this.state);
+//     this.props.registerUser(this.state);
+//   }
+
+//   render() {
+//     return (
+//       <div className="pure-u-1">
+
+//         <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
+//             <fieldset>
+//                 <legend>Sign up</legend>
+
+//                 <label htmlFor="email">Email</label>
+//                 <input
+//                   id="email"
+//                   name="email"
+//                   type="email"
+//                   className="form-control"
+//                   placeholder="Email"
+//                   value={this.state.email}
+//                   onChange={this.handleChange} />
+//                 <span className="pure-form-message">This is a required field.</span>
+
+//                 <label htmlFor="password">Password</label>
+//                 <input
+//                   id="password"
+//                   name="password"
+//                   type="password"
+//                   className="form-control"
+//                   placeholder="Password"
+//                   value={this.state.password}
+//                   onChange={this.handleChange} />
+
+//                 <button type="submit" className="pure-button pure-button-primary">Sign in</button>
+//             </fieldset>
+//         </form>
+
+//       </div>
+//     );
+//   }
+// }
+
+// const mapStateToProps = state => {
+//   return {
+//     errorMessage: state.users.registerError
+//   };
+// };
+
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     registerUser: user => dispatch(registerUser(user))
+//   };
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Register);
+
+},{"../actions":109,"./LoginRegisterForm":115,"react":89,"react-redux":56}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26465,7 +26518,7 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":116}],124:[function(require,module,exports){
+},{"./Messages":117}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26490,7 +26543,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { createBrowserHistory } from 'history';
 exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.default)() : (0, _createMemoryHistory2.default)();
 
-},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],125:[function(require,module,exports){
+},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26523,7 +26576,7 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware)));
 }
 
-},{"./reducers":126,"redux":97,"redux-logger":90,"redux-thunk":91}],126:[function(require,module,exports){
+},{"./reducers":127,"redux":97,"redux-logger":90,"redux-thunk":91}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26543,7 +26596,7 @@ var reducers = (0, _redux.combineReducers)({ session: _session2.default }); //, 
 // import users from './users';
 exports.default = reducers;
 
-},{"./session":127,"redux":97}],127:[function(require,module,exports){
+},{"./session":128,"redux":97}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26553,8 +26606,6 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _actions = require('../actions');
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var initialState = {
   user: null,
@@ -26579,18 +26630,30 @@ exports.default = function () {
   //
   switch (action.type) {
 
+    case _actions.REGISTER_USER:
+      {
+        return Object.assign(_extends({}, state), {
+          isRegistering: true
+        });
+      }
+
     case _actions.REGISTER_USER_SUCCESS:
       {
-        var _state = state,
-            items = _state.items;
-
-        console.log(state, { items: [].concat(_toConsumableArray(items), [action.user]) });
-        return { items: [].concat(_toConsumableArray(items), [action.user]), registerError: '' };
+        console.log('REGISTER_USER_SUCCESS', action);
+        // const { items } = state;
+        // console.log(state, { items: [ ...items, action.user ] });
+        // return { items: [ ...items, action.user ], registerError: '' };
+        return Object.assign(_extends({}, state), {
+          registrationError: '',
+          isRegistering: false
+        });
       }
     case _actions.REGISTER_USER_ERROR:
       {
+        console.error('REGISTER_USER_ERROR', action.error);
         return Object.assign(_extends({}, state), {
-          registerError: action.error.message
+          registrationError: action.error.message,
+          isRegistering: false
         });
       }
 
@@ -26601,13 +26664,15 @@ exports.default = function () {
      */
     case _actions.LOGIN_USER_SUCCESS:
       {
-        var _state2 = state,
-            user = _state2.user,
-            loginError = _state2.loginError,
-            updateError = _state2.updateError;
+        console.log('LOGIN SUCCESS', action);
+        // const { user, loginError, updateError } = state;
         // console.log(state, { items: [ ...items, action.user ] });
-
-        return { user: action.user, loginError: '', updateError: updateError };
+        // return { user: action.user, loginError: '', updateError };
+        return Object.assign(_extends({}, state), {
+          user: action.user,
+          isAuthenticating: false,
+          authenticationError: ''
+        });
       }
 
     // Error
@@ -26615,6 +26680,7 @@ exports.default = function () {
       {
         console.log('LOGIN ERROR', action);
         return Object.assign(_extends({}, state), {
+          isAuthenticating: false,
           authenticationError: action.error.message
         });
       }
@@ -26628,17 +26694,17 @@ exports.default = function () {
       }
     case _actions.UPDATE_USER_SUCCESS:
       {
-        var _state3 = state,
-            _user = _state3.user,
-            _loginError = _state3.loginError,
-            _updateError = _state3.updateError;
+        var _state = state,
+            user = _state.user,
+            loginError = _state.loginError,
+            updateError = _state.updateError;
 
         return { user: action.user, loginError: '', updateError: '' };
       }
     case _actions.UPDATE_USER_ERROR:
       {
-        var _state4 = state,
-            _user2 = _state4.user;
+        var _state2 = state,
+            _user = _state2.user;
 
         return {
           user: null,
@@ -26651,7 +26717,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":109}],128:[function(require,module,exports){
+},{"../actions":109}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26699,9 +26765,9 @@ var Validator = function () {
 
 exports.default = new Validator();
 
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
-},{"dup":107}],130:[function(require,module,exports){
+},{"dup":107}],131:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -26806,7 +26872,7 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":129}],131:[function(require,module,exports){
+},{"./API":130}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26822,6 +26888,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.User = _User2.default;
 
-},{"./User":130}]},{},[106])
+},{"./User":131}]},{},[106])
 
 //# sourceMappingURL=build.js.map

@@ -34,14 +34,27 @@ export default (state = initialState, action) => {
   //
   switch (action.type) {
 
+      case REGISTER_USER: {
+        return Object.assign({...state}, {
+          isRegistering: true
+        });
+      }
+
       case REGISTER_USER_SUCCESS: {
-        const { items } = state;
-        console.log(state, { items: [ ...items, action.user ] });
-        return { items: [ ...items, action.user ], registerError: '' };
+        console.log('REGISTER_USER_SUCCESS', action);
+        // const { items } = state;
+        // console.log(state, { items: [ ...items, action.user ] });
+        // return { items: [ ...items, action.user ], registerError: '' };
+        return Object.assign({...state}, {
+          registrationError: '',
+          isRegistering: false
+        });
       }
       case REGISTER_USER_ERROR: {
+        console.error('REGISTER_USER_ERROR', action.error);
         return Object.assign({...state}, {
-          registerError: action.error.message
+          registrationError : action.error.message,
+          isRegistering: false
         });
       }
 
@@ -52,15 +65,22 @@ export default (state = initialState, action) => {
        |
        */
       case LOGIN_USER_SUCCESS: {
-        const { user, loginError, updateError } = state;
+        console.log('LOGIN SUCCESS', action);
+        // const { user, loginError, updateError } = state;
         // console.log(state, { items: [ ...items, action.user ] });
-        return { user: action.user, loginError: '', updateError };
+        // return { user: action.user, loginError: '', updateError };
+        return Object.assign({ ...state }, {
+          user: action.user,
+          isAuthenticating: false,
+          authenticationError: ''
+        });
       }
 
       // Error
       case LOGIN_USER_ERROR: {
         console.log('LOGIN ERROR', action);
         return Object.assign({ ...state }, {
+          isAuthenticating: false,
           authenticationError: action.error.message
         });
       }
