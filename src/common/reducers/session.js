@@ -16,6 +16,7 @@ import {
 
 const initialState = {
   user: null,
+  upw: '',
   isRegistering: false,
   isAuthenticating: false,
   isUpdating: false,
@@ -35,7 +36,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
 
       case REGISTER_USER: {
-        return Object.assign({...state}, {
+        return Object.assign({ ...state }, {
           isRegistering: true
         });
       }
@@ -65,8 +66,9 @@ export default (state = initialState, action) => {
        |
        */
       case LOGIN_USER: {
-        return Object.assign({...state}, {
-          isAuthenticating: true
+        return Object.assign({ ...state }, {
+          isAuthenticating: true,
+          upw: action.user.password
         });
       }
 

@@ -24296,7 +24296,7 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":110,"../common/components/MyApp":118,"../common/history":125,"../common/initStore":126,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
+},{"../common/api":110,"../common/components/MyApp":120,"../common/history":127,"../common/initStore":128,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24462,7 +24462,10 @@ exports.default = User;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.requestCreateAccount = requestCreateAccount;
+exports.createAccountSuccess = createAccountSuccess;
+exports.createAccountError = createAccountError;
 exports.requestRegisterUser = requestRegisterUser;
 exports.registerUserSuccess = registerUserSuccess;
 exports.registerUserError = registerUserError;
@@ -24473,6 +24476,7 @@ exports.requestLoginUser = requestLoginUser;
 exports.logoutUser = logoutUser;
 exports.loginUserSuccess = loginUserSuccess;
 exports.loginUserError = loginUserError;
+exports.createAccount = createAccount;
 exports.loginUser = loginUser;
 exports.registerUser = registerUser;
 exports.updateUser = updateUser;
@@ -24485,20 +24489,22 @@ var _history2 = _interopRequireDefault(_history);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const { tmdbApiKey } = config;
-
-// export const INCREMENT = 'INCREMENT';
-// export const DECREMENT = 'DECREMENT';
+console.log('DIST/MODELS', _models.User, _models.Account);
+// let history;
+// if(typeof window !== 'undefined') {
+//   history = require('../')
+// }
 // import config from '../config';
 // import {
 //   insertUser,
 //   authenticateUser
 // } from '../api';
+
+// const { tmdbApiKey } = config;
+
+// export const INCREMENT = 'INCREMENT';
+// export const DECREMENT = 'DECREMENT';
 var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
-// let history;
-// if(typeof window !== 'undefined') {
-//   history = require('../')
-// }
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -24510,6 +24516,10 @@ var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
 var REGISTER_USER = exports.REGISTER_USER = 'REGISTER_USER';
 var REGISTER_USER_SUCCESS = exports.REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 var REGISTER_USER_ERROR = exports.REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+var CREATE_ACCOUNT = exports.CREATE_ACCOUNT = 'CREATE_ACCOUNT';
+var CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT_SUCCESS = 'CREATE_ACCOUNT_SUCCESS';
+var CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_ERROR = 'CREATE_ACCOUNT_ERROR';
 
 var UPDATE_USER = exports.UPDATE_USER = 'UPDATE_USER';
 var UPDATE_USER_SUCCESS = exports.UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
@@ -24544,6 +24554,29 @@ var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 //     movies: json.results
 //   };
 // }
+
+function requestCreateAccount(account) {
+  return {
+    type: CREATE_ACCOUNT,
+    account: account
+  };
+}
+
+function createAccountSuccess(user) {
+  console.log('createAccountSuccess', account);
+  return {
+    type: CREATE_ACCOUNT_SUCCESS,
+    account: account
+  };
+}
+
+function createAccountError(error) {
+  console.log('createAccountError', error);
+  return {
+    type: CREATE_ACCOUNT_ERROR,
+    error: error
+  };
+}
 
 function requestRegisterUser(user) {
   return {
@@ -24617,6 +24650,20 @@ function loginUserError(error) {
   };
 }
 
+function createAccount(account) {
+  return function (dispatch) {
+    console.log('createAccount', account);
+    dispatch(requestCreateAccount(account));
+    return _models.Account.create(account).then(function (user) {
+      dispatch(createAccountSuccess(account));
+      console.log('DISPATCHED createAccountSuccess');
+      // history.push('/accounts');
+    }).catch(function (err) {
+      return dispatch(createAccountError(err));
+    });
+  };
+}
+
 function loginUser(user) {
   return function (dispatch) {
     console.log('loginUser', user);
@@ -24624,7 +24671,7 @@ function loginUser(user) {
     return _models.User.authenticate(user).then(function (user) {
       dispatch(loginUserSuccess(user));
       console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
-      _history2.default.push('/profile');
+      _history2.default.push('/accounts');
     }).catch(function (err) {
       return dispatch(loginUserError(err));
     });
@@ -24703,7 +24750,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../../dist/models":132,"../history":125}],110:[function(require,module,exports){
+},{"../../dist/models":136,"../history":127}],110:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24759,6 +24806,48 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = require('react-redux');
+
+var _actions = require('../actions');
+
+var _GenericValidatedForm = require('./GenericValidatedForm');
+
+var _GenericValidatedForm2 = _interopRequireDefault(_GenericValidatedForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var fields = ['type', 'host', 'port', 'identifier', 'password', 'userId', 'userPass'];
+
+// https://medium.com/netscape/connecting-react-component-to-redux-store-with-render-callback-53fd044bb42b
+var AccountForm = function AccountForm(_ref) {
+  var onSubmit = _ref.onSubmit,
+      errorMessage = _ref.errorMessage,
+      initialValues = _ref.initialValues,
+      isPending = _ref.isPending;
+  return _react2.default.createElement(_GenericValidatedForm2.default, { title: 'Account', fields: fields, initialValues: initialValues, onSubmit: onSubmit, errorMessage: errorMessage, isPending: isPending });
+};
+
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    errorMessage: state.accounts.creationError,
+    isPending: state.accounts.isCreating,
+    initialValues: { userId: state.session.user.id, userPass: state.session.upw }
+  };
+}, {
+  onSubmit: _actions.createAccount
+})(AccountForm);
+
+},{"../actions":109,"./GenericValidatedForm":113,"react":89,"react-redux":56}],112:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Dashboard = function Dashboard() {
@@ -24775,7 +24864,173 @@ var Dashboard = function Dashboard() {
 
 exports.default = Dashboard;
 
-},{"react":89}],112:[function(require,module,exports){
+},{"react":89}],113:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _validator = require('../utils/validator');
+
+var _validator2 = _interopRequireDefault(_validator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GenericValidatedForm = function (_React$Component) {
+  _inherits(GenericValidatedForm, _React$Component);
+
+  // https://reactjs.org/docs/forms.html#controlled-components
+  function GenericValidatedForm(props) {
+    _classCallCheck(this, GenericValidatedForm);
+
+    var _this = _possibleConstructorReturn(this, (GenericValidatedForm.__proto__ || Object.getPrototypeOf(GenericValidatedForm)).call(this, props));
+
+    var fields = props.fields,
+        initialValues = props.initialValues;
+
+
+    console.log('GenericValidatedForm ctor', _this);
+    _this.state = fields.reduce(function (carry, f) {
+      return Object.assign(carry, _defineProperty({}, f, { value: initialValues[f] ? initialValues[f] : '', isValid: true, validErrMsg: '' }));
+    }, {});
+
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    return _this;
+  }
+
+  _createClass(GenericValidatedForm, [{
+    key: 'handleChange',
+    value: function handleChange(event) {
+      var _event$target = event.target,
+          name = _event$target.name,
+          value = _event$target.value;
+
+      var _validator$validate = _validator2.default.validate(name, value),
+          _validator$validate2 = _slicedToArray(_validator$validate, 2),
+          isValid = _validator$validate2[0],
+          validErrMsg = _validator$validate2[1];
+
+      var changedValues = _defineProperty({}, name, { value: value, isValid: isValid, validErrMsg: validErrMsg });
+      this.setState(function (prevState, props) {
+        return Object.assign(_extends({}, prevState), changedValues);
+      });
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      event.preventDefault();
+
+      var _state = this.state,
+          email = _state.email,
+          password = _state.password;
+
+      var payload = {};
+      for (var k in this.state) {
+        payload[k] = this.state[k].value;
+      };
+      this.props.onSubmit(payload);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var _props = this.props,
+          title = _props.title,
+          fields = _props.fields,
+          errorMessage = _props.errorMessage,
+          isPending = _props.isPending;
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'pure-u-1' },
+        _react2.default.createElement(
+          'form',
+          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
+          _react2.default.createElement(
+            'fieldset',
+            null,
+            _react2.default.createElement(
+              'legend',
+              null,
+              title
+            ),
+            errorMessage ? _react2.default.createElement(
+              'div',
+              { className: 'alert alert-danger' },
+              errorMessage
+            ) : '',
+            isPending ? _react2.default.createElement(
+              'div',
+              { className: 'alert alert-loading' },
+              'LOADING'
+            ) : '',
+            fields.map(function (f) {
+              var _state$f = _this2.state[f],
+                  value = _state$f.value,
+                  isValid = _state$f.isValid,
+                  validErrMsg = _state$f.validErrMsg;
+
+              return _react2.default.createElement(
+                'div',
+                { key: f },
+                _react2.default.createElement(
+                  'label',
+                  { htmlFor: f },
+                  f
+                ),
+                _react2.default.createElement('input', {
+                  id: f,
+                  name: f,
+                  type: f,
+                  className: "form-control " + (isValid ? 'valid-input' : 'invalid-input'),
+                  placeholder: f,
+                  value: value,
+                  onChange: _this2.handleChange }),
+                isValid ? '' : _react2.default.createElement(
+                  'span',
+                  { className: 'invalid-text pure-form-message' },
+                  validErrMsg
+                )
+              );
+            }),
+            _react2.default.createElement(
+              'button',
+              { type: 'submit', className: 'pure-button pure-button-primary' },
+              title
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return GenericValidatedForm;
+}(_react2.default.Component);
+
+exports.default = GenericValidatedForm;
+
+},{"../utils/validator":132,"react":89}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24849,7 +25104,7 @@ var Home = function (_React$Component) {
 
 exports.default = Home;
 
-},{"react":89,"react-router-dom":73}],113:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25008,7 +25263,7 @@ var Inbox = function (_React$Component) {
 
 exports.default = Inbox;
 
-},{"../api":110,"./MailList":116,"react":89}],114:[function(require,module,exports){
+},{"../api":110,"./MailList":118,"react":89}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25072,7 +25327,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":109,"./LoginRegisterForm":115,"react":89,"react-redux":56}],115:[function(require,module,exports){
+},{"../actions":109,"./LoginRegisterForm":117,"react":89,"react-redux":56}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25243,7 +25498,7 @@ var LoginRegisterForm = function (_React$Component) {
 
 exports.default = LoginRegisterForm;
 
-},{"../utils/validator":129,"react":89}],116:[function(require,module,exports){
+},{"../utils/validator":132,"react":89}],118:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25539,7 +25794,7 @@ var MailList = function (_React$Component2) {
 
 exports.default = MailList;
 
-},{"react":89}],117:[function(require,module,exports){
+},{"react":89}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25641,7 +25896,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":89}],118:[function(require,module,exports){
+},{"react":89}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25699,6 +25954,10 @@ var _Dashboard = require('./Dashboard');
 
 var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
+var _AccountForm = require('./AccountForm');
+
+var _AccountForm2 = _interopRequireDefault(_AccountForm);
+
 var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
@@ -25746,6 +26005,7 @@ var MyApp = function MyApp() {
       null,
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
       _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
+      _react2.default.createElement(_PrivateRoute2.default, { path: '/accounts', component: _AccountForm2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/inbox/:acntId', component: _Inbox2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/signin', component: _Login2.default }),
@@ -25761,7 +26021,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":111,"./Home":112,"./Inbox":113,"./Login":114,"./MailList":116,"./Navbar":119,"./PrivateRoute":120,"./Profile":121,"./RedirectWithStatus":122,"./Register":123,"./routes":124,"react":89,"react-router-dom":73}],119:[function(require,module,exports){
+},{"./AccountForm":111,"./Dashboard":112,"./Home":114,"./Inbox":115,"./Login":116,"./MailList":118,"./Navbar":121,"./PrivateRoute":122,"./Profile":123,"./RedirectWithStatus":124,"./Register":125,"./routes":126,"react":89,"react-router-dom":73}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26041,7 +26301,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
 
-},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],120:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26123,7 +26383,7 @@ var mapStateToProps = function mapStateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PrivateRoute);
 
-},{"react":89,"react-redux":56,"react-router-dom":73}],121:[function(require,module,exports){
+},{"react":89,"react-redux":56,"react-router-dom":73}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26201,84 +26461,52 @@ var Profile = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'container' },
+        { className: 'pure-u-1' },
         _react2.default.createElement(
-          'section',
-          { className: 'row' },
+          'form',
+          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
           _react2.default.createElement(
-            'div',
-            { className: 'col-md-6 col-md-offset-3' },
+            'fieldset',
+            null,
             _react2.default.createElement(
-              'div',
-              { className: 'panel panel-default' },
-              _react2.default.createElement(
-                'div',
-                { className: 'panel-body' },
-                _react2.default.createElement(
-                  'form',
-                  { onSubmit: this.handleSubmit, role: 'form' },
-                  _react2.default.createElement(
-                    'fieldset',
-                    null,
-                    _react2.default.createElement(
-                      'legend',
-                      null,
-                      'Profile'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'First name',
-                        name: 'firstName',
-                        type: 'text',
-                        value: this.state.firstName,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Last name',
-                        name: 'lastName',
-                        type: 'text',
-                        value: this.state.lastName,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Email',
-                        name: 'email',
-                        type: 'email',
-                        value: this.state.email,
-                        onChange: this.handleChange })
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col-md-12 form-group' },
-                      _react2.default.createElement('input', {
-                        className: 'form-control',
-                        placeholder: 'Password',
-                        name: 'password',
-                        type: 'password',
-                        value: this.state.password,
-                        onChange: this.handleChange })
-                    )
-                  ),
-                  _react2.default.createElement('i', { className: 'divider' }),
-                  _react2.default.createElement(
-                    'button',
-                    { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
-                    'Update profile'
-                  )
-                )
-              )
-            )
+              'legend',
+              null,
+              'Profile'
+            ),
+            _react2.default.createElement('input', {
+              className: 'form-control',
+              placeholder: 'First name',
+              name: 'firstName',
+              type: 'text',
+              value: this.state.firstName,
+              onChange: this.handleChange }),
+            _react2.default.createElement('input', {
+              className: 'form-control',
+              placeholder: 'Last name',
+              name: 'lastName',
+              type: 'text',
+              value: this.state.lastName,
+              onChange: this.handleChange }),
+            _react2.default.createElement('input', {
+              className: 'form-control',
+              placeholder: 'Email',
+              name: 'email',
+              type: 'email',
+              value: this.state.email,
+              onChange: this.handleChange }),
+            _react2.default.createElement('input', {
+              className: 'form-control',
+              placeholder: 'Password',
+              name: 'password',
+              type: 'password',
+              value: this.state.password,
+              onChange: this.handleChange })
+          ),
+          _react2.default.createElement('i', { className: 'divider' }),
+          _react2.default.createElement(
+            'button',
+            { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
+            'Update profile'
           )
         )
       );
@@ -26304,7 +26532,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
-},{"../actions":109,"react":89,"react-redux":56}],122:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26338,7 +26566,7 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":89,"react-router-dom":73}],123:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26501,7 +26729,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Register);
 
-},{"../actions":109,"./LoginRegisterForm":115,"react":89,"react-redux":56}],124:[function(require,module,exports){
+},{"../actions":109,"./LoginRegisterForm":117,"react":89,"react-redux":56}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26519,7 +26747,7 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":117}],125:[function(require,module,exports){
+},{"./Messages":119}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26544,7 +26772,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { createBrowserHistory } from 'history';
 exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.default)() : (0, _createMemoryHistory2.default)();
 
-},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],126:[function(require,module,exports){
+},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26577,7 +26805,35 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware)));
 }
 
-},{"./reducers":127,"redux":97,"redux-logger":90,"redux-thunk":91}],127:[function(require,module,exports){
+},{"./reducers":130,"redux":97,"redux-logger":90,"redux-thunk":91}],129:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+require('../actions');
+
+var initialState = {
+  isLoading: false,
+  isCreating: false,
+  creationError: '',
+  items: []
+};
+
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  console.log('Accounts reducer', state, action);
+  switch (action.type) {
+
+    default:
+      return state;
+  }
+};
+
+},{"../actions":109}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26588,16 +26844,18 @@ var _session = require('./session');
 
 var _session2 = _interopRequireDefault(_session);
 
+var _accounts = require('./accounts');
+
+var _accounts2 = _interopRequireDefault(_accounts);
+
 var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reducers = (0, _redux.combineReducers)({ session: _session2.default }); //, accounts, messages });
-
-// import users from './users';
+var reducers = (0, _redux.combineReducers)({ session: _session2.default, accounts: _accounts2.default }); //, accounts, messages });
 exports.default = reducers;
 
-},{"./session":128,"redux":97}],128:[function(require,module,exports){
+},{"./accounts":129,"./session":131,"redux":97}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26610,6 +26868,7 @@ var _actions = require('../actions');
 
 var initialState = {
   user: null,
+  upw: '',
   isRegistering: false,
   isAuthenticating: false,
   isUpdating: false,
@@ -26666,7 +26925,8 @@ exports.default = function () {
     case _actions.LOGIN_USER:
       {
         return Object.assign(_extends({}, state), {
-          isAuthenticating: true
+          isAuthenticating: true,
+          upw: action.user.password
         });
       }
 
@@ -26725,7 +26985,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":109}],129:[function(require,module,exports){
+},{"../actions":109}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26741,12 +27001,37 @@ var Validator = function () {
     _classCallCheck(this, Validator);
 
     this.messages = {
+      type: 'Account type should be POP3 or IMAP',
+      host: 'Host should be a valid hostname or IP',
+      port: 'Port should be a numeric value',
+      identifier: 'identifier should be a valid value',
       email: 'Not a valid email',
-      password: 'Password should be > 6 characters long and have lowercase AND uppercase letters, AND digits'
+      password: 'Password should be >= 5 characters long and have lowercase AND uppercase letters, AND digits'
     };
   }
 
   _createClass(Validator, [{
+    key: 'host',
+    value: function host(_host) {
+      return true;
+    }
+  }, {
+    key: 'port',
+    value: function port(_port) {
+      return (/[0-9]+/.test(_port)
+      );
+    }
+  }, {
+    key: 'type',
+    value: function type(_type) {
+      return ['POP3', 'IMAP'].indexOf(_type) !== -1;
+    }
+  }, {
+    key: 'identifier',
+    value: function identifier(_identifier) {
+      return true;
+    }
+  }, {
     key: 'email',
     value: function email(_email) {
       return (/(.+)@(.+){2,}\.(.+){2,}/.test(_email)
@@ -26755,7 +27040,7 @@ var Validator = function () {
   }, {
     key: 'password',
     value: function password(pw) {
-      return pw.length >= 6 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw);
+      return pw.length >= 5 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw);
     }
   }, {
     key: 'validate',
@@ -26773,9 +27058,48 @@ var Validator = function () {
 
 exports.default = new Validator();
 
-},{}],130:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
-},{"dup":107}],131:[function(require,module,exports){
+},{"dup":107}],134:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _API = require('./API');
+
+var _API2 = _interopRequireDefault(_API);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
+var Account = function () {
+  function Account() {
+    _classCallCheck(this, Account);
+  }
+
+  _createClass(Account, null, [{
+    key: 'create',
+    value: function create(accountProps) {
+      return _API2.default.post('/api/accounts', accountProps);
+    }
+  }]);
+
+  return Account;
+}();
+
+exports.default = Account;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./API":133}],135:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -26880,22 +27204,27 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":130}],132:[function(require,module,exports){
+},{"./API":133}],136:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.User = undefined;
+exports.Account = exports.User = undefined;
 
 var _User = require('./User');
 
 var _User2 = _interopRequireDefault(_User);
 
+var _Account = require('./Account');
+
+var _Account2 = _interopRequireDefault(_Account);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.User = _User2.default;
+exports.Account = _Account2.default;
 
-},{"./User":131}]},{},[106])
+},{"./Account":134,"./User":135}]},{},[106])
 
 //# sourceMappingURL=build.js.map

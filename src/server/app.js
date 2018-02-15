@@ -14,6 +14,7 @@ import initStore from './initStore';
 import api from './api';
 import serverAPI from './serverAPI';
 import User from './models/user';
+import Account from './models/account';
 
 console.log(serverAPI);
 api.setStrategy(serverAPI);
@@ -33,6 +34,16 @@ app.get('/messages', (req, res) => {
 app.post('/api/users', (req, res) => {
   User.create(req.body)
   .then(user => res.json(user))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.post('/api/accounts', (req, res) => {
+  const { userPass } = req.body;
+  delete req.body.userPass;
+  Account.create(req.body, userPass)
+  .then(account => res.json(account))
   .catch(err => res.status(400).json({
     error: err.message
   }));
@@ -100,6 +111,7 @@ app.get('*', (req, res) => {
     let initialState = {
       session: {
         user,
+        upw: '',
         isRegistering: false,
         isAuthenticating: false,
         isUpdating: false,
@@ -109,6 +121,8 @@ app.get('*', (req, res) => {
       },
       accounts: {
         isLoading: false,
+        isCreating: false,
+        creationError: '',
         items: []
       },
       messages: {

@@ -41,64 +41,48 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <section className="row">
-          <div className="col-md-6 col-md-offset-3">
-            <div className="panel panel-default">
-              <div className="panel-body">
-                <form onSubmit={this.handleSubmit} role="form">
-                  <fieldset>
-                    <legend>Profile</legend>
+      <div className="pure-u-1">
+        <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
+          <fieldset>
+            <legend>Profile</legend>
 
-                    <div className="col-md-12 form-group">
-                      <input
-                        className="form-control"
-                        placeholder="First name"
-                        name="firstName"
-                        type="text"
-                        value={this.state.firstName}
-                        onChange={this.handleChange} />
-                    </div>
+            <input
+              className="form-control"
+              placeholder="First name"
+              name="firstName"
+              type="text"
+              value={this.state.firstName}
+              onChange={this.handleChange} />
 
-                    <div className="col-md-12 form-group">
-                      <input
-                        className="form-control"
-                        placeholder="Last name"
-                        name="lastName"
-                        type="text"
-                        value={this.state.lastName}
-                        onChange={this.handleChange} />
-                    </div>
+            <input
+              className="form-control"
+              placeholder="Last name"
+              name="lastName"
+              type="text"
+              value={this.state.lastName}
+              onChange={this.handleChange} />
 
-                    <div className="col-md-12 form-group">
-                      <input
-                        className="form-control"
-                        placeholder="Email"
-                        name="email"
-                        type="email"
-                        value={this.state.email}
-                        onChange={this.handleChange} />
-                    </div>
+            <input
+              className="form-control"
+              placeholder="Email"
+              name="email"
+              type="email"
+              value={this.state.email}
+              onChange={this.handleChange} />
 
-                    <div className="col-md-12 form-group">
-                      <input
-                        className="form-control"
-                        placeholder="Password"
-                        name="password"
-                        type="password"
-                        value={this.state.password}
-                        onChange={this.handleChange} />
-                    </div>
+            <input
+              className="form-control"
+              placeholder="Password"
+              name="password"
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChange} />
 
-                  </fieldset>
+          </fieldset>
 
-                  <i className="divider"></i>
-                  <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Update profile</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
+          <i className="divider"></i>
+          <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Update profile</button>
+        </form>
       </div>
     );
   }

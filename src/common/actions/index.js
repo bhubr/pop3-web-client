@@ -3,7 +3,9 @@
 //   insertUser,
 //   authenticateUser
 // } from '../api';
-import { User } from '../../dist/models';
+import { User, Account } from '../../dist/models';
+
+console.log('DIST/MODELS', User, Account);
 // let history;
 // if(typeof window !== 'undefined') {
 //   history = require('../')
@@ -25,6 +27,10 @@ export const LOGOUT_USER        = 'LOGOUT_USER';
 export const REGISTER_USER = 'REGISTER_USER';
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
+
+export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
+export const CREATE_ACCOUNT_SUCCESS = 'CREATE_ACCOUNT_SUCCESS';
+export const CREATE_ACCOUNT_ERROR = 'CREATE_ACCOUNT_ERROR';
 
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
@@ -59,6 +65,29 @@ export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 //     movies: json.results
 //   };
 // }
+
+export function requestCreateAccount(account) {
+  return {
+    type: CREATE_ACCOUNT,
+    account
+  };
+}
+
+export function createAccountSuccess(user) {
+  console.log('createAccountSuccess', account);
+  return {
+    type: CREATE_ACCOUNT_SUCCESS,
+    account
+  };
+}
+
+export function createAccountError(error) {
+  console.log('createAccountError', error);
+  return {
+    type: CREATE_ACCOUNT_ERROR,
+    error
+  };
+}
 
 export function requestRegisterUser(user) {
   return {
@@ -132,6 +161,22 @@ export function loginUserError(error) {
   };
 }
 
+
+
+export function createAccount(account)  {
+  return dispatch => {
+    console.log('createAccount', account);
+    dispatch(requestCreateAccount(account));
+    return Account.create(account)
+      .then(user => {
+        dispatch(createAccountSuccess(account));
+        console.log('DISPATCHED createAccountSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(createAccountError(err)));
+  };
+}
+
 export function loginUser(user)  {
   return dispatch => {
     console.log('loginUser', user);
@@ -140,7 +185,7 @@ export function loginUser(user)  {
       .then(user => {
         dispatch(loginUserSuccess(user));
         console.log('DISPATCHED LOGIN SUCCESS', history);
-        history.push('/profile');
+        history.push('/accounts');
       })
       .catch(err => dispatch(loginUserError(err)));
   };
