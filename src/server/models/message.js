@@ -56,30 +56,31 @@ export default class Message {
     this.subject = props.subject;
     this.raw = props.raw;
     this.html = props.html;
+    this.body = props.body;
   }
 
   static findAll(accountId) {
     return pool
-      .query(`select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where accountId = ${accountId}`)
+      .query(`select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where accountId = ${accountId}`)
       .then(messages => messages.map(extractMessageBody));
   }
 
   static findOne(id) {
-    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where id = ${id}`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => new Message(props));
   }
 
   static findOneByUidl(uidl) {
-    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where uidl = '${uidl}'`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where uidl = '${uidl}'`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => (props ? new Message(props) : undefined));
   }
 
   static create(message) {
-    const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html'];
+    const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html', 'body'];
     for(let i = 0 ; i < requiredKeys.length ; i++) {
       const k = requiredKeys[i];
       if(! message[k]) {

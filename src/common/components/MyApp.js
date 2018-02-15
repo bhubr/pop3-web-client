@@ -51,6 +51,7 @@ const MyApp = () => (
       <PrivateRoute path="/accounts" component={Accounts}/>
       {/*<Route path="/profile" component={Profile}/>*/}
       <Route exact path="/inbox/:acntId" component={Inbox}/>
+      <Route exact path="/inbox/:acntId/:uidl" component={Inbox}/>
       <Route path="/signup" component={Register}/>
       <Route path="/signin" component={Login}/>
       <Route path="/dashboard" component={Dashboard}/>

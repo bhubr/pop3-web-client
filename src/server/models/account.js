@@ -121,6 +121,7 @@ export default class Account {
   }
 
   openPop3Session() {
+    console.log('openPop3Session', this.getPop3Credentials());
     this.pop3 = new Pop3Command(this.getPop3Credentials());
     pop3SessionStore.set(this.id, this.pop3);
   }
@@ -165,7 +166,7 @@ export default class Account {
     return Message.findOneByUidl(uidl)
     .then(message => {
       if(message) {
-        return message;
+        return carry.concat([message]);
       }
       return new Promise((resolve, reject) => {
         this.pop3.RETR(msgId)
@@ -188,7 +189,8 @@ export default class Account {
               senderEmail: address,
               subject,
               raw: JSON.stringify(mail),
-              html: theHtml
+              html: theHtml,
+              body
             });
           })
         )
