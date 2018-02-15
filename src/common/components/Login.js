@@ -9,7 +9,8 @@ class Login extends LoginRegisterForm {
 
 const mapStateToProps = state => {
   return {
-    errorMessage: state.session.authenticationError
+    errorMessage: state.session.authenticationError,
+    isPending: state.session.isAuthenticating
   };
 };
 

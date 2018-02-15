@@ -155,15 +155,15 @@ function timeoutPromise(timeout) {
   }
 }
 
-export function registerUser(user)  {
+export function registerUser(userProps)  {
   return dispatch => {
-    console.log('registerUser', user);
-    dispatch(requestRegisterUser(user));
-    return User.create(user)
+    console.log('registerUser', userProps);
+    dispatch(requestRegisterUser(userProps));
+    return User.create(userProps)
       .then(timeoutPromise(300))
-      .then(user => {
-        dispatch(registerUserSuccess(user))
-        // (loginUser(user))(dispatch);
+      .then(userModel => {
+        dispatch(registerUserSuccess(userModel))
+        loginUser(userProps)(dispatch);
       })
       .catch(err => dispatch(registerUserError(err)));
   };

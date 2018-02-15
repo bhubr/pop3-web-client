@@ -24642,13 +24642,13 @@ function timeoutPromise(timeout) {
   };
 }
 
-function registerUser(user) {
+function registerUser(userProps) {
   return function (dispatch) {
-    console.log('registerUser', user);
-    dispatch(requestRegisterUser(user));
-    return _models.User.create(user).then(timeoutPromise(300)).then(function (user) {
-      dispatch(registerUserSuccess(user));
-      // (loginUser(user))(dispatch);
+    console.log('registerUser', userProps);
+    dispatch(requestRegisterUser(userProps));
+    return _models.User.create(userProps).then(timeoutPromise(300)).then(function (userModel) {
+      dispatch(registerUserSuccess(userModel));
+      loginUser(userProps)(dispatch);
     }).catch(function (err) {
       return dispatch(registerUserError(err));
     });
@@ -25057,7 +25057,8 @@ var Login = function (_LoginRegisterForm) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    errorMessage: state.session.authenticationError
+    errorMessage: state.session.authenticationError,
+    isPending: state.session.isAuthenticating
   };
 };
 
@@ -26662,6 +26663,13 @@ exports.default = function () {
      *-------------------------*
      |
      */
+    case _actions.LOGIN_USER:
+      {
+        return Object.assign(_extends({}, state), {
+          isAuthenticating: true
+        });
+      }
+
     case _actions.LOGIN_USER_SUCCESS:
       {
         console.log('LOGIN SUCCESS', action);

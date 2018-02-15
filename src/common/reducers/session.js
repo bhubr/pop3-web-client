@@ -64,6 +64,14 @@ export default (state = initialState, action) => {
        *-------------------------*
        |
        */
+      case LOGIN_USER: {
+        return Object.assign({...state}, {
+          isAuthenticating: true
+        });
+      }
+
+
+
       case LOGIN_USER_SUCCESS: {
         console.log('LOGIN SUCCESS', action);
         // const { user, loginError, updateError } = state;
