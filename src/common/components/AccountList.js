@@ -19,12 +19,17 @@ class AccountList extends React.Component {
 	render() {
 		const { accounts } = this.props;
     console.log(accounts);
-    var accountItems = accounts.map(a =>
-      ('<li>' + a.identifier + '@' + a.host + '</li>')
-    );
-    var acntStr = accountItems.join('');
+    // var accountItems = accounts.map(a =>
+    //   ('<li>' + a.identifier + '@' + a.host + '</li>')
+    // );
+    // var acntStr = accountItems.join('');
+    const accountItems = accounts.map(a => (
+      <AccountItem key={a.id} account={a} />
+    ));
 		return (
-      <div dangerouslySetInnerHTML={{__html: acntStr}} />
+      <div>
+      {accounts && accounts.length ? accountItems : ''}
+      </div>
     );
 	}
 

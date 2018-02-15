@@ -24962,11 +24962,18 @@ var AccountList = function (_React$Component2) {
       var accounts = this.props.accounts;
 
       console.log(accounts);
+      // var accountItems = accounts.map(a =>
+      //   ('<li>' + a.identifier + '@' + a.host + '</li>')
+      // );
+      // var acntStr = accountItems.join('');
       var accountItems = accounts.map(function (a) {
-        return '<li>' + a.identifier + '@' + a.host + '</li>';
+        return _react2.default.createElement(AccountItem, { key: a.id, account: a });
       });
-      var acntStr = accountItems.join('');
-      return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: acntStr } });
+      return _react2.default.createElement(
+        'div',
+        null,
+        accounts && accounts.length ? accountItems : ''
+      );
     }
   }, {
     key: 'componentDidMount',
