@@ -135,9 +135,11 @@ export default class Account {
     return Promise.reduce(idUidls, this.fetchMessage, []);
   }
 
-  fetchRemoteMessages(account, start = 0, num = 10) {
+  fetchRemoteMessages(account, start = 0, num = 0) {
     return chain(this.listRemoteMessages())
-    .then(idUidls => idUidls.slice(start, num))
+    .then(idUidls => (
+      num ? idUidls.slice(start, num) : idUidls
+    ))
     .then(this.fetchMessages)
     // .then(passLog)
     // .set('messages')
