@@ -1,3 +1,5 @@
+import api from './API';
+
 const fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
 
 export default class User {
@@ -42,16 +44,16 @@ export default class User {
   }
 
   static authenticate(user) {
-
-    return fetch('/api/authentication', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-    .then(response => response.json());
+    return api.post('/api/authentication', user);
+    // return fetch('/api/authentication', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Accept: 'application/json'
+    //   },
+    //   body: JSON.stringify(user)
+    // })
+    // .then(response => response.json());
   }
 
   static delete(id) {

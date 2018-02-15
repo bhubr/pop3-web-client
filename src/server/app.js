@@ -65,7 +65,7 @@ app.get('/api/users', (req, res) => {
 app.post('/api/authentication', (req, res) => {
   User.authenticate(req.body)
   .then(userOrFalse => (userOrFalse ?
-    res.json(userOrFalse) : res.status(401).json({ error: 'failed' })
+    res.json(userOrFalse) : res.status(401).json({ error: 'Authentication Failure: Bad Credentials' })
   ));
 });
 
@@ -98,7 +98,15 @@ app.get('*', (req, res) => {
     const { user } = req;
     // const session = { user };
     let initialState = {
-      user,
+      session: {
+        user,
+        isRegistering: false,
+        isAuthenticating: false,
+        isUpdating: false,
+        registrationError: '',
+        authenticationError: '',
+        updateError: ''
+      },
       accounts: {
         isLoading: false,
         items: []

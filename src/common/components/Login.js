@@ -53,12 +53,14 @@ class Login extends React.Component {
 
   render() {
     const { email, password } = this.state;
+    const { errorMessage } = this.props;
     return (
       <div className="pure-u-1">
 
         <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
             <fieldset>
                 <legend>Sign in</legend>
+                {errorMessage ? <div className="alert-danger">{errorMessage}</div> : ''}
 
                 <label htmlFor="email">Email</label>
                 <input
@@ -93,7 +95,7 @@ class Login extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    errorMessage: state.users.registerError
+    errorMessage: state.session.authenticationError
   };
 };
 

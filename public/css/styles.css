@@ -35,3 +35,12 @@
 .invalid-text {
   color: #b94a48;
 }
+
+.alert-danger {
+  color: #b94a48;
+  background: #f4e5e4;
+  border: 1px solid #e9322d;
+  padding: 10px;
+  border-radius: 3px;
+  text-align: center;
+}

@@ -24219,7 +24219,7 @@ exports.default = { User: _User2.default }; // // import { users, app } from './
 // const client = new clientAPI();
 // export default client;
 
-},{"./models/User":107}],106:[function(require,module,exports){
+},{"./models/User":108}],106:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -24296,7 +24296,62 @@ var MyRoutedApp = function MyRoutedApp() {
 
 _reactDom2.default.render(_react2.default.createElement(MyRoutedApp, null), mountNode);
 
-},{"../common/api":109,"../common/components/MyApp":116,"../common/history":123,"../common/initStore":124,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
+},{"../common/api":110,"../common/components/MyApp":117,"../common/history":124,"../common/initStore":125,"./clientAPI":105,"react":89,"react-dom":46,"react-redux":56,"react-router-dom":73}],107:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var API = function () {
+  function API() {
+    _classCallCheck(this, API);
+
+    this.headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    };
+  }
+
+  _createClass(API, [{
+    key: 'sendRequest',
+    value: function sendRequest(url, method, body) {
+      return fetch(url, {
+        method: method,
+        headers: this.headers,
+        body: body
+      }).then(function (response) {
+        return response.json().then(function (json) {
+          if (!response.ok) {
+            console.error('RESPONSE NOT OK, THROWING', json, json.error);
+            throw new Error(json.error);
+          }
+          return json;
+        });
+      });
+    }
+  }, {
+    key: 'get',
+    value: function get(url) {
+      return this.sendRequest(url, 'GET');
+    }
+  }, {
+    key: 'post',
+    value: function post(url, data) {
+      return this.sendRequest(url, 'POST', JSON.stringify(data));
+    }
+  }]);
+
+  return API;
+}();
+
+exports.default = new API();
+
+},{}],108:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -24305,6 +24360,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _API = require('./API');
+
+var _API2 = _interopRequireDefault(_API);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -24361,17 +24422,16 @@ var User = function () {
   }, {
     key: 'authenticate',
     value: function authenticate(user) {
-
-      return fetch('/api/authentication', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify(user)
-      }).then(function (response) {
-        return response.json();
-      });
+      return _API2.default.post('/api/authentication', user);
+      // return fetch('/api/authentication', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Accept: 'application/json'
+      //   },
+      //   body: JSON.stringify(user)
+      // })
+      // .then(response => response.json());
     }
   }, {
     key: 'delete',
@@ -24396,7 +24456,7 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],108:[function(require,module,exports){
+},{"./API":107}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24631,7 +24691,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../../dist/models":130,"../history":123}],109:[function(require,module,exports){
+},{"../../dist/models":131,"../history":124}],110:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24676,7 +24736,7 @@ var API = function () {
 var api = new API();
 exports.default = api;
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24703,7 +24763,7 @@ var Dashboard = function Dashboard() {
 
 exports.default = Dashboard;
 
-},{"react":89}],111:[function(require,module,exports){
+},{"react":89}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24777,7 +24837,7 @@ var Home = function (_React$Component) {
 
 exports.default = Home;
 
-},{"react":89,"react-router-dom":73}],112:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24936,7 +24996,7 @@ var Inbox = function (_React$Component) {
 
 exports.default = Inbox;
 
-},{"../api":109,"./MailList":114,"react":89}],113:[function(require,module,exports){
+},{"../api":110,"./MailList":115,"react":89}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25043,6 +25103,7 @@ var Login = function (_React$Component) {
       var _state2 = this.state,
           email = _state2.email,
           password = _state2.password;
+      var errorMessage = this.props.errorMessage;
 
       return _react2.default.createElement(
         'div',
@@ -25058,6 +25119,11 @@ var Login = function (_React$Component) {
               null,
               'Sign in'
             ),
+            errorMessage ? _react2.default.createElement(
+              'div',
+              { className: 'alert-danger' },
+              errorMessage
+            ) : '',
             _react2.default.createElement(
               'label',
               { htmlFor: 'email' },
@@ -25110,7 +25176,7 @@ var Login = function (_React$Component) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    errorMessage: state.users.registerError
+    errorMessage: state.session.authenticationError
   };
 };
 
@@ -25124,7 +25190,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":108,"../utils/validator":128,"react":89,"react-redux":56}],114:[function(require,module,exports){
+},{"../actions":109,"../utils/validator":128,"react":89,"react-redux":56}],115:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25420,7 +25486,7 @@ var MailList = function (_React$Component2) {
 
 exports.default = MailList;
 
-},{"react":89}],115:[function(require,module,exports){
+},{"react":89}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25522,7 +25588,7 @@ var Messages = function (_React$Component2) {
 
 exports.default = Messages;
 
-},{"react":89}],116:[function(require,module,exports){
+},{"react":89}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25642,7 +25708,7 @@ var MyApp = function MyApp() {
 
 exports.default = MyApp;
 
-},{"./Dashboard":110,"./Home":111,"./Inbox":112,"./Login":113,"./MailList":114,"./Navbar":117,"./PrivateRoute":118,"./Profile":119,"./RedirectWithStatus":120,"./Register":121,"./routes":122,"react":89,"react-router-dom":73}],117:[function(require,module,exports){
+},{"./Dashboard":111,"./Home":112,"./Inbox":113,"./Login":114,"./MailList":115,"./Navbar":118,"./PrivateRoute":119,"./Profile":120,"./RedirectWithStatus":121,"./Register":122,"./routes":123,"react":89,"react-router-dom":73}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25922,7 +25988,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
 
-},{"../actions":108,"react":89,"react-redux":56,"react-router-dom":73}],118:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26004,7 +26070,7 @@ var mapStateToProps = function mapStateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PrivateRoute);
 
-},{"react":89,"react-redux":56,"react-router-dom":73}],119:[function(require,module,exports){
+},{"react":89,"react-redux":56,"react-router-dom":73}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26185,7 +26251,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
-},{"../actions":108,"react":89,"react-redux":56}],120:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26219,7 +26285,7 @@ var RedirectWithStatus = function RedirectWithStatus(_ref) {
 
 exports.default = RedirectWithStatus;
 
-},{"react":89,"react-router-dom":73}],121:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26381,7 +26447,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Register);
 
-},{"../actions":108,"react":89,"react-redux":56}],122:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26399,7 +26465,7 @@ exports.default = [{
   component: _Messages2.default
 }];
 
-},{"./Messages":115}],123:[function(require,module,exports){
+},{"./Messages":116}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26424,7 +26490,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { createBrowserHistory } from 'history';
 exports.default = typeof window !== 'undefined' ? (0, _createBrowserHistory2.default)() : (0, _createMemoryHistory2.default)();
 
-},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],124:[function(require,module,exports){
+},{"history/createBrowserHistory":20,"history/createMemoryHistory":22}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26457,7 +26523,7 @@ function initStore(initialState) {
   return (0, _redux.createStore)(_reducers2.default, initialState, composeEnhancers((0, _redux.applyMiddleware)(_reduxThunk2.default, loggerMiddleware)));
 }
 
-},{"./reducers":125,"redux":97,"redux-logger":90,"redux-thunk":91}],125:[function(require,module,exports){
+},{"./reducers":126,"redux":97,"redux-logger":90,"redux-thunk":91}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26468,94 +26534,16 @@ var _session = require('./session');
 
 var _session2 = _interopRequireDefault(_session);
 
-var _users = require('./users');
-
-var _users2 = _interopRequireDefault(_users);
-
 var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reducers = (0, _redux.combineReducers)({ session: _session2.default, users: _users2.default });
+var reducers = (0, _redux.combineReducers)({ session: _session2.default }); //, accounts, messages });
+
+// import users from './users';
 exports.default = reducers;
 
-},{"./session":126,"./users":127,"redux":97}],126:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _actions = require('../actions');
-
-var initialState = {
-  user: null,
-  loginError: '',
-  updateError: ''
-};
-
-exports.default = function () {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
-  // migrate
-  if (!state || state.email) {
-    state = initialState;
-  }
-  //
-  switch (action.type) {
-    case _actions.LOGIN_USER_SUCCESS:
-      {
-        var _state = state,
-            user = _state.user,
-            loginError = _state.loginError,
-            updateError = _state.updateError;
-        // console.log(state, { items: [ ...items, action.user ] });
-
-        return { user: action.user, loginError: '', updateError: updateError };
-      }
-    case _actions.LOGIN_USER_ERROR:
-      {
-        return {
-          user: null,
-          loginError: action.error.message,
-          updateError: ''
-        };
-      }
-    case _actions.LOGOUT_USER:
-      {
-        return {
-          user: null,
-          loginError: '',
-          updateError: ''
-        };
-      }
-    case _actions.UPDATE_USER_SUCCESS:
-      {
-        var _state2 = state,
-            _user = _state2.user,
-            _loginError = _state2.loginError,
-            _updateError = _state2.updateError;
-
-        return { user: action.user, loginError: '', updateError: '' };
-      }
-    case _actions.UPDATE_USER_ERROR:
-      {
-        var _state3 = state,
-            _user2 = _state3.user;
-
-        return {
-          user: null,
-          loginError: '',
-          updateError: action.error.message
-        };
-      }
-    default:
-      return state;
-  }
-};
-
-},{"../actions":108}],127:[function(require,module,exports){
+},{"./session":127,"redux":97}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26569,20 +26557,32 @@ var _actions = require('../actions');
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var initialState = {
-  items: [],
-  registerError: '',
-  loginError: ''
+  user: null,
+  isRegistering: false,
+  isAuthenticating: false,
+  isUpdating: false,
+  registrationError: '',
+  authenticationError: '',
+  updateError: ''
 };
 
 exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  console.log('Users reducer', state, action);
+
+  console.log('SESSION REDUCER', state);
+  // migrate
+  if (!state || state.email) {
+    state = initialState;
+  }
+  //
   switch (action.type) {
+
     case _actions.REGISTER_USER_SUCCESS:
       {
-        var items = state.items;
+        var _state = state,
+            items = _state.items;
 
         console.log(state, { items: [].concat(_toConsumableArray(items), [action.user]) });
         return { items: [].concat(_toConsumableArray(items), [action.user]), registerError: '' };
@@ -26593,12 +26593,65 @@ exports.default = function () {
           registerError: action.error.message
         });
       }
+
+    /*-------------------------*
+     | AUTHENTICATION reducers
+     *-------------------------*
+     |
+     */
+    case _actions.LOGIN_USER_SUCCESS:
+      {
+        var _state2 = state,
+            user = _state2.user,
+            loginError = _state2.loginError,
+            updateError = _state2.updateError;
+        // console.log(state, { items: [ ...items, action.user ] });
+
+        return { user: action.user, loginError: '', updateError: updateError };
+      }
+
+    // Error
+    case _actions.LOGIN_USER_ERROR:
+      {
+        console.log('LOGIN ERROR', action);
+        return Object.assign(_extends({}, state), {
+          authenticationError: action.error.message
+        });
+      }
+    case _actions.LOGOUT_USER:
+      {
+        return {
+          user: null,
+          loginError: '',
+          updateError: ''
+        };
+      }
+    case _actions.UPDATE_USER_SUCCESS:
+      {
+        var _state3 = state,
+            _user = _state3.user,
+            _loginError = _state3.loginError,
+            _updateError = _state3.updateError;
+
+        return { user: action.user, loginError: '', updateError: '' };
+      }
+    case _actions.UPDATE_USER_ERROR:
+      {
+        var _state4 = state,
+            _user2 = _state4.user;
+
+        return {
+          user: null,
+          loginError: '',
+          updateError: action.error.message
+        };
+      }
     default:
       return state;
   }
 };
 
-},{"../actions":108}],128:[function(require,module,exports){
+},{"../actions":109}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26647,6 +26700,8 @@ var Validator = function () {
 exports.default = new Validator();
 
 },{}],129:[function(require,module,exports){
+arguments[4][107][0].apply(exports,arguments)
+},{"dup":107}],130:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -26655,6 +26710,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _API = require('./API');
+
+var _API2 = _interopRequireDefault(_API);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -26711,17 +26772,16 @@ var User = function () {
   }, {
     key: 'authenticate',
     value: function authenticate(user) {
-
-      return fetch('/api/authentication', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify(user)
-      }).then(function (response) {
-        return response.json();
-      });
+      return _API2.default.post('/api/authentication', user);
+      // return fetch('/api/authentication', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Accept: 'application/json'
+      //   },
+      //   body: JSON.stringify(user)
+      // })
+      // .then(response => response.json());
     }
   }, {
     key: 'delete',
@@ -26746,7 +26806,7 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],130:[function(require,module,exports){
+},{"./API":129}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26762,6 +26822,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.User = _User2.default;
 
-},{"./User":129}]},{},[106])
+},{"./User":130}]},{},[106])
 
 //# sourceMappingURL=build.js.map
