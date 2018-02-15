@@ -39,16 +39,6 @@ app.post('/api/users', (req, res) => {
   }));
 });
 
-app.post('/api/accounts', (req, res) => {
-  const { userPass } = req.body;
-  delete req.body.userPass;
-  Account.create(req.body, userPass)
-  .then(account => res.json(account))
-  .catch(err => res.status(400).json({
-    error: err.message
-  }));
-});
-
 app.get('/api/users/:id', (req, res) => {
   User.findOne(req.params.id)
   .then(user => res.json(user))
@@ -78,6 +68,24 @@ app.post('/api/authentication', (req, res) => {
   .then(userOrFalse => (userOrFalse ?
     res.json(userOrFalse) : res.status(401).json({ error: 'Authentication Failure: Bad Credentials' })
   ));
+});
+
+app.post('/api/accounts', (req, res) => {
+  const { userPass } = req.body;
+  delete req.body.userPass;
+  Account.create(req.body, userPass)
+  .then(account => res.json(account))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.get('/api/accounts', (req, res) => {
+  Account.findAll(req.query)
+  .then(account => res.json(account))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
 });
 
 const routes = [{
@@ -120,8 +128,9 @@ app.get('*', (req, res) => {
         updateError: ''
       },
       accounts: {
-        isLoading: false,
+        isFetching: false,
         isCreating: false,
+        fetchingError: '',
         creationError: '',
         items: []
       },

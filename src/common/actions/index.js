@@ -32,6 +32,10 @@ export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const CREATE_ACCOUNT_SUCCESS = 'CREATE_ACCOUNT_SUCCESS';
 export const CREATE_ACCOUNT_ERROR = 'CREATE_ACCOUNT_ERROR';
 
+export const FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
+export const FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
+export const FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
+
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
@@ -66,6 +70,50 @@ export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 //   };
 // }
 
+
+
+
+// ------------- FETCH ACCOUNTS ------------
+export function requestFetchAccounts(userId) {
+  return {
+    type: FETCH_ACCOUNTS,
+    userId
+  };
+}
+
+export function fetchAccountsSuccess(userId, accounts) {
+  console.log('fetchAccountsSuccess', accounts);
+  return {
+    type: FETCH_ACCOUNTS_SUCCESS,
+    userId,
+    accounts
+  };
+}
+
+export function fetchAccountsError(error) {
+  console.log('fetchAccountsError', error);
+  return {
+    type: FETCH_ACCOUNTS_ERROR,
+    error
+  };
+}
+
+export function fetchUserAccounts(userId)  {
+  return dispatch => {
+    console.log('fetchUserAccounts', userId);
+    dispatch(requestFetchAccounts(userId));
+    return Account.findAll(userId)
+      .then(accounts => {
+        dispatch(fetchAccountsSuccess(userId, accounts));
+        console.log('DISPATCHED fetchAccountsSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchAccountsError(err)));
+  };
+}
+// --------------------------------------------
+
+// ------------- CREATE ACCOUNT ------------
 export function requestCreateAccount(account) {
   return {
     type: CREATE_ACCOUNT,
@@ -88,6 +136,7 @@ export function createAccountError(error) {
     error
   };
 }
+// --------------------------------------------
 
 export function requestRegisterUser(user) {
   return {
@@ -160,7 +209,6 @@ export function loginUserError(error) {
     error
   };
 }
-
 
 
 export function createAccount(account)  {

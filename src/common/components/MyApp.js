@@ -9,7 +9,7 @@ import RedirectWithStatus from './RedirectWithStatus';
 import Home from './Home';
 import Inbox from './Inbox';
 import Dashboard from './Dashboard';
-import AccountForm from './AccountForm';
+import Accounts from './Accounts';
 // import Messages from './Messages';
 import routes from './routes';
 
@@ -48,7 +48,7 @@ const MyApp = () => (
     <Switch>
       <Route exact path="/" component={Home}/>
       <PrivateRoute path="/profile" component={Profile}/>
-      <PrivateRoute path="/accounts" component={AccountForm}/>
+      <PrivateRoute path="/accounts" component={Accounts}/>
       {/*<Route path="/profile" component={Profile}/>*/}
       <Route exact path="/inbox/:acntId" component={Inbox}/>
       <Route path="/signup" component={Register}/>

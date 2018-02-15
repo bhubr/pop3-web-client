@@ -48,9 +48,17 @@ export default class Account {
     };
   }
 
-  static findAll() {
+  static findAll(whereHash) {
+    whereHash = whereHash || {};
+    const baseQuery = 'select id, userId, type, host, port, identifier, password from accounts';
+    let whereStrings = [];
+    for(let k in whereHash) {
+      whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
+    }
+    const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+    console.log('Account.findAll', baseQuery + whereCondition);
     return pool
-      .query('select id, userId, type, host, port, identifier, password from accounts');
+      .query(baseQuery + whereCondition);
   }
 
   static findOne(id, userPass) {
