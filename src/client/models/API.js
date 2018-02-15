@@ -7,6 +7,7 @@ class API {
   sendRequest(url, method, body) {
     return fetch(url, {
       method,
+      credentials: 'include',
       headers: this.headers,
       body
     })
@@ -17,6 +18,14 @@ class API {
           console.error('RESPONSE NOT OK, THROWING', json, json.error);
           throw new Error(json.error);
         }
+        // console.log('######## sendRequest cookies', response.headers, response.headers.get('set-cookie'));
+        // // Display the keys
+        // for(var key of response.headers.keys()) {
+        //    console.log(key);
+        // }
+        // if(response.headers.get('set-cookie')) {
+        //   document.cookie = response.headers.get('set-cookie');
+        // }
         return json;
       });
     });

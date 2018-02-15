@@ -3,7 +3,7 @@
 //   insertUser,
 //   authenticateUser
 // } from '../api';
-import { User, Account } from '../../dist/models';
+import { User, Account, Message } from '../../dist/models';
 
 console.log('DIST/MODELS', User, Account);
 // let history;
@@ -35,6 +35,10 @@ export const CREATE_ACCOUNT_ERROR = 'CREATE_ACCOUNT_ERROR';
 export const FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
 export const FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
 export const FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
+
+export const FETCH_MESSAGES = 'FETCH_MESSAGES';
+export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
+export const FETCH_MESSAGES_ERROR = 'FETCH_MESSAGES_ERROR';
 
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
@@ -72,6 +76,45 @@ export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
 
 
+
+// ------------- FETCH MESSAGES ------------
+export function requestFetchMessages(accountId) {
+  return {
+    type: FETCH_MESSAGES,
+    accountId
+  };
+}
+
+export function fetchMessagesSuccess(accountId, messages) {
+  console.log('fetchMessagesSuccess', messages);
+  return {
+    type: FETCH_MESSAGES_SUCCESS,
+    accountId,
+    messages
+  };
+}
+
+export function fetchMessagesError(error) {
+  console.log('fetchMessagesError', error);
+  return {
+    type: FETCH_MESSAGES_ERROR,
+    error
+  };
+}
+
+export function fetchAccountMessages(accountId, userPass)  {
+  return dispatch => {
+    console.log('fetchAccountMessages', accountId);
+    dispatch(requestFetchMessages(accountId));
+    return Message.openInbox(accountId, userPass)
+      .then(messages => {
+        dispatch(fetchMessagesSuccess(accountId, messages));
+        console.log('DISPATCHED fetchMessagesSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchMessagesError(err)));
+  };
+}
 
 // ------------- FETCH ACCOUNTS ------------
 export function requestFetchAccounts(userId) {

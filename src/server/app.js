@@ -1,6 +1,7 @@
 // Express and related stuff
 import express from 'express';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 
 // React and related stuff
 import React from 'react';
@@ -15,17 +16,36 @@ import api from './api';
 import serverAPI from './serverAPI';
 import User from './models/user';
 import Account from './models/account';
+const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
+const config = require('../' + configFile);
 
+// console.log(config);
 console.log(serverAPI);
 api.setStrategy(serverAPI);
 
 
 const app = express();
+const sess = {
+  secret: config.secret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60000
+  }
+};
+console.log('SESSION', sess);
+app.use(session(sess));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-app.get('/messages', (req, res) => {
-  api.call('getMessages')
+
+app.post('/api/inbox/:acntId', (req, res) => {
+  const { userPass } = req.body;
+  const acntId = parseInt(req.params.acntId);
+  // api.call('getMessages')
+  Account.findOne(acntId, userPass)
+  .then(account => account.fetchRemoteMessages())
   .then(messages => res.json(messages))
   .catch(console.error);
 
@@ -65,9 +85,19 @@ app.get('/api/users', (req, res) => {
 
 app.post('/api/authentication', (req, res) => {
   User.authenticate(req.body)
-  .then(userOrFalse => (userOrFalse ?
-    res.json(userOrFalse) : res.status(401).json({ error: 'Authentication Failure: Bad Credentials' })
-  ));
+  .then(userOrFalse => {
+    if(! userOrFalse) {
+      return res.status(401).json({ error: 'Authentication failure: bad credentials' });
+    }
+    delete userOrFalse.password;
+    req.session.user = userOrFalse;
+    // req.session.save(function(err) {
+      // if(err) {
+        // return res.status(500).json({ error: 'Could not save user session' });
+      // }
+    res.json(userOrFalse);
+    // });
+  });
 });
 
 app.post('/api/accounts', (req, res) => {
@@ -88,8 +118,20 @@ app.get('/api/accounts', (req, res) => {
   }));
 });
 
+/*--------------------------*
+ | WARNING! DEV MODE ONLY!
+ *--------------------------*
+ |
+ */
+if(process.env.NODE_ENV !== 'production') {
+  app.get('/session', (req, res) => {
+    console.log('/session req.headers', req.headers);
+    return res.json(req.session);
+  });
+}
+
 const routes = [{
-  path: '/inbox/:acntId',
+  path: '/izznbox/:acntId',
   loadData: async function() {
     const messages = await api.call('getMessages');
     return messages;
@@ -114,7 +156,7 @@ app.get('*', (req, res) => {
   });
 
   Promise.all(promises).then(data => {
-    const { user } = req;
+    const { user } = req.session;
     // const session = { user };
     let initialState = {
       session: {
@@ -135,10 +177,9 @@ app.get('*', (req, res) => {
         items: []
       },
       messages: {
-        isLoading: false,
-        perAccount: {
-
-        }
+        isFetching: false,
+        fetchingError: '',
+        perAccount: {}
       }
     };
 

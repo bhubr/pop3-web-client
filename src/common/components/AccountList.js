@@ -1,12 +1,17 @@
 import React from 'react';
 import { fetchUserAccounts } from '../actions';
 import { connect } from 'react-redux';
+import {
+  Link
+} from 'react-router-dom';
 
 class AccountItem extends React.Component {
 	render() {
-		const { identifier, host, port } = this.props.account;
+		const { identifier, host, port, id } = this.props.account;
 		return (
-			<h4>{identifier}@{host}{port ? ':' + port : ''}</h4>
+        <div>
+          <Link to={"/inbox/" + id}>{identifier}@{host}{port ? ':' + port : ''}</Link>
+        </div>
 		);
 	}
 }

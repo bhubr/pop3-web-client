@@ -19,8 +19,11 @@ function trimAndQuote(v) {
     "'" + v.trim() + "'" : v;
 }
 
-function passLog(v) {
-  console.log(v); return v;
+function passLog(label) {
+  return v => {
+    console.log('\n\n######\\\\\\#\n#', label, '\n', v);
+    return v;
+  }
 }
 
 export default class Account {
@@ -143,13 +146,15 @@ export default class Account {
     return Promise.reduce(idUidls, this.fetchMessage, []);
   }
 
-  fetchRemoteMessages(account, start = 0, num = 0) {
+  fetchRemoteMessages(start = 0, num = 0) {
     return chain(this.listRemoteMessages())
+    .then(passLog('returned by listRemoteMessages'))
     .then(idUidls => (
       num ? idUidls.slice(start, num) : idUidls
     ))
+    .then(passLog('after optional slice'))
     .then(this.fetchMessages)
-    // .then(passLog)
+    .then(passLog('fetchMessages returned'))
     // .set('messages')
     // .then(() => pop3.QUIT())
     // .get(({ messages }) => (messages));
@@ -189,6 +194,7 @@ export default class Account {
         )
       })
       .then(props => Message.create(props))
+      .then(passLog('RETRIEVED MESSAGE'))
       .then(message => carry.concat([message]));
     });
   }

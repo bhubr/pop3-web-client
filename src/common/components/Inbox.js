@@ -1,24 +1,28 @@
 import React from 'react';
 import api from '../api';
 import MailList from './MailList';
+import { connect } from 'react-redux';
+import { fetchAccountMessages } from '../actions';
 
-export default class Inbox extends React.Component {
+class Inbox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: []
     };
+
+    console.log(this.props);
+    this.acntId = this.props.match.params.acntId;
   }
 
   componentDidMount() {
-    api.call('getMessages')
-    .then(messages => 
-      this.setState((prevState, props) => ({ messages }))
-    );
+    this.props.fetchAccountMessages(this.acntId, this.props.userPass);
   }
 
   render() {
-    const { messages } = this.state;
+    const { msgPerAccount } = this.props;
+    const messages = msgPerAccount[this.acntId] ? msgPerAccount[this.acntId] : [];
+
     return (
 
       <div>
@@ -65,3 +69,15 @@ export default class Inbox extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state) => ({
+    isFetching: state.messages.isFetching,
+    msgPerAccount: state.messages.perAccount,
+    // userId: state.session.user.id,
+    userPass: state.session.upw
+  }),
+  {
+    fetchAccountMessages
+  }
+)(Inbox);

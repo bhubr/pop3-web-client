@@ -7,10 +7,10 @@ export default class LoginRegisterForm extends React.Component {
     super(props);
     this.state = {
       email: {
-        value: '', isValid: true, validErrMsg: ''
+        value: '', isValid: false, validErrMsg: ''
       },
       password:  {
-        value: '', isValid: true, validErrMsg: ''
+        value: '', isValid: false, validErrMsg: ''
       }
     };
 
