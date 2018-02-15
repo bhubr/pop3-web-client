@@ -24935,6 +24935,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -24944,6 +24946,10 @@ var _react2 = _interopRequireDefault(_react);
 var _actions = require('../actions');
 
 var _reactRedux = require('react-redux');
+
+var _validator = require('../utils/validator');
+
+var _validator2 = _interopRequireDefault(_validator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24965,12 +24971,12 @@ var Login = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
 
     _this.state = {
-      // firstName: '',
-      // lastName: '',
-      email: '',
-      password: ''
-      // passwordConfirm: '',
-      // passwordsMatch: true
+      email: {
+        value: '', isValid: true, validErrMsg: ''
+      },
+      password: {
+        value: '', isValid: true, validErrMsg: ''
+      }
     };
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -24985,7 +24991,13 @@ var Login = function (_React$Component) {
           name = _event$target.name,
           value = _event$target.value;
 
-      var changedValues = _defineProperty({}, name, value);
+      var _validator$validate = _validator2.default.validate(name, value),
+          _validator$validate2 = _slicedToArray(_validator$validate, 2),
+          isValid = _validator$validate2[0],
+          validErrMsg = _validator$validate2[1];
+
+      var changedValues = _defineProperty({}, name, { value: value, isValid: isValid, validErrMsg: validErrMsg });
+      console.log('Validate', name, value);
       // if(name.startsWith('password')) {
       //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
       // }
@@ -25013,6 +25025,10 @@ var Login = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _state = this.state,
+          email = _state.email,
+          password = _state.password;
+
       return _react2.default.createElement(
         'div',
         { className: 'pure-u-1' },
@@ -25036,14 +25052,14 @@ var Login = function (_React$Component) {
               id: 'email',
               name: 'email',
               type: 'email',
-              className: 'form-control',
+              className: "form-control " + (email.isValid ? 'valid-input' : 'invalid-input'),
               placeholder: 'Email',
-              value: this.state.email,
+              value: email.value,
               onChange: this.handleChange }),
-            _react2.default.createElement(
+            email.isValid ? '' : _react2.default.createElement(
               'span',
-              { className: 'pure-form-message' },
-              'This is a required field.'
+              { className: 'invalid-text pure-form-message' },
+              email.validErrMsg
             ),
             _react2.default.createElement(
               'label',
@@ -25054,10 +25070,15 @@ var Login = function (_React$Component) {
               id: 'password',
               name: 'password',
               type: 'password',
-              className: 'form-control',
+              className: "form-control " + (password.isValid ? 'valid-input' : 'invalid-input'),
               placeholder: 'Password',
-              value: this.state.password,
+              value: password.value,
               onChange: this.handleChange }),
+            password.isValid ? '' : _react2.default.createElement(
+              'span',
+              { className: 'invalid-text pure-form-message' },
+              password.validErrMsg
+            ),
             _react2.default.createElement(
               'button',
               { type: 'submit', className: 'pure-button pure-button-primary' },
@@ -25088,7 +25109,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":108,"react":89,"react-redux":56}],114:[function(require,module,exports){
+},{"../actions":108,"../utils/validator":128,"react":89,"react-redux":56}],114:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26562,6 +26583,54 @@ exports.default = function () {
   }
 };
 
-},{"../actions":108}]},{},[106])
+},{"../actions":108}],128:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Validator = function () {
+  function Validator() {
+    _classCallCheck(this, Validator);
+
+    this.messages = {
+      email: 'Not a valid email',
+      password: 'Password should be > 6 characters long and have lowercase AND uppercase letters, AND digits'
+    };
+  }
+
+  _createClass(Validator, [{
+    key: 'email',
+    value: function email(_email) {
+      return (/(.+)@(.+){2,}\.(.+){2,}/.test(_email)
+      );
+    }
+  }, {
+    key: 'password',
+    value: function password(pw) {
+      return pw.length >= 6 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw);
+    }
+  }, {
+    key: 'validate',
+    value: function validate(name, value) {
+      if (!this[name]) {
+        throw new Error('Validator ' + name + ' does not exist!');
+      }
+      var isValid = this[name](value);
+      return isValid ? [true, undefined] : [false, this.messages[name]];
+    }
+  }]);
+
+  return Validator;
+}();
+
+exports.default = new Validator();
+
+},{}]},{},[106])
 
 //# sourceMappingURL=build.js.map
