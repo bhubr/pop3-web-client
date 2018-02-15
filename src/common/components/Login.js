@@ -1,18 +1,19 @@
 import React from 'react';
 import { loginUser } from '../actions';
 import { connect } from 'react-redux';
+import validator from '../utils/validator';
 
 class Login extends React.Component {
   // https://reactjs.org/docs/forms.html#controlled-components
   constructor(props) {
     super(props);
     this.state = {
-      // firstName: '',
-      // lastName: '',
-      email: '',
-      password: '',
-      // passwordConfirm: '',
-      // passwordsMatch: true
+      email: {
+        value: '', isValid: true, validErrMsg: ''
+      },
+      password:  {
+        value: '', isValid: true, validErrMsg: ''
+      }
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -21,7 +22,10 @@ class Login extends React.Component {
 
   handleChange(event) {
     const { name, value } = event.target;
-    let changedValues = { [name]: value };
+    const [ isValid, validErrMsg ] = validator.validate(name, value);
+
+    let changedValues = { [name]: { value, isValid, validErrMsg } };
+    console.log('Validate', name, value, );
     // if(name.startsWith('password')) {
     //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
     // }
@@ -41,11 +45,14 @@ class Login extends React.Component {
     // if(! this.state.passwordsMatch) {
     //   return;
     // }
-    console.log(this.state);
-    this.props.loginUser(this.state);
+    const { email, password } = this.state;
+    this.props.loginUser({
+      email: email.value, password: password.value
+    });
   }
 
   render() {
+    const { email, password } = this.state;
     return (
       <div className="pure-u-1">
 
@@ -58,21 +65,22 @@ class Login extends React.Component {
                   id="email"
                   name="email"
                   type="email"
-                  className="form-control"
+                  className={"form-control " + (email.isValid ? 'valid-input' : 'invalid-input')}
                   placeholder="Email"
-                  value={this.state.email}
+                  value={email.value}
                   onChange={this.handleChange} />
-                <span className="pure-form-message">This is a required field.</span>
+                {email.isValid ? '' : <span className="invalid-text pure-form-message">{email.validErrMsg}</span>}
 
                 <label htmlFor="password">Password</label>
                 <input
                   id="password"
                   name="password"
                   type="password"
-                  className="form-control"
+                  className={"form-control " + (password.isValid ? 'valid-input' : 'invalid-input')}
                   placeholder="Password"
-                  value={this.state.password}
+                  value={password.value}
                   onChange={this.handleChange} />
+                {password.isValid ? '' : <span className="invalid-text pure-form-message">{password.validErrMsg}</span>}
 
                 <button type="submit" className="pure-button pure-button-primary">Sign in</button>
             </fieldset>

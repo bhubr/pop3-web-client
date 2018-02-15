@@ -54,7 +54,9 @@ export default class User {
 
   static authenticate(credentials) {
     return User.getByEmail(credentials.email)
-    .then(user => User.checkPassword(user, credentials.password))
+    .then(user => (! user ? false :
+      User.checkPassword(user, credentials.password)
+    ))
   }
 
   static create(user) {

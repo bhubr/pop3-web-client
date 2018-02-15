@@ -1,7 +1,7 @@
 const fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
 
 export default class User {
-  
+
   static findOne(id) {
 
     return fetch(`/api/users/${id}`, {
@@ -14,7 +14,7 @@ export default class User {
     .then(response => response.json());
 
   }
-  
+
   static findAll() {
 
     return fetch(`/api/users`, {
@@ -40,7 +40,20 @@ export default class User {
     })
     .then(response => response.json());
   }
-  
+
+  static authenticate(user) {
+
+    return fetch('/api/authentication', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json());
+  }
+
   static delete(id) {
 
     return fetch(`/api/users/${id}`, {

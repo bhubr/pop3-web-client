@@ -62,7 +62,7 @@ app.get('/api/users', (req, res) => {
   }));
 });
 
-app.post('/authentication', (req, res) => {
+app.post('/api/authentication', (req, res) => {
   User.authenticate(req.body)
   .then(userOrFalse => (userOrFalse ?
     res.json(userOrFalse) : res.status(401).json({ error: 'failed' })
@@ -96,12 +96,22 @@ app.get('*', (req, res) => {
 
   Promise.all(promises).then(data => {
     const { user } = req;
-    const session = { user };
-    // let initialState = {
-    //   session
-    // };
+    // const session = { user };
+    let initialState = {
+      user,
+      accounts: {
+        isLoading: false,
+        items: []
+      },
+      messages: {
+        isLoading: false,
+        perAccount: {
 
-    const initialState = JSON.stringify(data[0] || {});
+        }
+      }
+    };
+
+    // const initialState = JSON.stringify(data[0] || {});
     const stateJSON = JSON.stringify(initialState);
     console.log('Got data', data, stateJSON);
 

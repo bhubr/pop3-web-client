@@ -24359,6 +24359,21 @@ var User = function () {
       });
     }
   }, {
+    key: 'authenticate',
+    value: function authenticate(user) {
+
+      return fetch('/api/authentication', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
     key: 'delete',
     value: function _delete(id) {
 
@@ -24402,9 +24417,7 @@ exports.loginUser = loginUser;
 exports.registerUser = registerUser;
 exports.updateUser = updateUser;
 
-var _api = require('../api');
-
-var _api2 = _interopRequireDefault(_api);
+var _models = require('../../dist/models');
 
 var _history = require('../history');
 
@@ -24412,23 +24425,20 @@ var _history2 = _interopRequireDefault(_history);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var User = _api2.default.User; // import config from '../config';
-// import {
-//   insertUser,
-//   authenticateUser
-// } from '../api';
-
-console.log('### User in actions/index', User);
-// let history;
-// if(typeof window !== 'undefined') {
-//   history = require('../')
-// }
-
 // const { tmdbApiKey } = config;
 
 // export const INCREMENT = 'INCREMENT';
 // export const DECREMENT = 'DECREMENT';
+// import config from '../config';
+// import {
+//   insertUser,
+//   authenticateUser
+// } from '../api';
 var LOGIN_USER = exports.LOGIN_USER = 'LOGIN_USER';
+// let history;
+// if(typeof window !== 'undefined') {
+//   history = require('../')
+// }
 var LOGIN_USER_SUCCESS = exports.LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 var LOGIN_USER_ERROR = exports.LOGIN_USER_ERROR = 'LOGIN_USER_ERROR';
 var LOGOUT_USER = exports.LOGOUT_USER = 'LOGOUT_USER';
@@ -24551,7 +24561,7 @@ function loginUser(user) {
   return function (dispatch) {
     console.log('loginUser', user);
     dispatch(requestLoginUser(user));
-    return _api2.default.call('authenticateUser', user).then(function (user) {
+    return _models.User.authenticate(user).then(function (user) {
       dispatch(loginUserSuccess(user));
       console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
       _history2.default.push('/profile');
@@ -24565,7 +24575,7 @@ function registerUser(user) {
   return function (dispatch) {
     console.log('registerUser', user);
     dispatch(requestRegisterUser(user));
-    return User.create(user).then(function (user) {
+    return _models.User.create(user).then(function (user) {
       return dispatch(registerUserSuccess(user));
     }).catch(function (err) {
       return dispatch(registerUserError(err));
@@ -24577,7 +24587,7 @@ function updateUser(user) {
   return function (dispatch) {
     console.log('updateUser', user);
     dispatch(requestUpdateUser(user));
-    return _api2.default.call('updateUser', user).then(function (user) {
+    return api.call('updateUser', user).then(function (user) {
       return dispatch(updateUserSuccess(user));
     }).catch(function (err) {
       return dispatch(updateUserError(err));
@@ -24621,7 +24631,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../api":109,"../history":123}],109:[function(require,module,exports){
+},{"../../dist/models":130,"../history":123}],109:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24935,6 +24945,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -24944,6 +24956,10 @@ var _react2 = _interopRequireDefault(_react);
 var _actions = require('../actions');
 
 var _reactRedux = require('react-redux');
+
+var _validator = require('../utils/validator');
+
+var _validator2 = _interopRequireDefault(_validator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24965,12 +24981,12 @@ var Login = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
 
     _this.state = {
-      // firstName: '',
-      // lastName: '',
-      email: '',
-      password: ''
-      // passwordConfirm: '',
-      // passwordsMatch: true
+      email: {
+        value: '', isValid: true, validErrMsg: ''
+      },
+      password: {
+        value: '', isValid: true, validErrMsg: ''
+      }
     };
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -24985,7 +25001,13 @@ var Login = function (_React$Component) {
           name = _event$target.name,
           value = _event$target.value;
 
-      var changedValues = _defineProperty({}, name, value);
+      var _validator$validate = _validator2.default.validate(name, value),
+          _validator$validate2 = _slicedToArray(_validator$validate, 2),
+          isValid = _validator$validate2[0],
+          validErrMsg = _validator$validate2[1];
+
+      var changedValues = _defineProperty({}, name, { value: value, isValid: isValid, validErrMsg: validErrMsg });
+      console.log('Validate', name, value);
       // if(name.startsWith('password')) {
       //   changedValues.passwordsMatch = this.checkPasswordsMatch(name, value);
       // }
@@ -25007,12 +25029,21 @@ var Login = function (_React$Component) {
       // if(! this.state.passwordsMatch) {
       //   return;
       // }
-      console.log(this.state);
-      this.props.loginUser(this.state);
+      var _state = this.state,
+          email = _state.email,
+          password = _state.password;
+
+      this.props.loginUser({
+        email: email.value, password: password.value
+      });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _state2 = this.state,
+          email = _state2.email,
+          password = _state2.password;
+
       return _react2.default.createElement(
         'div',
         { className: 'pure-u-1' },
@@ -25036,14 +25067,14 @@ var Login = function (_React$Component) {
               id: 'email',
               name: 'email',
               type: 'email',
-              className: 'form-control',
+              className: "form-control " + (email.isValid ? 'valid-input' : 'invalid-input'),
               placeholder: 'Email',
-              value: this.state.email,
+              value: email.value,
               onChange: this.handleChange }),
-            _react2.default.createElement(
+            email.isValid ? '' : _react2.default.createElement(
               'span',
-              { className: 'pure-form-message' },
-              'This is a required field.'
+              { className: 'invalid-text pure-form-message' },
+              email.validErrMsg
             ),
             _react2.default.createElement(
               'label',
@@ -25054,10 +25085,15 @@ var Login = function (_React$Component) {
               id: 'password',
               name: 'password',
               type: 'password',
-              className: 'form-control',
+              className: "form-control " + (password.isValid ? 'valid-input' : 'invalid-input'),
               placeholder: 'Password',
-              value: this.state.password,
+              value: password.value,
               onChange: this.handleChange }),
+            password.isValid ? '' : _react2.default.createElement(
+              'span',
+              { className: 'invalid-text pure-form-message' },
+              password.validErrMsg
+            ),
             _react2.default.createElement(
               'button',
               { type: 'submit', className: 'pure-button pure-button-primary' },
@@ -25088,7 +25124,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 
-},{"../actions":108,"react":89,"react-redux":56}],114:[function(require,module,exports){
+},{"../actions":108,"../utils/validator":128,"react":89,"react-redux":56}],114:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26562,6 +26598,170 @@ exports.default = function () {
   }
 };
 
-},{"../actions":108}]},{},[106])
+},{"../actions":108}],128:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Validator = function () {
+  function Validator() {
+    _classCallCheck(this, Validator);
+
+    this.messages = {
+      email: 'Not a valid email',
+      password: 'Password should be > 6 characters long and have lowercase AND uppercase letters, AND digits'
+    };
+  }
+
+  _createClass(Validator, [{
+    key: 'email',
+    value: function email(_email) {
+      return (/(.+)@(.+){2,}\.(.+){2,}/.test(_email)
+      );
+    }
+  }, {
+    key: 'password',
+    value: function password(pw) {
+      return pw.length >= 6 && /[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw);
+    }
+  }, {
+    key: 'validate',
+    value: function validate(name, value) {
+      if (!this[name]) {
+        throw new Error('Validator ' + name + ' does not exist!');
+      }
+      var isValid = this[name](value);
+      return isValid ? [true, undefined] : [false, this.messages[name]];
+    }
+  }]);
+
+  return Validator;
+}();
+
+exports.default = new Validator();
+
+},{}],129:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
+var User = function () {
+  function User() {
+    _classCallCheck(this, User);
+  }
+
+  _createClass(User, null, [{
+    key: 'findOne',
+    value: function findOne(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'findAll',
+    value: function findAll() {
+
+      return fetch('/api/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'create',
+    value: function create(user) {
+
+      return fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'authenticate',
+    value: function authenticate(user) {
+
+      return fetch('/api/authentication', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(user)
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
+    key: 'delete',
+    value: function _delete(id) {
+
+      return fetch('/api/users/' + id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        }
+      }).then(function (response) {
+        return response.json();
+      });
+    }
+  }]);
+
+  return User;
+}();
+
+exports.default = User;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],130:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.User = undefined;
+
+var _User = require('./User');
+
+var _User2 = _interopRequireDefault(_User);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.User = _User2.default;
+
+},{"./User":129}]},{},[106])
 
 //# sourceMappingURL=build.js.map
