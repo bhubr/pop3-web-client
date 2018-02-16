@@ -2,6 +2,7 @@ module.exports = {
   secret: 'your-secret',
   port: 3000,
   useHttps: false,
+  host: 'localhost:3000',
   db: {
     client: 'mysql',
     connection: {

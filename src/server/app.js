@@ -224,6 +224,7 @@ app.get('*', (req, res) => {
       res.redirect(status, context.url);
     } else {
       const protocol = config.useHttps ? 'https' : 'http';
+
       // we're good, send the response
       res.status(status).render('app.html.twig', { markup, state: stateJSON, protocol });
     }

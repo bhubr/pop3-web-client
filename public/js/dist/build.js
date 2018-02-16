@@ -33880,8 +33880,10 @@ var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var protocol = typeof window !== 'undefined' && window.__protocol ? window.__protocol : 'http';
-exports.default = (0, _socket2.default)(protocol + '://localhost:3000');
+// const protocol = typeof window !== 'undefined' && window.__protocol ? window.__protocol : 'http';
+var host = typeof window === 'undefined' ? 'http://localhost' : window.location.origin;
+
+exports.default = (0, _socket2.default)(host);
 
 },{"socket.io-client":130}],181:[function(require,module,exports){
 'use strict';
