@@ -7,7 +7,7 @@ class EmailItem extends React.Component {
 
   render() {
     const { acntId } = this.props;
-    const { from, uidl, subject, html, textAsHtml, body, senderName, senderEmail } = this.props.message;
+    const { uidl, subject, senderName, senderEmail } = this.props.message;
     // const content = html ? html : textAsHtml;
     return (
       <div className="email-item email-item-selected pure-g">
@@ -18,7 +18,6 @@ class EmailItem extends React.Component {
         <div className="pure-u-3-4">
           <h5 className="email-name"><a href={"mailto:" + senderEmail}>{ senderName }</a></h5>
           <h4 className="email-subject"><Link to={ `/inbox/${acntId}/${uidl}` }>{ subject }</Link></h4>
-          <p className="email-desc" dangerouslySetInnerHTML={{ __html: body.substr(0, 200) + ' [...]' }}></p>
         </div>
       </div>
     );

@@ -43,6 +43,7 @@ export default class Account {
     this.parseEmail = this.parseEmail.bind(this);
 
     this.pop3 = pop3SessionStore.get(this.id);
+    this.socketIOHandler = require('../socketIOHandler')();
   }
 
   getPop3Credentials() {
@@ -151,12 +152,14 @@ export default class Account {
   }
 
   fetchRemoteMessages(start = 0, num = 0) {
+
     return chain(this.listRemoteMessages())
     .then(passLog('returned by listRemoteMessages'))
     .then(idUidls => (
       num ? idUidls.slice(start, num) : idUidls
     ))
     // .then(passLog('after optional slice'))
+    .then(this.socketIOHandler.onMessageListSuccess(this.userId))
     .then(this.fetchMessages)
     // .then(passLog('fetchMessages returned'))
     // .set('messages')
@@ -215,27 +218,33 @@ export default class Account {
     }
   }
 
+  extractBaseProps(message) {
+    const { uidl, subject, senderName, senderEmail } = message;
+    return { uidl, subject, senderName, senderEmail };
+  }
+
   fetchMessage(carry, msgIdUidl) {
-    const socketIOHandler = require('../socketIOHandler')();
-    // console.log('##### fetchMessage', socketIOHandler);
+    console.log('##### fetchMessage', msgIdUidl);
 
     const [msgId, uidl] = msgIdUidl;
     return Message.findOneByUidl(uidl)
     .then(message => {
-      if(message) {
-        return carry.concat([message]);
-      }
+
+      // BYPASS DB
+
+      // if(message) {
+      //   return carry.concat([message]);
+      // }
       return this.pop3.RETR(msgId)
       .then(this.readEmailStream)
       .then(this.parseEmail(uidl))
-      .then(props => {
-        console.log('### emitting to socket', this.userId, props);
-        socketIOHandler.onMessageFetchSuccess(this.userId, props);
-        return props;
-      })
       .then(props => Message.create(props))
+      .then(this.extractBaseProps)
+      .then(this.socketIOHandler.onMessageFetchSuccess(this.userId))
       // .then(passLog('RETRIEVED MESSAGE'))
-      .then(message => carry.concat([message]));
+      .then(message => carry.concat([message]))
+      .catch(this.socketIOHandler.onMessageFetchError(this.userId))
+      .then(() => (carry));
     });
   }
 

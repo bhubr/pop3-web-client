@@ -31142,8 +31142,23 @@ var UPDATE_USER_SUCCESS = exports.UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
 var socket = (0, _socket2.default)('http://localhost:3000');
+
+var numMessages = void 0;
+var msgFetched = 0;
+var msgErrored = 0;
+
+socket.on('message:list:success', function (idUidls) {
+  console.log('LIST MESSAGES SUCCESS', idUidls);
+  numMessages = idUidls.length;
+});
+
 socket.on('message:fetch:success', function (data) {
-  console.log(data);
+  msgFetched++;
+  console.log('FETCH MESSAGE SUCCESS ' + msgFetched + '/' + numMessages, data);
+});
+
+socket.on('message:fetch:error', function (errMsg) {
+  console.log('FETCH MESSAGE ERROR ' + msgErrored, errMsg);
 });
 
 // export function increment() {
@@ -32415,12 +32430,8 @@ var EmailItem = function (_React$Component) {
     value: function render() {
       var acntId = this.props.acntId;
       var _props$message = this.props.message,
-          from = _props$message.from,
           uidl = _props$message.uidl,
           subject = _props$message.subject,
-          html = _props$message.html,
-          textAsHtml = _props$message.textAsHtml,
-          body = _props$message.body,
           senderName = _props$message.senderName,
           senderEmail = _props$message.senderEmail;
       // const content = html ? html : textAsHtml;
@@ -32453,8 +32464,7 @@ var EmailItem = function (_React$Component) {
               { to: '/inbox/' + acntId + '/' + uidl },
               subject
             )
-          ),
-          _react2.default.createElement('p', { className: 'email-desc', dangerouslySetInnerHTML: { __html: body.substr(0, 200) + ' [...]' } })
+          )
         )
       );
     }

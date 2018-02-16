@@ -46,9 +46,23 @@ export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
 import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
-socket.on('message:fetch:success', function (data) {
-  console.log(data);
 
+let numMessages;
+let msgFetched = 0;
+let msgErrored = 0;
+
+socket.on('message:list:success', function (idUidls) {
+  console.log('LIST MESSAGES SUCCESS', idUidls);
+  numMessages = idUidls.length;
+});
+
+socket.on('message:fetch:success', function (data) {
+  msgFetched++;
+  console.log(`FETCH MESSAGE SUCCESS ${msgFetched}/${numMessages}`, data);
+});
+
+socket.on('message:fetch:error', function (errMsg) {
+  console.log(`FETCH MESSAGE ERROR ${msgErrored}`, errMsg);
 });
 
 

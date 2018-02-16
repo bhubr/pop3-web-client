@@ -6,6 +6,7 @@ class SocketIOHandler {
     this.onAuthSuccess = this.onAuthSuccess.bind(this);
     this.onMessageFetchSuccess = this.onMessageFetchSuccess.bind(this);
     this.onMessageFetchError = this.onMessageFetchError.bind(this);
+    this.onMessageListSuccess = this.onMessageListSuccess.bind(this);
 
 		this.io.on('connection', socket => {
 		  socket.emit('news', { hello: 'world' });
@@ -13,14 +14,31 @@ class SocketIOHandler {
 		});
 	}
 
-  onMessageFetchSuccess(userId, message) {
-    const { socket } = this.users[userId];
-    console.log('## FETCH SUCCESS, EMIT TO CLIENT', message);
-    socket.emit('message:fetch:success', message);
+  onMessageListSuccess(userId) {
+    return idUidls => {
+      const { socket } = this.users[userId];
+      console.log('## LIST SUCCESS, EMIT TO CLIENT', idUidls);
+      socket.emit('message:list:success', idUidls);
+      return idUidls;
+    }
   }
 
-  onMessageFetchError(error) {
+  onMessageFetchSuccess(userId) {
+    return message => {
+      const { socket } = this.users[userId];
+      console.log('## FETCH SUCCESS, EMIT TO CLIENT', message);
+      socket.emit('message:fetch:success', message);
+      return message;
+    }
+  }
 
+  onMessageFetchError(userId) {
+    return error => {
+      const { socket } = this.users[userId];
+      console.error('## FETCH ERROR, EMIT TO CLIENT', error);
+      socket.emit('message:fetch:error', error.message);
+      return true;
+    }
   }
 
   onAuthSuccess(socket) {
