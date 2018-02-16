@@ -229,6 +229,6 @@ app.get('*', (req, res) => {
   });
 });
 
-const server = app.listen(3000);
+const server = app.listen(config.port);
 const io = require('socket.io').listen(server);
 require('./socketIOHandler')(io);

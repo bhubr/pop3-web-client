@@ -1,3 +1,13 @@
 module.exports = {
-  secret: 'your-secret'
+  secret: 'your-secret',
+  port: 3000,
+  db: {
+    client: 'mysql',
+    connection: {
+      user : 'mysqluser',
+      host: 'localhost',
+      password : 'mysqlpass',
+      database : 'mysqldb'
+    }
+  }
 };
