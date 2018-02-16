@@ -31058,10 +31058,15 @@ exports.default = User;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.FETCH_MESSAGES_ERROR = exports.FETCH_MESSAGES_SUCCESS = exports.FETCH_MESSAGES = exports.FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS = exports.CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.RECV_MESSAGE_SUCCESS = exports.FETCH_MESSAGES_ERROR = exports.FETCH_MESSAGES_SUCCESS = exports.FETCH_MESSAGES = exports.FETCH_SINGLE_MESSAGE_ERROR = exports.FETCH_SINGLE_MESSAGE_SUCCESS = exports.FETCH_SINGLE_MESSAGE = exports.FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS = exports.CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.requestFetchSingleMessage = requestFetchSingleMessage;
+exports.fetchSingleMessageSuccess = fetchSingleMessageSuccess;
+exports.fetchSingleMessageError = fetchSingleMessageError;
+exports.fetchSingleMessage = fetchSingleMessage;
 exports.requestFetchMessages = requestFetchMessages;
 exports.fetchMessagesSuccess = fetchMessagesSuccess;
 exports.fetchMessagesError = fetchMessagesError;
+exports.messageReceived = messageReceived;
 exports.fetchAccountMessages = fetchAccountMessages;
 exports.requestFetchAccounts = requestFetchAccounts;
 exports.fetchAccountsSuccess = fetchAccountsSuccess;
@@ -31091,7 +31096,7 @@ var _history = require('../history');
 
 var _history2 = _interopRequireDefault(_history);
 
-var _socket = require('socket.io-client');
+var _socket = require('../socket');
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -31133,33 +31138,19 @@ var FETCH_ACCOUNTS = exports.FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
 var FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
 var FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
 
+var FETCH_SINGLE_MESSAGE = exports.FETCH_SINGLE_MESSAGE = 'FETCH_SINGLE_MESSAGE';
+var FETCH_SINGLE_MESSAGE_SUCCESS = exports.FETCH_SINGLE_MESSAGE_SUCCESS = 'FETCH_SINGLE_MESSAGE_SUCCESS';
+var FETCH_SINGLE_MESSAGE_ERROR = exports.FETCH_SINGLE_MESSAGE_ERROR = 'FETCH_SINGLE_MESSAGE_ERROR';
+
 var FETCH_MESSAGES = exports.FETCH_MESSAGES = 'FETCH_MESSAGES';
 var FETCH_MESSAGES_SUCCESS = exports.FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
 var FETCH_MESSAGES_ERROR = exports.FETCH_MESSAGES_ERROR = 'FETCH_MESSAGES_ERROR';
 
+var RECV_MESSAGE_SUCCESS = exports.RECV_MESSAGE_SUCCESS = 'RECV_MESSAGE_SUCCESS';
+
 var UPDATE_USER = exports.UPDATE_USER = 'UPDATE_USER';
 var UPDATE_USER_SUCCESS = exports.UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
-
-var socket = (0, _socket2.default)('http://localhost:3000');
-
-var numMessages = void 0;
-var msgFetched = 0;
-var msgErrored = 0;
-
-socket.on('message:list:success', function (idUidls) {
-  console.log('LIST MESSAGES SUCCESS', idUidls);
-  numMessages = idUidls.length;
-});
-
-socket.on('message:fetch:success', function (data) {
-  msgFetched++;
-  console.log('FETCH MESSAGE SUCCESS ' + msgFetched + '/' + numMessages, data);
-});
-
-socket.on('message:fetch:error', function (errMsg) {
-  console.log('FETCH MESSAGE ERROR ' + msgErrored, errMsg);
-});
 
 // export function increment() {
 //   return { type: INCREMENT };
@@ -31192,6 +31183,46 @@ socket.on('message:fetch:error', function (errMsg) {
 // }
 
 
+// ------------- FETCH SINGLE MESSAGE ------------
+function requestFetchSingleMessage(accountId, uidl) {
+  return {
+    type: FETCH_SINGLE_MESSAGE,
+    accountId: accountId,
+    uidl: uidl
+  };
+}
+
+function fetchSingleMessageSuccess(accountId, message) {
+  console.log('fetchSingleMessageSuccess', message);
+  return {
+    type: FETCH_SINGLE_MESSAGE_SUCCESS,
+    accountId: accountId,
+    message: message
+  };
+}
+
+function fetchSingleMessageError(error) {
+  console.log('fetchSingleMessageError', error);
+  return {
+    type: FETCH_SINGLE_MESSAGE_ERROR,
+    error: error
+  };
+}
+
+function fetchSingleMessage(accountId, uidl) {
+  return function (dispatch) {
+    console.log('fetchSingleMessage', uidl);
+    dispatch(requestFetchSingleMessage(accountId, uidl));
+    return _models.Message.findByUidl(accountId, uidl).then(function (message) {
+      dispatch(fetchSingleMessageSuccess(accountId, message));
+      console.log('DISPATCHED fetchSingleMessageSuccess');
+      // history.push('/accounts');
+    }).catch(function (err) {
+      return dispatch(fetchSingleMessageError(err));
+    });
+  };
+}
+
 // ------------- FETCH MESSAGES ------------
 function requestFetchMessages(accountId) {
   return {
@@ -31214,6 +31245,14 @@ function fetchMessagesError(error) {
   return {
     type: FETCH_MESSAGES_ERROR,
     error: error
+  };
+}
+
+function messageReceived(accountId, message) {
+  return {
+    type: RECV_MESSAGE_SUCCESS,
+    accountId: accountId,
+    message: message
   };
 }
 
@@ -31390,7 +31429,7 @@ function loginUser(user) {
     dispatch(requestLoginUser(user));
     return _models.User.authenticate(user).then(function (user) {
       dispatch(loginUserSuccess(user));
-      socket.emit('auth:success', user);
+      _socket2.default.emit('auth:success', user);
       console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
       _history2.default.push('/accounts');
     }).catch(function (err) {
@@ -31471,7 +31510,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../../dist/models":185,"../history":174,"socket.io-client":130}],155:[function(require,module,exports){
+},{"../../dist/models":186,"../history":174,"../socket":180}],155:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31932,7 +31971,7 @@ var GenericValidatedForm = function (_React$Component) {
 
 exports.default = GenericValidatedForm;
 
-},{"../utils/validator":180,"react":119}],161:[function(require,module,exports){
+},{"../utils/validator":181,"react":119}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32031,6 +32070,10 @@ var _reactRedux = require('react-redux');
 
 var _actions = require('../actions');
 
+var _socket = require('../socket');
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32038,6 +32081,19 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var numMessages = void 0;
+var msgFetched = 0;
+var msgErrored = 0;
+
+_socket2.default.on('message:list:success', function (idUidls) {
+  console.log('LIST MESSAGES SUCCESS', idUidls);
+  numMessages = idUidls.length;
+});
+
+_socket2.default.on('message:fetch:error', function (errMsg) {
+  console.log('FETCH MESSAGE ERROR ' + msgErrored, errMsg);
+});
 
 var Inbox = function (_React$Component) {
   _inherits(Inbox, _React$Component);
@@ -32059,7 +32115,15 @@ var Inbox = function (_React$Component) {
   _createClass(Inbox, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.props.fetchAccountMessages(this.acntId, this.props.userPass);
+
+      _socket2.default.on('message:fetch:success', function (message) {
+        msgFetched++;
+        console.log('FETCH MESSAGE SUCCESS ' + msgFetched + '/' + numMessages, message);
+        _this2.props.messageReceived(_this2.acntId, message);
+      });
     }
   }, {
     key: 'render',
@@ -32068,13 +32132,27 @@ var Inbox = function (_React$Component) {
       var uidl = this.props.match.params.uidl;
 
       var messages = msgPerAccount[this.acntId] ? msgPerAccount[this.acntId] : [];
-      var emailContentBody = uidl ? _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: messages.find(function (m) {
-            return m.uidl === uidl;
-          }).body } }) : _react2.default.createElement(
-        'p',
-        null,
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit'
-      );
+      var message = void 0;
+      var emailContentBody = void 0;
+      if (uidl && (message = messages.find(function (m) {
+        return m.uidl === uidl;
+      }))) {} else {
+        message = {
+          subject: 'N/A',
+          senderName: 'N/A',
+          senderEmail: 'nobody@example.com',
+          body: 'Select a message first!'
+        };
+      }
+
+      var _message = message,
+          subject = _message.subject,
+          senderName = _message.senderName,
+          senderEmail = _message.senderEmail,
+          body = _message.body;
+
+      var senderLink = "mailto:" + senderEmail;
+
       return _react2.default.createElement(
         'div',
         null,
@@ -32090,11 +32168,15 @@ var Inbox = function (_React$Component) {
               { className: 'email-content-header pure-g' },
               _react2.default.createElement(
                 'div',
-                { className: 'pure-u-1-2' },
+                { className: 'pure-u-1' },
                 _react2.default.createElement(
                   'h1',
                   { className: 'email-content-title' },
-                  'Hello from Toronto'
+                  subject || _react2.default.createElement(
+                    'span',
+                    { style: { color: '#b44' } },
+                    '(vide)'
+                  )
                 ),
                 _react2.default.createElement(
                   'p',
@@ -32102,45 +32184,48 @@ var Inbox = function (_React$Component) {
                   'From ',
                   _react2.default.createElement(
                     'a',
-                    null,
-                    'Tilo Mitra'
+                    { href: senderLink },
+                    senderName || senderEmail
                   ),
                   ' at ',
                   _react2.default.createElement(
                     'span',
                     null,
-                    '3:56pm, April 3, 2012'
+                    _react2.default.createElement(
+                      'del',
+                      null,
+                      '3:56pm, April 3, 2012'
+                    )
                   )
-                )
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'email-content-controls pure-u-1-2' },
-                _react2.default.createElement(
-                  'button',
-                  { className: 'secondary-button pure-button' },
-                  'Reply'
-                ),
-                _react2.default.createElement(
-                  'button',
-                  { className: 'secondary-button pure-button' },
-                  'Forward'
-                ),
-                _react2.default.createElement(
-                  'button',
-                  { className: 'secondary-button pure-button' },
-                  'Move to'
                 )
               )
             ),
             _react2.default.createElement(
               'div',
               { className: 'email-content-body' },
-              emailContentBody
+              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: message.body } })
             )
           )
         )
       );
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      var msgPerAccount = this.props.msgPerAccount;
+      var params = this.props.match.params;
+
+      var nextParams = nextProps.match.params;
+      console.log('Inbox.componentWillReceiveProps', nextProps, this.props, 'current/next uidl', params.uidl, nextParams.uidl, msgPerAccount[this.acntId]);
+      if (params.uidl !== nextParams.uidl && msgPerAccount[this.acntId]) {
+        var msg = msgPerAccount[this.acntId].find(function (m) {
+          return m.uidl === nextParams.uidl;
+        });
+        console.log('Message', msg);
+        if (!msg.body) {
+          this.props.fetchSingleMessage(this.acntId, nextParams.uidl);
+        }
+      }
     }
   }]);
 
@@ -32155,10 +32240,12 @@ exports.default = (0, _reactRedux.connect)(function (state) {
     userPass: state.session.upw
   };
 }, {
-  fetchAccountMessages: _actions.fetchAccountMessages
+  fetchAccountMessages: _actions.fetchAccountMessages,
+  fetchSingleMessage: _actions.fetchSingleMessage,
+  messageReceived: _actions.messageReceived
 })(Inbox);
 
-},{"../actions":154,"../api":155,"./MailList":165,"react":119,"react-redux":86}],163:[function(require,module,exports){
+},{"../actions":154,"../api":155,"../socket":180,"./MailList":165,"react":119,"react-redux":86}],163:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32393,7 +32480,7 @@ var LoginRegisterForm = function (_React$Component) {
 
 exports.default = LoginRegisterForm;
 
-},{"../utils/validator":180,"react":119}],165:[function(require,module,exports){
+},{"../utils/validator":181,"react":119}],165:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32433,17 +32520,13 @@ var EmailItem = function (_React$Component) {
           uidl = _props$message.uidl,
           subject = _props$message.subject,
           senderName = _props$message.senderName,
-          senderEmail = _props$message.senderEmail;
+          senderEmail = _props$message.senderEmail,
+          body = _props$message.body;
       // const content = html ? html : textAsHtml;
 
       return _react2.default.createElement(
         'div',
         { className: 'email-item email-item-selected pure-g' },
-        _react2.default.createElement(
-          'div',
-          { className: 'pure-u' },
-          _react2.default.createElement('img', { width: '64', height: '64', alt: 'Tilo Mitra\'s avatar', className: 'email-avatar', src: '/img/common/tilo-avatar.png' })
-        ),
         _react2.default.createElement(
           'div',
           { className: 'pure-u-3-4' },
@@ -32494,91 +32577,7 @@ var MailList = function (_React$Component2) {
         { id: 'list', className: 'pure-u-1' },
         messages.map(function (m, i) {
           return _react2.default.createElement(EmailItem, { key: i, message: m, acntId: acntId });
-        }),
-        _react2.default.createElement(
-          'div',
-          { className: 'email-item email-item-selected pure-g' },
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u' },
-            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Tilo Mitra\'s avatar', className: 'email-avatar', src: '/img/common/tilo-avatar.png' })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-3-4' },
-            _react2.default.createElement(
-              'h5',
-              { className: 'email-name' },
-              'Tilo Mitra'
-            ),
-            _react2.default.createElement(
-              'h4',
-              { className: 'email-subject' },
-              'Hello from Toronto'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'email-desc' },
-              'Hey, I just wanted to check in with you from Toronto. I got here earlier today.'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'email-item email-item-unread pure-g' },
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u' },
-            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Eric Ferraiuolo\'s avatar', className: 'email-avatar', src: '/img/common/ericf-avatar.png' })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-3-4' },
-            _react2.default.createElement(
-              'h5',
-              { className: 'email-name' },
-              'Eric Ferraiuolo'
-            ),
-            _react2.default.createElement(
-              'h4',
-              { className: 'email-subject' },
-              'Re: Pull Requests'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'email-desc' },
-              'Hey, I had some feedback for pull request #51. We should center the menu so it looks better on mobile.'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'email-item pure-g' },
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u' },
-            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Yahoo! News\' avatar', className: 'email-avatar', src: '/img/common/ynews-avatar.png' })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-3-4' },
-            _react2.default.createElement(
-              'h5',
-              { className: 'email-name' },
-              'Yahoo! News'
-            ),
-            _react2.default.createElement(
-              'h4',
-              { className: 'email-subject' },
-              'Summary for April 3rd, 2012'
-            ),
-            _react2.default.createElement(
-              'p',
-              { className: 'email-desc' },
-              'We found 10 news articles that you may like.'
-            )
-          )
-        )
+        })
       );
     }
   }]);
@@ -33679,6 +33678,8 @@ var _actions = require('../actions');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var initialState = {
   isFetching: false,
   fetchingError: '',
@@ -33690,21 +33691,56 @@ exports.default = function () {
   var action = arguments[1];
 
   console.log('Accounts reducer', state, action);
+
+  var perAccount = state.perAccount;
+  var accountId = action.accountId;
+
+
   switch (action.type) {
+
+    // Fetch messages started
     case _actions.FETCH_MESSAGES:
       return Object.assign(_extends({}, state), {
         isFetching: true
       });
-    case _actions.FETCH_MESSAGES_SUCCESS:
-      var perAccount = state.perAccount;
-      var accountId = action.accountId,
-          messages = action.messages;
 
-      return Object.assign(_extends({}, state), {
-        isFetching: false,
-        fetchingError: '',
-        perAccount: Object.assign(_extends({}, perAccount), _defineProperty({}, accountId, messages))
+    // Fetch messages succeeded
+    case _actions.FETCH_MESSAGES_SUCCESS:
+      var messages = action.messages;
+
+      // NOW ONLY SINGLE RECEIVES matter
+
+      return state;
+    // return Object.assign({ ...state }, {
+    //   isFetching: false,
+    //   fetchingError: '',
+    //   perAccount: Object.assign({ ...perAccount }, { [accountId]: messages })
+    // });
+
+    // Single message received
+    case _actions.FETCH_SINGLE_MESSAGE_SUCCESS:
+    case _actions.RECV_MESSAGE_SUCCESS:
+      console.log('RECV_MESSAGE_SUCCESS reducer', action);
+      var message = action.message;
+
+      var acntMessages = perAccount[accountId];
+      if (!acntMessages) {
+        acntMessages = [];
+      }
+      var updatedAcntMessages = [].concat(_toConsumableArray(acntMessages));
+      var foundMessage = updatedAcntMessages.find(function (m) {
+        return m.uidl === message.uidl;
       });
+      if (foundMessage) {
+        var msgIndex = updatedAcntMessages.indexOf(foundMessage);
+        updatedAcntMessages[msgIndex] = message;
+      } else {
+        updatedAcntMessages.push(message);
+      }
+      return Object.assign(_extends({}, state), {
+        perAccount: Object.assign(_extends({}, perAccount), _defineProperty({}, accountId, updatedAcntMessages))
+      });
+
     default:
       return state;
   }
@@ -33847,6 +33883,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _socket = require('socket.io-client');
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _socket2.default)('http://localhost:3000');
+
+},{"socket.io-client":130}],181:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -33913,9 +33964,9 @@ var Validator = function () {
 
 exports.default = new Validator();
 
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 arguments[4][152][0].apply(exports,arguments)
-},{"dup":152}],182:[function(require,module,exports){
+},{"dup":152}],183:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -33959,7 +34010,7 @@ exports.default = Account;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":181}],183:[function(require,module,exports){
+},{"./API":182}],184:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -33994,6 +34045,13 @@ var Message = function () {
     value: function findAll(accountId) {
       return _API2.default.get('/api/messages/?accountId=' + accountId);
     }
+  }, {
+    key: 'findByUidl',
+    value: function findByUidl(accountId, uidl) {
+      return _API2.default.get('/api/messages/?accountId=' + accountId + '&uidl=' + uidl).then(function (messages) {
+        return messages[0];
+      });
+    }
   }]);
 
   return Message;
@@ -34003,7 +34061,7 @@ exports.default = Message;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":181}],184:[function(require,module,exports){
+},{"./API":182}],185:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -34108,7 +34166,7 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":181}],185:[function(require,module,exports){
+},{"./API":182}],186:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -34134,6 +34192,6 @@ exports.User = _User2.default;
 exports.Account = _Account2.default;
 exports.Message = _Message2.default;
 
-},{"./Account":182,"./Message":183,"./User":184}]},{},[151])
+},{"./Account":183,"./Message":184,"./User":185}]},{},[151])
 
 //# sourceMappingURL=build.js.map

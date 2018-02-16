@@ -59,9 +59,18 @@ export default class Message {
     this.body = props.body;
   }
 
-  static findAll(accountId) {
-    return pool
-      .query(`select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where accountId = ${accountId}`)
+  static findAll(accountId, optHash) {
+     optHash = optHash || {};
+     var whereHash = Object.assign({ accountId }, optHash);
+     const baseQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages`;
+     let whereStrings = [];
+     for(let k in whereHash) {
+       whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
+     }
+     const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+     console.log('Account.findAll', baseQuery + whereCondition);
+     return pool
+       .query(baseQuery + whereCondition)
       .then(messages => messages.map(extractMessageBody));
   }
 

@@ -36,34 +36,21 @@ export const FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
 export const FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
 export const FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
 
+export const FETCH_SINGLE_MESSAGE = 'FETCH_SINGLE_MESSAGE';
+export const FETCH_SINGLE_MESSAGE_SUCCESS = 'FETCH_SINGLE_MESSAGE_SUCCESS';
+export const FETCH_SINGLE_MESSAGE_ERROR = 'FETCH_SINGLE_MESSAGE_ERROR';
+
 export const FETCH_MESSAGES = 'FETCH_MESSAGES';
 export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_ERROR = 'FETCH_MESSAGES_ERROR';
+
+export const RECV_MESSAGE_SUCCESS = 'RECV_MESSAGE_SUCCESS';
 
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
-import io from 'socket.io-client';
-const socket = io('http://localhost:3000');
-
-let numMessages;
-let msgFetched = 0;
-let msgErrored = 0;
-
-socket.on('message:list:success', function (idUidls) {
-  console.log('LIST MESSAGES SUCCESS', idUidls);
-  numMessages = idUidls.length;
-});
-
-socket.on('message:fetch:success', function (data) {
-  msgFetched++;
-  console.log(`FETCH MESSAGE SUCCESS ${msgFetched}/${numMessages}`, data);
-});
-
-socket.on('message:fetch:error', function (errMsg) {
-  console.log(`FETCH MESSAGE ERROR ${msgErrored}`, errMsg);
-});
+import socket from '../socket';
 
 
 // export function increment() {
@@ -98,6 +85,45 @@ socket.on('message:fetch:error', function (errMsg) {
 
 
 
+// ------------- FETCH SINGLE MESSAGE ------------
+export function requestFetchSingleMessage(accountId, uidl) {
+  return {
+    type: FETCH_SINGLE_MESSAGE,
+    accountId,
+    uidl
+  };
+}
+
+export function fetchSingleMessageSuccess(accountId, message) {
+  console.log('fetchSingleMessageSuccess', message);
+  return {
+    type: FETCH_SINGLE_MESSAGE_SUCCESS,
+    accountId,
+    message
+  };
+}
+
+export function fetchSingleMessageError(error) {
+  console.log('fetchSingleMessageError', error);
+  return {
+    type: FETCH_SINGLE_MESSAGE_ERROR,
+    error
+  };
+}
+
+export function fetchSingleMessage(accountId, uidl)  {
+  return dispatch => {
+    console.log('fetchSingleMessage', uidl);
+    dispatch(requestFetchSingleMessage(accountId, uidl));
+    return Message.findByUidl(accountId, uidl)
+      .then(message => {
+        dispatch(fetchSingleMessageSuccess(accountId, message));
+        console.log('DISPATCHED fetchSingleMessageSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchSingleMessageError(err)));
+  };
+}
 
 // ------------- FETCH MESSAGES ------------
 export function requestFetchMessages(accountId) {
@@ -122,6 +148,14 @@ export function fetchMessagesError(error) {
     type: FETCH_MESSAGES_ERROR,
     error
   };
+}
+
+export function messageReceived(accountId, message) {
+  return {
+    type: RECV_MESSAGE_SUCCESS,
+    accountId,
+    message
+  }
 }
 
 export function fetchAccountMessages(accountId, userPass)  {

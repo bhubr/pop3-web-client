@@ -7,13 +7,13 @@ class EmailItem extends React.Component {
 
   render() {
     const { acntId } = this.props;
-    const { uidl, subject, senderName, senderEmail } = this.props.message;
+    const { uidl, subject, senderName, senderEmail, body } = this.props.message;
     // const content = html ? html : textAsHtml;
     return (
       <div className="email-item email-item-selected pure-g">
-        <div className="pure-u">
+        {/*<div className="pure-u">
           <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
-        </div>
+        </div>*/}
 
         <div className="pure-u-3-4">
           <h5 className="email-name"><a href={"mailto:" + senderEmail}>{ senderName }</a></h5>
@@ -33,6 +33,7 @@ export default class MailList extends React.Component {
 
         {messages.map((m, i) => <EmailItem key={i} message={m} acntId={acntId} />)}
 
+      {/*
         <div className="email-item email-item-selected pure-g">
           <div className="pure-u">
             <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
@@ -74,6 +75,7 @@ export default class MailList extends React.Component {
             </p>
           </div>
         </div>
+      */}
       </div>
     );
   }

@@ -11,4 +11,9 @@ export default class Message {
   static findAll(accountId) {
     return api.get('/api/messages/?accountId=' + accountId);
   }
+
+  static findByUidl(accountId, uidl) {
+    return api.get(`/api/messages/?accountId=${accountId}&uidl=${uidl}`)
+    .then(messages => (messages[0]));
+  }
 }

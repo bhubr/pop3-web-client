@@ -125,7 +125,7 @@ export default class Account {
   }
 
   openPop3Session() {
-    console.log('openPop3Session', this.getPop3Credentials());
+    console.log('\n\n\n#### openPop3Session', this.getPop3Credentials());
     this.pop3 = new Pop3Command(this.getPop3Credentials());
     pop3SessionStore.set(this.id, this.pop3);
   }
@@ -232,20 +232,25 @@ export default class Account {
 
       // BYPASS DB
 
-      // if(message) {
-      //   return carry.concat([message]);
-      // }
+      if(message) {
+        return message;
+      }
       return this.pop3.RETR(msgId)
+      .then(passLog('\n\nfetchMessage #1 stream'))
       .then(this.readEmailStream)
       .then(this.parseEmail(uidl))
+      .then(passLog('\n\nfetchMessage #2 parsed'))
       .then(props => Message.create(props))
-      .then(this.extractBaseProps)
-      .then(this.socketIOHandler.onMessageFetchSuccess(this.userId))
-      // .then(passLog('RETRIEVED MESSAGE'))
-      .then(message => carry.concat([message]))
-      .catch(this.socketIOHandler.onMessageFetchError(this.userId))
-      .then(() => (carry));
-    });
+      // .catch(this.socketIOHandler.onMessageFetchError(this.userId)
+        // .then(() => (carry))
+      .catch(err => {
+        console.error(err);
+        return carry;
+      });
+    })
+    .then(this.extractBaseProps)
+    .then(this.socketIOHandler.onMessageFetchSuccess(this.userId))
+    .then(message => carry.concat([message]));
   }
 
 

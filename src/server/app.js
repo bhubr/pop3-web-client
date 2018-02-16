@@ -123,7 +123,9 @@ app.get('/api/accounts', (req, res) => {
 
 
 app.get('/api/messages', (req, res) => {
-  Message.findAll(req.query.accountId)
+  const { accountId } = req.query;
+  delete req.query.accountId;
+  Message.findAll(accountId, req.query)
   .then(messages => res.json(messages))
   .catch(err => res.status(400).json({
     error: err.message
