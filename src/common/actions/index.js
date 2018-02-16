@@ -44,6 +44,14 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
+import io from 'socket.io-client';
+const socket = io('http://localhost:3000');
+socket.on('message:fetch:success', function (data) {
+  console.log(data);
+
+});
+
+
 // export function increment() {
 //   return { type: INCREMENT };
 // }
@@ -106,8 +114,8 @@ export function fetchAccountMessages(accountId, userPass)  {
   return dispatch => {
     console.log('fetchAccountMessages', accountId);
     dispatch(requestFetchMessages(accountId));
-    // return Message.openInbox(accountId, userPass)
-    return Message.findAll(accountId)
+    return Message.openInbox(accountId, userPass)
+    // return Message.findAll(accountId)
       .then(messages => {
         dispatch(fetchMessagesSuccess(accountId, messages));
         console.log('DISPATCHED fetchMessagesSuccess');
@@ -276,6 +284,7 @@ export function loginUser(user)  {
     return User.authenticate(user)
       .then(user => {
         dispatch(loginUserSuccess(user));
+        socket.emit('auth:success', user);
         console.log('DISPATCHED LOGIN SUCCESS', history);
         history.push('/accounts');
       })

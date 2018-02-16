@@ -17,7 +17,7 @@ function createEmail(index, toName, toAddress) {
     publisher.publish("mailqueue", JSON.stringify(email));
     setTimeout(() => {
       resolve(true);
-    }, 1000);
+    }, 200);
   });
 }
 

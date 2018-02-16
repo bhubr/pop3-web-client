@@ -17,6 +17,8 @@ import serverAPI from './serverAPI';
 import User from './models/user';
 import Account from './models/account';
 import Message from './models/message';
+
+
 const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
 const config = require('../' + configFile);
 
@@ -225,4 +227,6 @@ app.get('*', (req, res) => {
   });
 });
 
-app.listen(3000);
+const server = app.listen(3000);
+const io = require('socket.io').listen(server);
+require('./socketIOHandler')(io);

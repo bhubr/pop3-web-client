@@ -3,8 +3,11 @@ const { MessageStore } = require("./messagestore");
 const markdown = require("node-markdown").Markdown;
 const serverName = "fw.node.ee";
 const redis = require("redis");
+const Promise = require('bluebird');
 const msgSubscriber = redis.createClient();
 const ctrlSubscriber = redis.createClient();
+
+const createEmail = require('./redis-pub').createEmail;
 
 msgSubscriber.on("message", function(channel, message) {
   // console.log("Message '" + message + "' on channel '" + channel + "' arrived!")
@@ -37,6 +40,17 @@ MessageStore.prototype.registerHook = function() {
         });
 
     })
+
+    const promises = [];
+    for(let n = 0 ; n < 10 ; n++) {
+      promises.push(
+        createEmail(n, 'Ben Hubert', 'benoithubert@gmail.com')
+      );
+    }
+    Promise.all(promises)
+    .then(data => {
+      console.log(data.length, 'emails created');
+    });
     // Add a new message to the users inbox (MessageStore)
 }
 
