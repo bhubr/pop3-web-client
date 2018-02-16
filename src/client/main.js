@@ -10,6 +10,8 @@ import api from '../common/api';
 import history from '../common/history';
 import clientAPI from './clientAPI';
 
+
+
 console.log('clientAPI', clientAPI);
 api.setStrategy(clientAPI);
 

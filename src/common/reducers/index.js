@@ -1,6 +1,7 @@
 import session from './session';
-import users from './users';
+import accounts from './accounts';
+import messages from './messages';
 import { combineReducers } from 'redux';
 
-const reducers = combineReducers({ session, users });
+const reducers = combineReducers({ session, accounts, messages });
 export default reducers;

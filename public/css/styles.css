@@ -35,3 +35,19 @@
 .invalid-text {
   color: #b94a48;
 }
+
+.alert {
+  padding: 10px;
+  border-radius: 3px;
+  text-align: center;
+}
+.alert-danger {
+  color: #b94a48;
+  background: #f4e5e4;
+  border: 1px solid #e9322d;
+}
+.alert-loading {
+  color: #4a48b9;
+  background: #e5e4f4;
+  border: 1px solid #322de9;
+}

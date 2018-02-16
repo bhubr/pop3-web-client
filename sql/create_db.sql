@@ -37,6 +37,7 @@ CREATE TABLE `messages` (
   `subject` text COLLATE utf8_unicode_ci NOT NULL,
   `raw` text COLLATE utf8_unicode_ci NOT NULL,
   `html` text COLLATE utf8_unicode_ci DEFAULT NULL,
+  `body` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

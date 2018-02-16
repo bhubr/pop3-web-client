@@ -56,36 +56,46 @@ export default class Message {
     this.subject = props.subject;
     this.raw = props.raw;
     this.html = props.html;
+    this.body = props.body;
   }
 
-  static findAll(accountId) {
-    return pool
-      .query(`select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where accountId = ${accountId}`)
+  static findAll(accountId, optHash) {
+     optHash = optHash || {};
+     var whereHash = Object.assign({ accountId }, optHash);
+     const baseQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages`;
+     let whereStrings = [];
+     for(let k in whereHash) {
+       whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
+     }
+     const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+     console.log('Account.findAll', baseQuery + whereCondition);
+     return pool
+       .query(baseQuery + whereCondition)
       .then(messages => messages.map(extractMessageBody));
   }
 
   static findOne(id) {
-    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where id = ${id}`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => new Message(props));
   }
 
   static findOneByUidl(uidl) {
-    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html from messages where uidl = '${uidl}'`;
+    const selectQuery = `select id, accountId, uidl, senderName, senderEmail, subject, raw, html, body from messages where uidl = '${uidl}'`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
       .then(props => (props ? new Message(props) : undefined));
   }
 
   static create(message) {
-    const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html'];
-    for(let i = 0 ; i < requiredKeys.length ; i++) {
-      const k = requiredKeys[i];
-      if(! message[k]) {
-        return Promise.reject(new Error(`required key '${k}' is missing`));
-      }
-    }
+    const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html', 'body'];
+    // for(let i = 0 ; i < requiredKeys.length ; i++) {
+    //   const k = requiredKeys[i];
+    //   if(! message[k]) {
+    //     return Promise.reject(new Error(`required key '${k}' is missing`));
+    //   }
+    // }
     for(let k in message) {
       if(requiredKeys.indexOf(k) === -1) {
         return Promise.reject(new Error(`unexpected key '${k}'`));

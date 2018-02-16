@@ -1,67 +1,128 @@
 import React from 'react';
 import api from '../api';
 import MailList from './MailList';
+import { connect } from 'react-redux';
+import {
+  fetchAccountMessages,
+  fetchSingleMessage,
+  messageReceived
+} from '../actions';
 
-export default class Inbox extends React.Component {
+import socket from '../socket';
+
+let numMessages;
+let msgFetched = 0;
+let msgErrored = 0;
+
+socket.on('message:list:success', function (idUidls) {
+  console.log('LIST MESSAGES SUCCESS', idUidls);
+  numMessages = idUidls.length;
+});
+
+socket.on('message:fetch:error', function (errMsg) {
+  console.log(`FETCH MESSAGE ERROR ${msgErrored}`, errMsg);
+});
+
+
+class Inbox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: []
     };
+
+    console.log(this.props);
+    this.acntId = this.props.match.params.acntId;
   }
 
   componentDidMount() {
-    api.call('getMessages')
-    .then(messages => 
-      this.setState((prevState, props) => ({ messages }))
-    );
+    this.props.fetchAccountMessages(this.acntId, this.props.userPass);
+
+    socket.on('message:fetch:success', message => {
+      msgFetched++;
+      console.log(`FETCH MESSAGE SUCCESS ${msgFetched}/${numMessages}`, message);
+      this.props.messageReceived(this.acntId, message);
+    });
   }
 
   render() {
-    const { messages } = this.state;
+    const { msgPerAccount } = this.props;
+    const { uidl } = this.props.match.params;
+    const messages = msgPerAccount[this.acntId] ? msgPerAccount[this.acntId] : [];
+    let message;
+    let emailContentBody;
+    if(uidl && (message = messages.find(m => m.uidl === uidl))) {
+    }
+    else {
+      message = {
+        subject: 'N/A',
+        senderName: 'N/A',
+        senderEmail: 'nobody@example.com',
+        body: 'Select a message first!'
+      }
+    }
+
+    const { subject, senderName, senderEmail, body } = message;
+    const senderLink = "mailto:" + senderEmail;
+
     return (
 
       <div>
-        <MailList messages={messages} />
+        <MailList messages={messages} acntId={this.acntId} />
 
         <div id="main" className="pure-u-1">
           <div className="email-content">
             <div className="email-content-header pure-g">
-              <div className="pure-u-1-2">
-                <h1 className="email-content-title">Hello from Toronto</h1>
+              <div className="pure-u-1">
+                <h1 className="email-content-title">{ subject || <span style={{ color: '#b44' }}>(vide)</span> }</h1>
                 <p className="email-content-subtitle">
-                  From <a>Tilo Mitra</a> at <span>3:56pm, April 3, 2012</span>
+                  From <a href={senderLink}>{ senderName || senderEmail }</a> at <span><del>3:56pm, April 3, 2012</del></span>
                 </p>
               </div>
 
+            {/*
               <div className="email-content-controls pure-u-1-2">
                 <button className="secondary-button pure-button">Reply</button>
                 <button className="secondary-button pure-button">Forward</button>
                 <button className="secondary-button pure-button">Move to</button>
               </div>
+            */}
             </div>
 
             <div className="email-content-body">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-              <p>
-                Aliquam ac feugiat dolor. Proin mattis massa sit amet enim iaculis tincidunt. Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris. Curabitur ornare arcu quis mi blandit laoreet. Vivamus imperdiet fermentum mauris, ac posuere urna tempor at. Duis pellentesque justo ac sapien aliquet egestas. Morbi enim mi, porta eget ullamcorper at, pharetra id lorem.
-              </p>
-              <p>
-                Donec sagittis dolor ut quam pharetra pretium varius in nibh. Suspendisse potenti. Donec imperdiet, velit vel adipiscing bibendum, leo eros tristique augue, eu rutrum lacus sapien vel quam. Nam orci arcu, luctus quis vestibulum ut, ullamcorper ut enim. Morbi semper erat quis orci aliquet condimentum. Nam interdum mauris sed massa dignissim rhoncus.
-              </p>
-              <p>
-                Regards,<br />
-                Tilo
-              </p>
+              <div dangerouslySetInnerHTML={{ __html: message.body }}></div>
             </div>
           </div>
         </div>
       </div>
     );
   }
+
+  componentWillReceiveProps(nextProps) {
+    const { msgPerAccount } = this.props;
+    const { params } = this.props.match;
+    const nextParams = nextProps.match.params;
+    console.log('Inbox.componentWillReceiveProps', nextProps, this.props, 'current/next uidl', params.uidl, nextParams.uidl, msgPerAccount[this.acntId]);
+    if(params.uidl !== nextParams.uidl && msgPerAccount[this.acntId]) {
+      const msg = msgPerAccount[this.acntId].find(m => (m.uidl === nextParams.uidl));
+      console.log('Message', msg);
+      if(! msg.body) {
+        this.props.fetchSingleMessage(this.acntId, nextParams.uidl);
+      }
+    }
+  }
 }
+
+export default connect(
+  (state) => ({
+    isFetching: state.messages.isFetching,
+    msgPerAccount: state.messages.perAccount,
+    // userId: state.session.user.id,
+    userPass: state.session.upw
+  }),
+  {
+    fetchAccountMessages,
+    fetchSingleMessage,
+    messageReceived
+  }
+)(Inbox);

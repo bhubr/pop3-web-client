@@ -16,28 +16,30 @@
 
   <div id="app">{{ markup|raw }}</div>
 
-  <script src="https://yui-s.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-  <script>
-    YUI().use('node-base', 'node-event-delegate', function (Y) {
-
-      var menuButton = Y.one('.nav-menu-button'),
-        nav        = Y.one('#nav');
-
-      // Setting the active class name expands the menu vertically on small screens.
-      menuButton.on('click', function (e) {
-        nav.toggleClass('active');
-      });
-
-      // Your application code goes here...
-
-    });
-  </script>
-
+  <div id="tools" style="position: fixed; bottom: 0; font-size: 12px;">
+    <button id="auto-login">login</button> <button id="auto-account">account</button>
+  </div>
 
   <script>
   window.initialState = {{ state|raw }};
   </script>
+  <script src="http://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="/js/dist/build.js"></script>
+  <script>
+  (function($) {
+    $(document).ready(() => {
+
+      $('#auto-login').click(() => {
+        $('input[name="email"]').val('benoithubert@gmail.com');
+        $('input[name="password"]').val('BenHub31');
+        setTimeout(() => {
+          $('button[type="submit"]').click();
+        }, 200);
+      });
+
+    });
+  })(jQuery);
+  </script>
 
   {% block scripts %}{% endblock %}
 </body>

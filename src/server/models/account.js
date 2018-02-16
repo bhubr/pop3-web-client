@@ -19,8 +19,11 @@ function trimAndQuote(v) {
     "'" + v.trim() + "'" : v;
 }
 
-function passLog(v) {
-  console.log(v); return v;
+function passLog(label) {
+  return v => {
+    console.log('\n\n######\\\\\\#\n#', label, '\n', v);
+    return v;
+  }
 }
 
 export default class Account {
@@ -36,7 +39,11 @@ export default class Account {
 
     this.fetchMessages = this.fetchMessages.bind(this);
     this.fetchMessage = this.fetchMessage.bind(this);
+    this.readEmailStream = this.readEmailStream.bind(this);
+    this.parseEmail = this.parseEmail.bind(this);
+
     this.pop3 = pop3SessionStore.get(this.id);
+    this.socketIOHandler = require('../socketIOHandler')();
   }
 
   getPop3Credentials() {
@@ -48,9 +55,17 @@ export default class Account {
     };
   }
 
-  static findAll() {
+  static findAll(whereHash) {
+    whereHash = whereHash || {};
+    const baseQuery = 'select id, userId, type, host, port, identifier, password from accounts';
+    let whereStrings = [];
+    for(let k in whereHash) {
+      whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
+    }
+    const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+    console.log('Account.findAll', baseQuery + whereCondition);
     return pool
-      .query('select id, userId, type, host, port, identifier, password from accounts');
+      .query(baseQuery + whereCondition);
   }
 
   static findOne(id, userPass) {
@@ -110,6 +125,7 @@ export default class Account {
   }
 
   openPop3Session() {
+    console.log('\n\n\n#### openPop3Session', this.getPop3Credentials());
     this.pop3 = new Pop3Command(this.getPop3Credentials());
     pop3SessionStore.set(this.id, this.pop3);
   }
@@ -135,54 +151,106 @@ export default class Account {
     return Promise.reduce(idUidls, this.fetchMessage, []);
   }
 
-  fetchRemoteMessages(account, start = 0, num = 0) {
+  fetchRemoteMessages(start = 0, num = 0) {
+
     return chain(this.listRemoteMessages())
+    .then(passLog('returned by listRemoteMessages'))
     .then(idUidls => (
       num ? idUidls.slice(start, num) : idUidls
     ))
+    // .then(passLog('after optional slice'))
+    .then(this.socketIOHandler.onMessageListSuccess(this.userId))
     .then(this.fetchMessages)
-    // .then(passLog)
+    // .then(passLog('fetchMessages returned'))
     // .set('messages')
     // .then(() => pop3.QUIT())
     // .get(({ messages }) => (messages));
   }
 
+  readEmailStream(stream) {
+    // console.log('#### readEmailStream', stream);
+    return new Promise((resolve, reject) => {
+      let data = '';
+      let buffers = [];
+      let len = 0;
+      stream.on('data', (chunk) => {
+        // console.log('### readEmailStream data', chunk, chunk.length);
+        data += chunk.toString();
+        buffers.push(chunk);
+        len += chunk.length;
+      });
+      stream.on('end', (chunk) => {
+        // console.log('Account.readEmailStream', len, data);
+        resolve({ buffer: Buffer.concat(buffers), len, data });
+      });
+    });
+  }
+
+  parseEmail(uidl) {
+    return streamAndData => {
+      const { buffer, len, data } = streamAndData;
+      // console.log('parseEmail', buffer, len, data);
+      return new Promise((resolve, reject) =>
+        simpleParser(buffer,
+        (err, mail) => {
+          if (err) {
+            return reject(err);
+          }
+          const { html, textAsHtml, subject, from } = mail;
+          const [{ address, name }] = from.value;
+          const theHtml = html ? html : textAsHtml;
+          const $ = cheerio.load(theHtml);
+          const body = $('body').html();
+
+          // const style = $('style').html();
+          resolve({
+            accountId: this.id,
+            uidl,
+            senderName: name,
+            senderEmail: address,
+            subject: subject || '',
+            raw: JSON.stringify(mail),
+            html: theHtml,
+            body
+          });
+        })
+      );
+    }
+  }
+
+  extractBaseProps(message) {
+    const { uidl, subject, senderName, senderEmail } = message;
+    return { uidl, subject, senderName, senderEmail };
+  }
+
   fetchMessage(carry, msgIdUidl) {
+    console.log('##### fetchMessage', msgIdUidl);
+
     const [msgId, uidl] = msgIdUidl;
     return Message.findOneByUidl(uidl)
     .then(message => {
+
+      // BYPASS DB
+
       if(message) {
         return message;
       }
-      return new Promise((resolve, reject) => {
-        this.pop3.RETR(msgId)
-        .then(stream => simpleParser(stream,
-          (err, mail) => {
-            if (err) {
-              return reject(err);
-            }
-            const { html, textAsHtml, subject, from } = mail;
-            const [{ address, name }] = from.value;
-            const theHtml = html ? html : textAsHtml;
-            const $ = cheerio.load(theHtml);
-            const body = $('body').html();
-
-            // const style = $('style').html();
-            resolve({
-              accountId: this.id,
-              uidl,
-              senderName: name,
-              senderEmail: address,
-              subject,
-              raw: JSON.stringify(mail),
-              html: theHtml
-            });
-          })
-        )
-      })
+      return this.pop3.RETR(msgId)
+      .then(passLog('\n\nfetchMessage #1 stream'))
+      .then(this.readEmailStream)
+      .then(this.parseEmail(uidl))
+      .then(passLog('\n\nfetchMessage #2 parsed'))
       .then(props => Message.create(props))
-      .then(message => carry.concat([message]));
-    });
+      // .catch(this.socketIOHandler.onMessageFetchError(this.userId)
+        // .then(() => (carry))
+      .catch(err => {
+        console.error(err);
+        return carry;
+      });
+    })
+    .then(this.extractBaseProps)
+    .then(this.socketIOHandler.onMessageFetchSuccess(this.userId))
+    .then(message => carry.concat([message]));
   }
 
 

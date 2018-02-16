@@ -1,6 +1,7 @@
 // Express and related stuff
 import express from 'express';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 
 // React and related stuff
 import React from 'react';
@@ -14,17 +15,40 @@ import initStore from './initStore';
 import api from './api';
 import serverAPI from './serverAPI';
 import User from './models/user';
+import Account from './models/account';
+import Message from './models/message';
 
+
+const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
+const config = require('../' + configFile);
+
+// console.log(config);
 console.log(serverAPI);
 api.setStrategy(serverAPI);
 
 
 const app = express();
+const sess = {
+  secret: config.secret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60000
+  }
+};
+console.log('SESSION', sess);
+app.use(session(sess));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-app.get('/messages', (req, res) => {
-  api.call('getMessages')
+
+app.post('/api/inbox/:acntId', (req, res) => {
+  const { userPass } = req.body;
+  const acntId = parseInt(req.params.acntId);
+  // api.call('getMessages')
+  Account.findOne(acntId, userPass)
+  .then(account => account.fetchRemoteMessages())
   .then(messages => res.json(messages))
   .catch(console.error);
 
@@ -64,13 +88,63 @@ app.get('/api/users', (req, res) => {
 
 app.post('/api/authentication', (req, res) => {
   User.authenticate(req.body)
-  .then(userOrFalse => (userOrFalse ?
-    res.json(userOrFalse) : res.status(401).json({ error: 'failed' })
-  ));
+  .then(userOrFalse => {
+    if(! userOrFalse) {
+      return res.status(401).json({ error: 'Authentication failure: bad credentials' });
+    }
+    delete userOrFalse.password;
+    req.session.user = userOrFalse;
+    // req.session.save(function(err) {
+      // if(err) {
+        // return res.status(500).json({ error: 'Could not save user session' });
+      // }
+    res.json(userOrFalse);
+    // });
+  });
 });
 
+app.post('/api/accounts', (req, res) => {
+  const { userPass } = req.body;
+  delete req.body.userPass;
+  Account.create(req.body, userPass)
+  .then(account => res.json(account))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+app.get('/api/accounts', (req, res) => {
+  Account.findAll(req.query)
+  .then(accounts => res.json(accounts))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
+
+app.get('/api/messages', (req, res) => {
+  const { accountId } = req.query;
+  delete req.query.accountId;
+  Message.findAll(accountId, req.query)
+  .then(messages => res.json(messages))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+/*--------------------------*
+ | WARNING! DEV MODE ONLY!
+ *--------------------------*
+ |
+ */
+if(process.env.NODE_ENV !== 'production') {
+  app.get('/session', (req, res) => {
+    console.log('/session req.headers', req.headers);
+    return res.json(req.session);
+  });
+}
+
 const routes = [{
-  path: '/inbox/:acntId',
+  path: '/izznbox/:acntId',
   loadData: async function() {
     const messages = await api.call('getMessages');
     return messages;
@@ -95,19 +169,30 @@ app.get('*', (req, res) => {
   });
 
   Promise.all(promises).then(data => {
-    const { user } = req;
+    const { user } = req.session;
     // const session = { user };
     let initialState = {
-      user,
+      session: {
+        user,
+        upw: '',
+        isRegistering: false,
+        isAuthenticating: false,
+        isUpdating: false,
+        registrationError: '',
+        authenticationError: '',
+        updateError: ''
+      },
       accounts: {
-        isLoading: false,
+        isFetching: false,
+        isCreating: false,
+        fetchingError: '',
+        creationError: '',
         items: []
       },
       messages: {
-        isLoading: false,
-        perAccount: {
-
-        }
+        isFetching: false,
+        fetchingError: '',
+        perAccount: {}
       }
     };
 
@@ -144,4 +229,6 @@ app.get('*', (req, res) => {
   });
 });
 
-app.listen(3000);
+const server = app.listen(3000);
+const io = require('socket.io').listen(server);
+require('./socketIOHandler')(io);

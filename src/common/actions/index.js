@@ -3,7 +3,9 @@
 //   insertUser,
 //   authenticateUser
 // } from '../api';
-import { User } from '../../dist/models';
+import { User, Account, Message } from '../../dist/models';
+
+console.log('DIST/MODELS', User, Account);
 // let history;
 // if(typeof window !== 'undefined') {
 //   history = require('../')
@@ -26,9 +28,30 @@ export const REGISTER_USER = 'REGISTER_USER';
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS';
 export const REGISTER_USER_ERROR = 'REGISTER_USER_ERROR';
 
+export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
+export const CREATE_ACCOUNT_SUCCESS = 'CREATE_ACCOUNT_SUCCESS';
+export const CREATE_ACCOUNT_ERROR = 'CREATE_ACCOUNT_ERROR';
+
+export const FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
+export const FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
+export const FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
+
+export const FETCH_SINGLE_MESSAGE = 'FETCH_SINGLE_MESSAGE';
+export const FETCH_SINGLE_MESSAGE_SUCCESS = 'FETCH_SINGLE_MESSAGE_SUCCESS';
+export const FETCH_SINGLE_MESSAGE_ERROR = 'FETCH_SINGLE_MESSAGE_ERROR';
+
+export const FETCH_MESSAGES = 'FETCH_MESSAGES';
+export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
+export const FETCH_MESSAGES_ERROR = 'FETCH_MESSAGES_ERROR';
+
+export const RECV_MESSAGE_SUCCESS = 'RECV_MESSAGE_SUCCESS';
+
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
+
+import socket from '../socket';
+
 
 // export function increment() {
 //   return { type: INCREMENT };
@@ -59,6 +82,161 @@ export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 //     movies: json.results
 //   };
 // }
+
+
+
+// ------------- FETCH SINGLE MESSAGE ------------
+export function requestFetchSingleMessage(accountId, uidl) {
+  return {
+    type: FETCH_SINGLE_MESSAGE,
+    accountId,
+    uidl
+  };
+}
+
+export function fetchSingleMessageSuccess(accountId, message) {
+  console.log('fetchSingleMessageSuccess', message);
+  return {
+    type: FETCH_SINGLE_MESSAGE_SUCCESS,
+    accountId,
+    message
+  };
+}
+
+export function fetchSingleMessageError(error) {
+  console.log('fetchSingleMessageError', error);
+  return {
+    type: FETCH_SINGLE_MESSAGE_ERROR,
+    error
+  };
+}
+
+export function fetchSingleMessage(accountId, uidl)  {
+  return dispatch => {
+    console.log('fetchSingleMessage', uidl);
+    dispatch(requestFetchSingleMessage(accountId, uidl));
+    return Message.findByUidl(accountId, uidl)
+      .then(message => {
+        dispatch(fetchSingleMessageSuccess(accountId, message));
+        console.log('DISPATCHED fetchSingleMessageSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchSingleMessageError(err)));
+  };
+}
+
+// ------------- FETCH MESSAGES ------------
+export function requestFetchMessages(accountId) {
+  return {
+    type: FETCH_MESSAGES,
+    accountId
+  };
+}
+
+export function fetchMessagesSuccess(accountId, messages) {
+  console.log('fetchMessagesSuccess', messages);
+  return {
+    type: FETCH_MESSAGES_SUCCESS,
+    accountId,
+    messages
+  };
+}
+
+export function fetchMessagesError(error) {
+  console.log('fetchMessagesError', error);
+  return {
+    type: FETCH_MESSAGES_ERROR,
+    error
+  };
+}
+
+export function messageReceived(accountId, message) {
+  return {
+    type: RECV_MESSAGE_SUCCESS,
+    accountId,
+    message
+  }
+}
+
+export function fetchAccountMessages(accountId, userPass)  {
+  return dispatch => {
+    console.log('fetchAccountMessages', accountId);
+    dispatch(requestFetchMessages(accountId));
+    return Message.openInbox(accountId, userPass)
+    // return Message.findAll(accountId)
+      .then(messages => {
+        dispatch(fetchMessagesSuccess(accountId, messages));
+        console.log('DISPATCHED fetchMessagesSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchMessagesError(err)));
+  };
+}
+
+// ------------- FETCH ACCOUNTS ------------
+export function requestFetchAccounts(userId) {
+  return {
+    type: FETCH_ACCOUNTS,
+    userId
+  };
+}
+
+export function fetchAccountsSuccess(userId, accounts) {
+  console.log('fetchAccountsSuccess', accounts);
+  return {
+    type: FETCH_ACCOUNTS_SUCCESS,
+    userId,
+    accounts
+  };
+}
+
+export function fetchAccountsError(error) {
+  console.log('fetchAccountsError', error);
+  return {
+    type: FETCH_ACCOUNTS_ERROR,
+    error
+  };
+}
+
+export function fetchUserAccounts(userId)  {
+  return dispatch => {
+    console.log('fetchUserAccounts', userId);
+    dispatch(requestFetchAccounts(userId));
+    return Account.findAll(userId)
+      .then(accounts => {
+        dispatch(fetchAccountsSuccess(userId, accounts));
+        console.log('DISPATCHED fetchAccountsSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(fetchAccountsError(err)));
+  };
+}
+// --------------------------------------------
+
+// ------------- CREATE ACCOUNT ------------
+export function requestCreateAccount(account) {
+  return {
+    type: CREATE_ACCOUNT,
+    account
+  };
+}
+
+export function createAccountSuccess(user) {
+  console.log('createAccountSuccess', account);
+  return {
+    type: CREATE_ACCOUNT_SUCCESS,
+    account
+  };
+}
+
+export function createAccountError(error) {
+  console.log('createAccountError', error);
+  return {
+    type: CREATE_ACCOUNT_ERROR,
+    error
+  };
+}
+// --------------------------------------------
 
 export function requestRegisterUser(user) {
   return {
@@ -132,6 +310,21 @@ export function loginUserError(error) {
   };
 }
 
+
+export function createAccount(account)  {
+  return dispatch => {
+    console.log('createAccount', account);
+    dispatch(requestCreateAccount(account));
+    return Account.create(account)
+      .then(user => {
+        dispatch(createAccountSuccess(account));
+        console.log('DISPATCHED createAccountSuccess');
+        // history.push('/accounts');
+      })
+      .catch(err => dispatch(createAccountError(err)));
+  };
+}
+
 export function loginUser(user)  {
   return dispatch => {
     console.log('loginUser', user);
@@ -139,19 +332,33 @@ export function loginUser(user)  {
     return User.authenticate(user)
       .then(user => {
         dispatch(loginUserSuccess(user));
+        socket.emit('auth:success', user);
         console.log('DISPATCHED LOGIN SUCCESS', history);
-        history.push('/profile');
+        history.push('/accounts');
       })
       .catch(err => dispatch(loginUserError(err)));
   };
 }
 
-export function registerUser(user)  {
+function timeoutPromise(timeout) {
+  return value => {
+    return new Promise((resolve, reject) => {
+      console.error('TIMEOUT');
+      setTimeout(() => resolve(value), timeout);
+    });
+  }
+}
+
+export function registerUser(userProps)  {
   return dispatch => {
-    console.log('registerUser', user);
-    dispatch(requestRegisterUser(user));
-    return User.create(user)
-      .then(user => dispatch(registerUserSuccess(user)))
+    console.log('registerUser', userProps);
+    dispatch(requestRegisterUser(userProps));
+    return User.create(userProps)
+      .then(timeoutPromise(300))
+      .then(userModel => {
+        dispatch(registerUserSuccess(userModel))
+        loginUser(userProps)(dispatch);
+      })
       .catch(err => dispatch(registerUserError(err)));
   };
 }

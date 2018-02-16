@@ -1,20 +1,23 @@
 import React from 'react';
+import {
+  Link
+} from 'react-router-dom';
 
 class EmailItem extends React.Component {
 
   render() {
-    const { from, subject, html, textAsHtml, body } = this.props.message;
+    const { acntId } = this.props;
+    const { uidl, subject, senderName, senderEmail, body } = this.props.message;
     // const content = html ? html : textAsHtml;
     return (
       <div className="email-item email-item-selected pure-g">
-        <div className="pure-u">
+        {/*<div className="pure-u">
           <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
-        </div>
+        </div>*/}
 
         <div className="pure-u-3-4">
-          <h5 className="email-name">{ from.text }</h5>
-          <h4 className="email-subject">{ subject }</h4>
-          <p className="email-desc" dangerouslySetInnerHTML={{ __html: body.substr(0, 200) + ' [...]' }}></p>
+          <h5 className="email-name"><a href={"mailto:" + senderEmail}>{ senderName }</a></h5>
+          <h4 className="email-subject"><Link to={ `/inbox/${acntId}/${uidl}` }>{ subject }</Link></h4>
         </div>
       </div>
     );
@@ -24,12 +27,13 @@ class EmailItem extends React.Component {
 export default class MailList extends React.Component {
 
   render() {
-    const { messages } = this.props;
+    const { messages, acntId } = this.props;
     return (
       <div id="list" className="pure-u-1">
 
-        {messages.map((m, i) => <EmailItem key={i} message={m} />)}
+        {messages.map((m, i) => <EmailItem key={i} message={m} acntId={acntId} />)}
 
+      {/*
         <div className="email-item email-item-selected pure-g">
           <div className="pure-u">
             <img width="64" height="64" alt="Tilo Mitra&#x27;s avatar" className="email-avatar" src="/img/common/tilo-avatar.png" />
@@ -58,62 +62,6 @@ export default class MailList extends React.Component {
           </div>
         </div>
 
-        <div className="email-item email-item-unread pure-g">
-          <div className="pure-u">
-            <img width="64" height="64" alt="YUI&#x27;s avatar" className="email-avatar" src="/img/common/yui-avatar.png" />
-          </div>
-
-          <div className="pure-u-3-4">
-            <h5 className="email-name">YUI Library</h5>
-            <h4 className="email-subject">You have 5 bugs assigned to you</h4>
-            <p className="email-desc">
-              Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla.
-            </p>
-          </div>
-        </div>
-
-        <div className="email-item pure-g">
-          <div className="pure-u">
-            <img width="64" height="64" alt="Reid Burke&#x27;s avatar" className="email-avatar" src="/img/common/reid-avatar.png" />
-          </div>
-
-          <div className="pure-u-3-4">
-            <h5 className="email-name">Reid Burke</h5>
-            <h4 className="email-subject">Re: Design Language</h4>
-            <p className="email-desc">
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa.
-            </p>
-          </div>
-        </div>
-
-        <div className="email-item pure-g">
-          <div className="pure-u">
-            <img width="64" height="64" alt="Andrew Wooldridge&#x27;s avatar" className="email-avatar" src="/img/common/andrew-avatar.png" />
-          </div>
-
-          <div className="pure-u-3-4">
-            <h5 className="email-name">Andrew Wooldridge</h5>
-            <h4 className="email-subject">YUI Blog Updates?</h4>
-            <p className="email-desc">
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
-            </p>
-          </div>
-        </div>
-
-        <div className="email-item pure-g">
-          <div className="pure-u">
-            <img width="64" height="64" alt="Yahoo! Finance&#x27;s Avatar" className="email-avatar" src="/img/common/yfinance-avatar.png" />
-          </div>
-
-          <div className="pure-u-3-4">
-            <h5 className="email-name">Yahoo! Finance</h5>
-            <h4 className="email-subject">How to protect your finances from winter storms</h4>
-            <p className="email-desc">
-              Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris.
-            </p>
-          </div>
-        </div>
-
         <div className="email-item pure-g">
           <div className="pure-u">
             <img width="64" height="64" alt="Yahoo! News&#x27; avatar" className="email-avatar" src="/img/common/ynews-avatar.png" />
@@ -127,6 +75,7 @@ export default class MailList extends React.Component {
             </p>
           </div>
         </div>
+      */}
       </div>
     );
   }

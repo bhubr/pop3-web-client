@@ -12,7 +12,7 @@ function trimAndQuote(v) {
 }
 
 function passLog(v) {
-  console.log(v); return v;
+  console.log('passLog', v); return v;
 }
 
 export default class User {
@@ -53,6 +53,7 @@ export default class User {
   }
 
   static authenticate(credentials) {
+    console.log('Server-side User.authenticate', credentials);
     return User.getByEmail(credentials.email)
     .then(user => (! user ? false :
       User.checkPassword(user, credentials.password)
