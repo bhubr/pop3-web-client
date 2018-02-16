@@ -22,6 +22,7 @@
 
   <script>
   window.initialState = {{ state|raw }};
+  window.__protocol = {{ useHttps }} ? 'https' : 'http';
   </script>
   <script src="http://code.jquery.com/jquery-3.3.1.js"></script>
   <script src="/js/dist/build.js"></script>

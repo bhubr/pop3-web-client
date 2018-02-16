@@ -1,2 +1,4 @@
 import io from 'socket.io-client';
-export default io('http://localhost:3000');
+
+const protocol = typeof window !== 'undefined' && window.__protocol ? window.__protocol : 'http';
+export default io(protocol + '://localhost:3000');

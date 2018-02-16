@@ -33880,7 +33880,8 @@ var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = (0, _socket2.default)('http://localhost:3000');
+var protocol = typeof window !== 'undefined' && window.__protocol ? window.__protocol : 'http';
+exports.default = (0, _socket2.default)(protocol + '://localhost:3000');
 
 },{"socket.io-client":130}],181:[function(require,module,exports){
 'use strict';
