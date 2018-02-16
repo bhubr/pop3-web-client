@@ -223,9 +223,9 @@ app.get('*', (req, res) => {
       // Somewhere a `<Redirect>` was rendered
       res.redirect(status, context.url);
     } else {
-      const useHttps = config.useHttps ? 'true' : 'false';
+      const protocol = config.useHttps ? 'https' : 'http';
       // we're good, send the response
-      res.status(status).render('app.html.twig', { markup, state: stateJSON, useHttps });
+      res.status(status).render('app.html.twig', { markup, state: stateJSON, protocol });
     }
   });
 });
