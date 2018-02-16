@@ -32395,70 +32395,126 @@ var LoginRegisterForm = function (_React$Component) {
           errorMessage = _props.errorMessage,
           isPending = _props.isPending;
 
+      console.log(this.props);
+      var mainStyles = {
+        height: '100vh',
+        background: 'repeat url("/img/mp-01.png")'
+      };
+      var overlayStyles = {
+        paddingTop: '10%',
+        height: '100vh',
+        background: 'rgba(255, 255, 255, 0.3)'
+      };
+      var formStyles = {
+        padding: '32px 64px 16px 64px',
+        border: '1px solid #eee',
+        maxWidth: '450px',
+        margin: '0 auto'
+      };
       return _react2.default.createElement(
-        'div',
-        { className: 'pure-u-1' },
+        'main',
+        { style: mainStyles },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
+          'div',
+          { style: overlayStyles },
           _react2.default.createElement(
-            'fieldset',
-            null,
+            'div',
+            { className: 'z-depth-1 grey lighten-4 row', style: formStyles },
             _react2.default.createElement(
-              'legend',
-              null,
-              this.title
+              'h5',
+              { className: 'indigo-text' },
+              'Please, login into your account'
             ),
             errorMessage ? _react2.default.createElement(
               'div',
-              { className: 'alert alert-danger' },
+              { 'class': 'card-panel red lighten-4' },
               errorMessage
             ) : '',
             isPending ? _react2.default.createElement(
               'div',
-              { className: 'alert alert-loading' },
+              { className: 'card-panel blue lighten-4' },
               'LOADING'
             ) : '',
             _react2.default.createElement(
-              'label',
-              { htmlFor: 'email' },
-              'Email'
-            ),
-            _react2.default.createElement('input', {
-              id: 'email',
-              name: 'email',
-              type: 'email',
-              className: "form-control " + (email.isValid ? 'valid-input' : 'invalid-input'),
-              placeholder: 'Email',
-              value: email.value,
-              onChange: this.handleChange }),
-            email.isValid ? '' : _react2.default.createElement(
-              'span',
-              { className: 'invalid-text pure-form-message' },
-              email.validErrMsg
-            ),
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'password' },
-              'Password'
-            ),
-            _react2.default.createElement('input', {
-              id: 'password',
-              name: 'password',
-              type: 'password',
-              className: "form-control " + (password.isValid ? 'valid-input' : 'invalid-input'),
-              placeholder: 'Password',
-              value: password.value,
-              onChange: this.handleChange }),
-            password.isValid ? '' : _react2.default.createElement(
-              'span',
-              { className: 'invalid-text pure-form-message' },
-              password.validErrMsg
-            ),
-            _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'pure-button pure-button-primary' },
-              this.title
+              'form',
+              { onSubmit: this.handleSubmit, className: 'col s12', method: 'POST' },
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement('div', { className: 'col s12' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    id: 'email',
+                    name: 'email',
+                    type: 'email',
+                    className: "validate " + (email.value ? email.isValid ? 'valid' : 'invalid' : ''),
+                    value: email.value,
+                    onChange: this.handleChange }),
+                  email.isValid ? '' : _react2.default.createElement(
+                    'span',
+                    { className: 'invalid-text pure-form-message' },
+                    email.validErrMsg
+                  ),
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: 'email' },
+                    'Enter your email'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    id: 'password',
+                    name: 'password',
+                    type: 'password',
+                    className: "validate " + (password.value ? password.isValid ? 'valid' : 'invalid' : ''),
+                    value: password.value,
+                    onChange: this.handleChange }),
+                  password.isValid ? '' : _react2.default.createElement(
+                    'span',
+                    { className: 'invalid-text pure-form-message' },
+                    password.validErrMsg
+                  ),
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: 'password' },
+                    'Enter your password'
+                  )
+                ),
+                _react2.default.createElement(
+                  'label',
+                  { style: { float: 'right' } },
+                  _react2.default.createElement(
+                    'a',
+                    { className: 'pink-text', href: '#!' },
+                    _react2.default.createElement(
+                      'b',
+                      null,
+                      'Forgot Password?'
+                    )
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'button',
+                  { type: 'submit', name: 'btn-login', className: 'col s12 btn btn-large waves-effect indigo' },
+                  this.title
+                )
+              )
             )
           )
         )
@@ -32783,7 +32839,6 @@ var MyApp = function MyApp() {
   return _react2.default.createElement(
     'div',
     { id: 'layout', className: 'content pure-g' },
-    _react2.default.createElement(_Navbar2.default, { user: null }),
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
@@ -33808,6 +33863,7 @@ exports.default = function () {
       {
         return Object.assign(_extends({}, state), {
           isAuthenticating: true,
+          authenticationError: '',
           upw: action.user.password
         });
       }

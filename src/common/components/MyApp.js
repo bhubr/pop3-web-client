@@ -42,8 +42,8 @@ const MyApp = () => (
   <div id="layout" className="content pure-g">
 
 
-    <Navbar user={null}/>
-    {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
+    {/*<Navbar user={null}/>
+    <Navbar user={{email:'joe@foo.bar'}}/>*/}
 
     <Switch>
       <Route exact path="/" component={Home}/>

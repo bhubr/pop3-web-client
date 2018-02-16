@@ -40,42 +40,80 @@ export default class LoginRegisterForm extends React.Component {
   render() {
     const { email, password } = this.state;
     const { title, errorMessage, isPending } = this.props;
+    console.log(this.props);
+    const mainStyles = {
+      height: '100vh',
+      background: 'repeat url("/img/mp-01.png")'
+    };
+    const overlayStyles = {
+      paddingTop: '10%',
+      height: '100vh',
+      background: 'rgba(255, 255, 255, 0.3)'
+    };
+    const formStyles = {
+      padding: '32px 64px 16px 64px',
+      border: '1px solid #eee',
+      maxWidth: '450px',
+      margin: '0 auto'
+    };
     return (
-      <div className="pure-u-1">
+      <main style={mainStyles}>
+          <div style={overlayStyles}>
 
-        <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
-            <fieldset>
-                <legend>{this.title}</legend>
-                {errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : ''}
-                {isPending ? <div className="alert alert-loading">LOADING</div> : ''}
 
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  className={"form-control " + (email.isValid ? 'valid-input' : 'invalid-input')}
-                  placeholder="Email"
-                  value={email.value}
-                  onChange={this.handleChange} />
-                {email.isValid ? '' : <span className="invalid-text pure-form-message">{email.validErrMsg}</span>}
+          <div className="z-depth-1 grey lighten-4 row" style={formStyles}>
+            <h5 className="indigo-text">Please, login into your account</h5>
+            {errorMessage ? <div class="card-panel red lighten-4">{errorMessage}</div> : ''}
+            {isPending ? <div className="card-panel blue lighten-4">LOADING</div> : ''}
 
-                <label htmlFor="password">Password</label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  className={"form-control " + (password.isValid ? 'valid-input' : 'invalid-input')}
-                  placeholder="Password"
-                  value={password.value}
-                  onChange={this.handleChange} />
-                {password.isValid ? '' : <span className="invalid-text pure-form-message">{password.validErrMsg}</span>}
+            <form onSubmit={this.handleSubmit} className="col s12" method="POST">
+              <div className="row">
+                <div className="col s12">
+                </div>
+              </div>
 
-                <button type="submit" className="pure-button pure-button-primary">{this.title}</button>
-            </fieldset>
-        </form>
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    className={"validate " + (email.value ? (email.isValid ? 'valid' : 'invalid') : '')}
+                    value={email.value}
+                    onChange={this.handleChange} />
+                  {email.isValid ? '' : <span className="invalid-text pure-form-message">{email.validErrMsg}</span>}
+                  <label htmlFor="email">Enter your email</label>
 
-      </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="input-field col s12">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    className={"validate " + (password.value ? (password.isValid ? 'valid' : 'invalid') : '')}
+                    value={password.value}
+                    onChange={this.handleChange} />
+                  {password.isValid ? '' : <span className="invalid-text pure-form-message">{password.validErrMsg}</span>}
+                  <label htmlFor="password">Enter your password</label>
+                </div>
+                <label style={{float: 'right'}}>
+                  <a className="pink-text" href="#!"><b>Forgot Password?</b></a>
+                </label>
+              </div>
+
+              <div className="row">
+                <button type="submit" name="btn-login" className="col s12 btn btn-large waves-effect indigo">{this.title}</button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </main>
+
     );
   }
 }
