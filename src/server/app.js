@@ -16,6 +16,7 @@ import api from './api';
 import serverAPI from './serverAPI';
 import User from './models/user';
 import Account from './models/account';
+import Message from './models/message';
 const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
 const config = require('../' + configFile);
 
@@ -112,12 +113,20 @@ app.post('/api/accounts', (req, res) => {
 
 app.get('/api/accounts', (req, res) => {
   Account.findAll(req.query)
-  .then(account => res.json(account))
+  .then(accounts => res.json(accounts))
   .catch(err => res.status(400).json({
     error: err.message
   }));
 });
 
+
+app.get('/api/messages', (req, res) => {
+  Message.findAll(req.query.accountId)
+  .then(messages => res.json(messages))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
 /*--------------------------*
  | WARNING! DEV MODE ONLY!
  *--------------------------*

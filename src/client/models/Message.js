@@ -7,4 +7,8 @@ export default class Message {
   static openInbox(accountId, userPass) {
     return api.post('/api/inbox/' + accountId, { userPass });
   }
+
+  static findAll(accountId) {
+    return api.get('/api/messages/?accountId=' + accountId);
+  }
 }

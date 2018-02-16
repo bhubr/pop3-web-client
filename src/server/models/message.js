@@ -81,12 +81,12 @@ export default class Message {
 
   static create(message) {
     const requiredKeys = ['accountId', 'uidl', 'senderName', 'senderEmail', 'subject', 'raw', 'html', 'body'];
-    for(let i = 0 ; i < requiredKeys.length ; i++) {
-      const k = requiredKeys[i];
-      if(! message[k]) {
-        return Promise.reject(new Error(`required key '${k}' is missing`));
-      }
-    }
+    // for(let i = 0 ; i < requiredKeys.length ; i++) {
+    //   const k = requiredKeys[i];
+    //   if(! message[k]) {
+    //     return Promise.reject(new Error(`required key '${k}' is missing`));
+    //   }
+    // }
     for(let k in message) {
       if(requiredKeys.indexOf(k) === -1) {
         return Promise.reject(new Error(`unexpected key '${k}'`));

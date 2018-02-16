@@ -187,7 +187,7 @@ export default class Account {
               uidl,
               senderName: name,
               senderEmail: address,
-              subject,
+              subject: subject || '',
               raw: JSON.stringify(mail),
               html: theHtml,
               body

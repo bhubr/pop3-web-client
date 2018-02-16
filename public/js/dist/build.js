@@ -24322,6 +24322,7 @@ var API = function () {
     value: function sendRequest(url, method, body) {
       return fetch(url, {
         method: method,
+        credentials: 'include',
         headers: this.headers,
         body: body
       }).then(function (response) {
@@ -24330,6 +24331,14 @@ var API = function () {
             console.error('RESPONSE NOT OK, THROWING', json, json.error);
             throw new Error(json.error);
           }
+          // console.log('######## sendRequest cookies', response.headers, response.headers.get('set-cookie'));
+          // // Display the keys
+          // for(var key of response.headers.keys()) {
+          //    console.log(key);
+          // }
+          // if(response.headers.get('set-cookie')) {
+          //   document.cookie = response.headers.get('set-cookie');
+          // }
           return json;
         });
       });
@@ -24462,7 +24471,11 @@ exports.default = User;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS = exports.CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.UPDATE_USER_ERROR = exports.UPDATE_USER_SUCCESS = exports.UPDATE_USER = exports.FETCH_MESSAGES_ERROR = exports.FETCH_MESSAGES_SUCCESS = exports.FETCH_MESSAGES = exports.FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS = exports.CREATE_ACCOUNT_ERROR = exports.CREATE_ACCOUNT_SUCCESS = exports.CREATE_ACCOUNT = exports.REGISTER_USER_ERROR = exports.REGISTER_USER_SUCCESS = exports.REGISTER_USER = exports.LOGOUT_USER = exports.LOGIN_USER_ERROR = exports.LOGIN_USER_SUCCESS = exports.LOGIN_USER = undefined;
+exports.requestFetchMessages = requestFetchMessages;
+exports.fetchMessagesSuccess = fetchMessagesSuccess;
+exports.fetchMessagesError = fetchMessagesError;
+exports.fetchAccountMessages = fetchAccountMessages;
 exports.requestFetchAccounts = requestFetchAccounts;
 exports.fetchAccountsSuccess = fetchAccountsSuccess;
 exports.fetchAccountsError = fetchAccountsError;
@@ -24529,6 +24542,10 @@ var FETCH_ACCOUNTS = exports.FETCH_ACCOUNTS = 'FETCH_ACCOUNTS';
 var FETCH_ACCOUNTS_SUCCESS = exports.FETCH_ACCOUNTS_SUCCESS = 'FETCH_ACCOUNTS_SUCCESS';
 var FETCH_ACCOUNTS_ERROR = exports.FETCH_ACCOUNTS_ERROR = 'FETCH_ACCOUNTS_ERROR';
 
+var FETCH_MESSAGES = exports.FETCH_MESSAGES = 'FETCH_MESSAGES';
+var FETCH_MESSAGES_SUCCESS = exports.FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
+var FETCH_MESSAGES_ERROR = exports.FETCH_MESSAGES_ERROR = 'FETCH_MESSAGES_ERROR';
+
 var UPDATE_USER = exports.UPDATE_USER = 'UPDATE_USER';
 var UPDATE_USER_SUCCESS = exports.UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
@@ -24563,6 +24580,46 @@ var UPDATE_USER_ERROR = exports.UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 //   };
 // }
 
+
+// ------------- FETCH MESSAGES ------------
+function requestFetchMessages(accountId) {
+  return {
+    type: FETCH_MESSAGES,
+    accountId: accountId
+  };
+}
+
+function fetchMessagesSuccess(accountId, messages) {
+  console.log('fetchMessagesSuccess', messages);
+  return {
+    type: FETCH_MESSAGES_SUCCESS,
+    accountId: accountId,
+    messages: messages
+  };
+}
+
+function fetchMessagesError(error) {
+  console.log('fetchMessagesError', error);
+  return {
+    type: FETCH_MESSAGES_ERROR,
+    error: error
+  };
+}
+
+function fetchAccountMessages(accountId, userPass) {
+  return function (dispatch) {
+    console.log('fetchAccountMessages', accountId);
+    dispatch(requestFetchMessages(accountId));
+    // return Message.openInbox(accountId, userPass)
+    return _models.Message.findAll(accountId).then(function (messages) {
+      dispatch(fetchMessagesSuccess(accountId, messages));
+      console.log('DISPATCHED fetchMessagesSuccess');
+      // history.push('/accounts');
+    }).catch(function (err) {
+      return dispatch(fetchMessagesError(err));
+    });
+  };
+}
 
 // ------------- FETCH ACCOUNTS ------------
 function requestFetchAccounts(userId) {
@@ -24801,7 +24858,7 @@ function updateUser(user) {
 //   };
 // }
 
-},{"../../dist/models":138,"../history":129}],110:[function(require,module,exports){
+},{"../../dist/models":140,"../history":129}],110:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24905,6 +24962,8 @@ var _actions = require('../actions');
 
 var _reactRedux = require('react-redux');
 
+var _reactRouterDom = require('react-router-dom');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -24928,15 +24987,20 @@ var AccountItem = function (_React$Component) {
       var _props$account = this.props.account,
           identifier = _props$account.identifier,
           host = _props$account.host,
-          port = _props$account.port;
+          port = _props$account.port,
+          id = _props$account.id;
 
       return _react2.default.createElement(
-        'h4',
+        'div',
         null,
-        identifier,
-        '@',
-        host,
-        port ? ':' + port : ''
+        _react2.default.createElement(
+          _reactRouterDom.Link,
+          { to: "/inbox/" + id },
+          identifier,
+          '@',
+          host,
+          port ? ':' + port : ''
+        )
       );
     }
   }]);
@@ -24995,7 +25059,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   fetchUserAccounts: _actions.fetchUserAccounts
 })(AccountList);
 
-},{"../actions":109,"react":89,"react-redux":56}],113:[function(require,module,exports){
+},{"../actions":109,"react":89,"react-redux":56,"react-router-dom":73}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25255,7 +25319,7 @@ var GenericValidatedForm = function (_React$Component) {
 
 exports.default = GenericValidatedForm;
 
-},{"../utils/validator":134,"react":89}],116:[function(require,module,exports){
+},{"../utils/validator":135,"react":89}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25350,6 +25414,10 @@ var _MailList = require('./MailList');
 
 var _MailList2 = _interopRequireDefault(_MailList);
 
+var _reactRedux = require('react-redux');
+
+var _actions = require('../actions');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25369,29 +25437,35 @@ var Inbox = function (_React$Component) {
     _this.state = {
       messages: []
     };
+
+    console.log(_this.props);
+    _this.acntId = _this.props.match.params.acntId;
     return _this;
   }
 
   _createClass(Inbox, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var _this2 = this;
-
-      _api2.default.call('getMessages').then(function (messages) {
-        return _this2.setState(function (prevState, props) {
-          return { messages: messages };
-        });
-      });
+      this.props.fetchAccountMessages(this.acntId, this.props.userPass);
     }
   }, {
     key: 'render',
     value: function render() {
-      var messages = this.state.messages;
+      var msgPerAccount = this.props.msgPerAccount;
+      var uidl = this.props.match.params.uidl;
 
+      var messages = msgPerAccount[this.acntId] ? msgPerAccount[this.acntId] : [];
+      var emailContentBody = uidl ? _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: messages.find(function (m) {
+            return m.uidl === uidl;
+          }).body } }) : _react2.default.createElement(
+        'p',
+        null,
+        'Lorem ipsum dolor sit amet, consectetur adipisicing elit'
+      );
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_MailList2.default, { messages: messages }),
+        _react2.default.createElement(_MailList2.default, { messages: messages, acntId: this.acntId }),
         _react2.default.createElement(
           'div',
           { id: 'main', className: 'pure-u-1' },
@@ -25449,33 +25523,7 @@ var Inbox = function (_React$Component) {
             _react2.default.createElement(
               'div',
               { className: 'email-content-body' },
-              _react2.default.createElement(
-                'p',
-                null,
-                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-              ),
-              _react2.default.createElement(
-                'p',
-                null,
-                'Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-              ),
-              _react2.default.createElement(
-                'p',
-                null,
-                'Aliquam ac feugiat dolor. Proin mattis massa sit amet enim iaculis tincidunt. Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris. Curabitur ornare arcu quis mi blandit laoreet. Vivamus imperdiet fermentum mauris, ac posuere urna tempor at. Duis pellentesque justo ac sapien aliquet egestas. Morbi enim mi, porta eget ullamcorper at, pharetra id lorem.'
-              ),
-              _react2.default.createElement(
-                'p',
-                null,
-                'Donec sagittis dolor ut quam pharetra pretium varius in nibh. Suspendisse potenti. Donec imperdiet, velit vel adipiscing bibendum, leo eros tristique augue, eu rutrum lacus sapien vel quam. Nam orci arcu, luctus quis vestibulum ut, ullamcorper ut enim. Morbi semper erat quis orci aliquet condimentum. Nam interdum mauris sed massa dignissim rhoncus.'
-              ),
-              _react2.default.createElement(
-                'p',
-                null,
-                'Regards,',
-                _react2.default.createElement('br', null),
-                'Tilo'
-              )
+              emailContentBody
             )
           )
         )
@@ -25486,9 +25534,18 @@ var Inbox = function (_React$Component) {
   return Inbox;
 }(_react2.default.Component);
 
-exports.default = Inbox;
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    isFetching: state.messages.isFetching,
+    msgPerAccount: state.messages.perAccount,
+    // userId: state.session.user.id,
+    userPass: state.session.upw
+  };
+}, {
+  fetchAccountMessages: _actions.fetchAccountMessages
+})(Inbox);
 
-},{"../api":110,"./MailList":120,"react":89}],118:[function(require,module,exports){
+},{"../actions":109,"../api":110,"./MailList":120,"react":89,"react-redux":56}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25594,10 +25651,10 @@ var LoginRegisterForm = function (_React$Component) {
 
     _this.state = {
       email: {
-        value: '', isValid: true, validErrMsg: ''
+        value: '', isValid: false, validErrMsg: ''
       },
       password: {
-        value: '', isValid: true, validErrMsg: ''
+        value: '', isValid: false, validErrMsg: ''
       }
     };
 
@@ -25723,8 +25780,8 @@ var LoginRegisterForm = function (_React$Component) {
 
 exports.default = LoginRegisterForm;
 
-},{"../utils/validator":134,"react":89}],120:[function(require,module,exports){
-"use strict";
+},{"../utils/validator":135,"react":89}],120:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -25732,9 +25789,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = require('react-router-dom');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25754,38 +25813,50 @@ var EmailItem = function (_React$Component) {
   }
 
   _createClass(EmailItem, [{
-    key: "render",
+    key: 'render',
     value: function render() {
+      var acntId = this.props.acntId;
       var _props$message = this.props.message,
           from = _props$message.from,
+          uidl = _props$message.uidl,
           subject = _props$message.subject,
           html = _props$message.html,
           textAsHtml = _props$message.textAsHtml,
-          body = _props$message.body;
+          body = _props$message.body,
+          senderName = _props$message.senderName,
+          senderEmail = _props$message.senderEmail;
       // const content = html ? html : textAsHtml;
 
       return _react2.default.createElement(
-        "div",
-        { className: "email-item email-item-selected pure-g" },
+        'div',
+        { className: 'email-item email-item-selected pure-g' },
         _react2.default.createElement(
-          "div",
-          { className: "pure-u" },
-          _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "/img/common/tilo-avatar.png" })
+          'div',
+          { className: 'pure-u' },
+          _react2.default.createElement('img', { width: '64', height: '64', alt: 'Tilo Mitra\'s avatar', className: 'email-avatar', src: '/img/common/tilo-avatar.png' })
         ),
         _react2.default.createElement(
-          "div",
-          { className: "pure-u-3-4" },
+          'div',
+          { className: 'pure-u-3-4' },
           _react2.default.createElement(
-            "h5",
-            { className: "email-name" },
-            from.text
+            'h5',
+            { className: 'email-name' },
+            _react2.default.createElement(
+              'a',
+              { href: "mailto:" + senderEmail },
+              senderName
+            )
           ),
           _react2.default.createElement(
-            "h4",
-            { className: "email-subject" },
-            subject
+            'h4',
+            { className: 'email-subject' },
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { to: '/inbox/' + acntId + '/' + uidl },
+              subject
+            )
           ),
-          _react2.default.createElement("p", { className: "email-desc", dangerouslySetInnerHTML: { __html: body.substr(0, 200) + ' [...]' } })
+          _react2.default.createElement('p', { className: 'email-desc', dangerouslySetInnerHTML: { __html: body.substr(0, 200) + ' [...]' } })
         )
       );
     }
@@ -25804,209 +25875,99 @@ var MailList = function (_React$Component2) {
   }
 
   _createClass(MailList, [{
-    key: "render",
+    key: 'render',
     value: function render() {
-      var messages = this.props.messages;
+      var _props = this.props,
+          messages = _props.messages,
+          acntId = _props.acntId;
 
       return _react2.default.createElement(
-        "div",
-        { id: "list", className: "pure-u-1" },
+        'div',
+        { id: 'list', className: 'pure-u-1' },
         messages.map(function (m, i) {
-          return _react2.default.createElement(EmailItem, { key: i, message: m });
+          return _react2.default.createElement(EmailItem, { key: i, message: m, acntId: acntId });
         }),
         _react2.default.createElement(
-          "div",
-          { className: "email-item email-item-selected pure-g" },
+          'div',
+          { className: 'email-item email-item-selected pure-g' },
           _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Tilo Mitra's avatar", className: "email-avatar", src: "/img/common/tilo-avatar.png" })
+            'div',
+            { className: 'pure-u' },
+            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Tilo Mitra\'s avatar', className: 'email-avatar', src: '/img/common/tilo-avatar.png' })
           ),
           _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
+            'div',
+            { className: 'pure-u-3-4' },
             _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Tilo Mitra"
+              'h5',
+              { className: 'email-name' },
+              'Tilo Mitra'
             ),
             _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "Hello from Toronto"
+              'h4',
+              { className: 'email-subject' },
+              'Hello from Toronto'
             ),
             _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Hey, I just wanted to check in with you from Toronto. I got here earlier today."
+              'p',
+              { className: 'email-desc' },
+              'Hey, I just wanted to check in with you from Toronto. I got here earlier today.'
             )
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "email-item email-item-unread pure-g" },
+          'div',
+          { className: 'email-item email-item-unread pure-g' },
           _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Eric Ferraiuolo's avatar", className: "email-avatar", src: "/img/common/ericf-avatar.png" })
+            'div',
+            { className: 'pure-u' },
+            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Eric Ferraiuolo\'s avatar', className: 'email-avatar', src: '/img/common/ericf-avatar.png' })
           ),
           _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
+            'div',
+            { className: 'pure-u-3-4' },
             _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Eric Ferraiuolo"
+              'h5',
+              { className: 'email-name' },
+              'Eric Ferraiuolo'
             ),
             _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "Re: Pull Requests"
+              'h4',
+              { className: 'email-subject' },
+              'Re: Pull Requests'
             ),
             _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Hey, I had some feedback for pull request #51. We should center the menu so it looks better on mobile."
+              'p',
+              { className: 'email-desc' },
+              'Hey, I had some feedback for pull request #51. We should center the menu so it looks better on mobile.'
             )
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "email-item email-item-unread pure-g" },
+          'div',
+          { className: 'email-item pure-g' },
           _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "YUI's avatar", className: "email-avatar", src: "/img/common/yui-avatar.png" })
+            'div',
+            { className: 'pure-u' },
+            _react2.default.createElement('img', { width: '64', height: '64', alt: 'Yahoo! News\' avatar', className: 'email-avatar', src: '/img/common/ynews-avatar.png' })
           ),
           _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
+            'div',
+            { className: 'pure-u-3-4' },
             _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "YUI Library"
+              'h5',
+              { className: 'email-name' },
+              'Yahoo! News'
             ),
             _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "You have 5 bugs assigned to you"
+              'h4',
+              { className: 'email-subject' },
+              'Summary for April 3rd, 2012'
             ),
             _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla."
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "email-item pure-g" },
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Reid Burke's avatar", className: "email-avatar", src: "/img/common/reid-avatar.png" })
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
-            _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Reid Burke"
-            ),
-            _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "Re: Design Language"
-            ),
-            _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Excepteur sint occaecat cupidatat non proident, sunt in culpa."
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "email-item pure-g" },
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Andrew Wooldridge's avatar", className: "email-avatar", src: "/img/common/andrew-avatar.png" })
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
-            _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Andrew Wooldridge"
-            ),
-            _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "YUI Blog Updates?"
-            ),
-            _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip."
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "email-item pure-g" },
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! Finance's Avatar", className: "email-avatar", src: "/img/common/yfinance-avatar.png" })
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
-            _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Yahoo! Finance"
-            ),
-            _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "How to protect your finances from winter storms"
-            ),
-            _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "Mauris tempor mi vitae sem aliquet pharetra. Fusce in dui purus, nec malesuada mauris."
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { className: "email-item pure-g" },
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u" },
-            _react2.default.createElement("img", { width: "64", height: "64", alt: "Yahoo! News' avatar", className: "email-avatar", src: "/img/common/ynews-avatar.png" })
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "pure-u-3-4" },
-            _react2.default.createElement(
-              "h5",
-              { className: "email-name" },
-              "Yahoo! News"
-            ),
-            _react2.default.createElement(
-              "h4",
-              { className: "email-subject" },
-              "Summary for April 3rd, 2012"
-            ),
-            _react2.default.createElement(
-              "p",
-              { className: "email-desc" },
-              "We found 10 news articles that you may like."
+              'p',
+              { className: 'email-desc' },
+              'We found 10 news articles that you may like.'
             )
           )
         )
@@ -26019,7 +25980,7 @@ var MailList = function (_React$Component2) {
 
 exports.default = MailList;
 
-},{"react":89}],121:[function(require,module,exports){
+},{"react":89,"react-router-dom":73}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26232,6 +26193,7 @@ var MyApp = function MyApp() {
       _react2.default.createElement(_PrivateRoute2.default, { path: '/profile', component: _Profile2.default }),
       _react2.default.createElement(_PrivateRoute2.default, { path: '/accounts', component: _Accounts2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/inbox/:acntId', component: _Inbox2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/inbox/:acntId/:uidl', component: _Inbox2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _Register2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/signin', component: _Login2.default }),
       _react2.default.createElement(_reactRouterDom.Route, { path: '/dashboard', component: _Dashboard2.default }),
@@ -27085,14 +27047,62 @@ var _accounts = require('./accounts');
 
 var _accounts2 = _interopRequireDefault(_accounts);
 
+var _messages = require('./messages');
+
+var _messages2 = _interopRequireDefault(_messages);
+
 var _redux = require('redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reducers = (0, _redux.combineReducers)({ session: _session2.default, accounts: _accounts2.default }); //, accounts, messages });
+var reducers = (0, _redux.combineReducers)({ session: _session2.default, accounts: _accounts2.default, messages: _messages2.default });
 exports.default = reducers;
 
-},{"./accounts":131,"./session":133,"redux":97}],133:[function(require,module,exports){
+},{"./accounts":131,"./messages":133,"./session":134,"redux":97}],133:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _actions = require('../actions');
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var initialState = {
+  isFetching: false,
+  fetchingError: '',
+  perAccount: {}
+};
+
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  console.log('Accounts reducer', state, action);
+  switch (action.type) {
+    case _actions.FETCH_MESSAGES:
+      return Object.assign(_extends({}, state), {
+        isFetching: true
+      });
+    case _actions.FETCH_MESSAGES_SUCCESS:
+      var perAccount = state.perAccount;
+      var accountId = action.accountId,
+          messages = action.messages;
+
+      return Object.assign(_extends({}, state), {
+        isFetching: false,
+        fetchingError: '',
+        perAccount: Object.assign(_extends({}, perAccount), _defineProperty({}, accountId, messages))
+      });
+    default:
+      return state;
+  }
+};
+
+},{"../actions":109}],134:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27222,7 +27232,7 @@ exports.default = function () {
   }
 };
 
-},{"../actions":109}],134:[function(require,module,exports){
+},{"../actions":109}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27295,9 +27305,9 @@ var Validator = function () {
 
 exports.default = new Validator();
 
-},{}],135:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 arguments[4][107][0].apply(exports,arguments)
-},{"dup":107}],136:[function(require,module,exports){
+},{"dup":107}],137:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -27341,7 +27351,51 @@ exports.default = Account;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":135}],137:[function(require,module,exports){
+},{"./API":136}],138:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _API = require('./API');
+
+var _API2 = _interopRequireDefault(_API);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
+var Message = function () {
+  function Message() {
+    _classCallCheck(this, Message);
+  }
+
+  _createClass(Message, null, [{
+    key: 'openInbox',
+    value: function openInbox(accountId, userPass) {
+      return _API2.default.post('/api/inbox/' + accountId, { userPass: userPass });
+    }
+  }, {
+    key: 'findAll',
+    value: function findAll(accountId) {
+      return _API2.default.get('/api/messages/?accountId=' + accountId);
+    }
+  }]);
+
+  return Message;
+}();
+
+exports.default = Message;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./API":136}],139:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -27446,13 +27500,13 @@ exports.default = User;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./API":135}],138:[function(require,module,exports){
+},{"./API":136}],140:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Account = exports.User = undefined;
+exports.Message = exports.Account = exports.User = undefined;
 
 var _User = require('./User');
 
@@ -27462,11 +27516,16 @@ var _Account = require('./Account');
 
 var _Account2 = _interopRequireDefault(_Account);
 
+var _Message = require('./Message');
+
+var _Message2 = _interopRequireDefault(_Message);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.User = _User2.default;
 exports.Account = _Account2.default;
+exports.Message = _Message2.default;
 
-},{"./Account":136,"./User":137}]},{},[106])
+},{"./Account":137,"./Message":138,"./User":139}]},{},[106])
 
 //# sourceMappingURL=build.js.map

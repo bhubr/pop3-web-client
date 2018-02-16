@@ -106,7 +106,8 @@ export function fetchAccountMessages(accountId, userPass)  {
   return dispatch => {
     console.log('fetchAccountMessages', accountId);
     dispatch(requestFetchMessages(accountId));
-    return Message.openInbox(accountId, userPass)
+    // return Message.openInbox(accountId, userPass)
+    return Message.findAll(accountId)
       .then(messages => {
         dispatch(fetchMessagesSuccess(accountId, messages));
         console.log('DISPATCHED fetchMessagesSuccess');
