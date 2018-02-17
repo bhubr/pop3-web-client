@@ -31567,7 +31567,21 @@ var _GenericValidatedForm2 = _interopRequireDefault(_GenericValidatedForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fields = ['type', 'host', 'port', 'identifier', 'password', 'userId', 'userPass'];
+var fields = [{
+  name: 'type', type: 'text'
+}, {
+  name: 'host', type: 'text'
+}, {
+  name: 'port', type: 'text'
+}, {
+  name: 'identifier', type: 'text'
+}, {
+  name: 'password', type: 'password'
+}, {
+  name: 'userId', type: 'hidden'
+}, {
+  name: 'userPass', type: 'hidden'
+}];
 
 // https://medium.com/netscape/connecting-react-component-to-redux-store-with-render-callback-53fd044bb42b
 var AccountForm = function AccountForm(_ref) {
@@ -31634,8 +31648,8 @@ var AccountItem = function (_React$Component) {
           id = _props$account.id;
 
       return _react2.default.createElement(
-        'div',
-        null,
+        'li',
+        { className: 'collection-item' },
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: "/inbox/" + id },
@@ -31677,8 +31691,8 @@ var AccountList = function (_React$Component2) {
         return _react2.default.createElement(AccountItem, { key: a.id, account: a });
       });
       return _react2.default.createElement(
-        'div',
-        null,
+        'ul',
+        { className: 'collection' },
         accounts && accounts.length ? accountItems : ''
       );
     }
@@ -31745,20 +31759,16 @@ var Accounts = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'pure-u-1' },
+        { className: 'row' },
         _react2.default.createElement(
           'div',
-          { className: 'pure-g' },
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-1-2' },
-            _react2.default.createElement(_AccountList2.default, null)
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-1-2' },
-            _react2.default.createElement(_AccountForm2.default, null)
-          )
+          { className: 'col s6' },
+          _react2.default.createElement(_AccountList2.default, null)
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col s6' },
+          _react2.default.createElement(_AccountForm2.default, null)
         )
       );
     }
@@ -31842,7 +31852,7 @@ var GenericValidatedForm = function (_React$Component) {
 
     console.log('GenericValidatedForm ctor', _this);
     _this.state = fields.reduce(function (carry, f) {
-      return Object.assign(carry, _defineProperty({}, f, { value: initialValues[f] ? initialValues[f] : '', isValid: true, validErrMsg: '' }));
+      return Object.assign(carry, _defineProperty({}, f.name, { value: initialValues[f.name] ? initialValues[f.name] : '', isValid: true, validErrMsg: '' }));
     }, {});
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -31894,64 +31904,59 @@ var GenericValidatedForm = function (_React$Component) {
           isPending = _props.isPending;
 
       return _react2.default.createElement(
-        'div',
-        { className: 'pure-u-1' },
+        'form',
+        { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
-          _react2.default.createElement(
-            'fieldset',
-            null,
-            _react2.default.createElement(
-              'legend',
-              null,
-              title
-            ),
-            errorMessage ? _react2.default.createElement(
-              'div',
-              { className: 'alert alert-danger' },
-              errorMessage
-            ) : '',
-            isPending ? _react2.default.createElement(
-              'div',
-              { className: 'alert alert-loading' },
-              'LOADING'
-            ) : '',
-            fields.map(function (f) {
-              var _state$f = _this2.state[f],
-                  value = _state$f.value,
-                  isValid = _state$f.isValid,
-                  validErrMsg = _state$f.validErrMsg;
+          'h5',
+          null,
+          title
+        ),
+        errorMessage ? _react2.default.createElement(
+          'div',
+          { className: 'alert alert-danger' },
+          errorMessage
+        ) : '',
+        isPending ? _react2.default.createElement(
+          'div',
+          { className: 'alert alert-loading' },
+          'LOADING'
+        ) : '',
+        fields.map(function (f) {
+          var _state$f$name = _this2.state[f.name],
+              value = _state$f$name.value,
+              isValid = _state$f$name.isValid,
+              validErrMsg = _state$f$name.validErrMsg;
 
-              return _react2.default.createElement(
-                'div',
-                { key: f },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: f },
-                  f
-                ),
-                _react2.default.createElement('input', {
-                  id: f,
-                  name: f,
-                  type: f,
-                  className: "form-control " + (isValid ? 'valid-input' : 'invalid-input'),
-                  placeholder: f,
-                  value: value,
-                  onChange: _this2.handleChange }),
-                isValid ? '' : _react2.default.createElement(
-                  'span',
-                  { className: 'invalid-text pure-form-message' },
-                  validErrMsg
-                )
-              );
-            }),
+          return _react2.default.createElement(
+            'div',
+            { key: f.name, className: 'row' },
             _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'pure-button pure-button-primary' },
-              title
+              'div',
+              { className: 'input-field col s12' },
+              _react2.default.createElement('input', {
+                id: f.name,
+                name: f.name,
+                type: f.type,
+                className: "validate " + (value ? isValid ? 'valid' : 'invalid' : ''),
+                value: value,
+                onChange: _this2.handleChange }),
+              isValid ? '' : _react2.default.createElement(
+                'span',
+                { className: 'invalid-text pure-form-message' },
+                validErrMsg
+              ),
+              f.type !== 'hidden' ? _react2.default.createElement(
+                'label',
+                { htmlFor: f.name },
+                f.name
+              ) : ''
             )
-          )
+          );
+        }),
+        _react2.default.createElement(
+          'button',
+          { type: 'submit', className: 'col s12 btn btn-large waves-effect indigo' },
+          title
         )
       );
     }
@@ -32804,6 +32809,8 @@ var _routes2 = _interopRequireDefault(_routes);
 
 var _reactRouterDom = require('react-router-dom');
 
+var _reactRedux = require('react-redux');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Status = function Status(_ref) {
@@ -32835,10 +32842,12 @@ var NotFound = function NotFound() {
   );
 };
 
-var MyApp = function MyApp() {
+var MyApp = function MyApp(_ref3) {
+  var user = _ref3.user;
   return _react2.default.createElement(
     'div',
-    { id: 'layout', className: 'content pure-g' },
+    { id: 'layout' },
+    user ? _react2.default.createElement(_Navbar2.default, { user: user }) : '',
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
@@ -32859,9 +32868,13 @@ var MyApp = function MyApp() {
   );
 };
 
-exports.default = MyApp;
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    user: state.session.user
+  };
+}, {})(MyApp);
 
-},{"./Accounts":158,"./Dashboard":159,"./Home":161,"./Inbox":162,"./Login":163,"./MailList":165,"./Navbar":168,"./PrivateRoute":169,"./Profile":170,"./RedirectWithStatus":171,"./Register":172,"./routes":173,"react":119,"react-router-dom":103}],168:[function(require,module,exports){
+},{"./Accounts":158,"./Dashboard":159,"./Home":161,"./Inbox":162,"./Login":163,"./MailList":165,"./Navbar":168,"./PrivateRoute":169,"./Profile":170,"./RedirectWithStatus":171,"./Register":172,"./routes":173,"react":119,"react-redux":86,"react-router-dom":103}],168:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -33007,116 +33020,72 @@ var Navbar = function (_React$Component3) {
       //   <li><a href="/register/">Register</a></li>
       // );
       return _react2.default.createElement(
-        'div',
-        { id: 'nav', className: 'pure-u' },
-        _react2.default.createElement(
-          'a',
-          { href: '#', className: 'nav-menu-button' },
-          'Menu'
-        ),
+        'nav',
+        null,
         _react2.default.createElement(
           'div',
-          { className: 'nav-inner' },
+          { className: 'nav-wrapper' },
           _react2.default.createElement(
-            'button',
-            { className: 'primary-button pure-button' },
-            'Compose'
+            'a',
+            { href: '#', className: 'brand-logo' },
+            'Logo'
           ),
           _react2.default.createElement(
-            'div',
-            { className: 'pure-menu' },
+            'ul',
+            { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
             _react2.default.createElement(
-              'ul',
-              { className: 'pure-menu-list' },
+              'li',
+              null,
               _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Inbox ',
-                  _react2.default.createElement(
-                    'span',
-                    { className: 'email-count' },
-                    '(2)'
-                  )
-                )
-              ),
+                'a',
+                { href: 'sass.html' },
+                'Sass'
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
               _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Important'
-                )
-              ),
+                'a',
+                { href: 'badges.html' },
+                'Components'
+              )
+            ),
+            _react2.default.createElement(
+              'li',
+              null,
               _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Sent'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Drafts'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Trash'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-heading' },
-                'Labels'
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-personal' }),
-                  'Personal'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-work' }),
-                  'Work'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-travel' }),
-                  'Travel'
-                )
+                'a',
+                { href: 'collapsible.html' },
+                'JavaScript'
               )
             )
           )
         )
       );
+      // return (
+      // <div id="nav" className="pure-u">
+      //     <a href="#" className="nav-menu-button">Menu</a>
+
+      //     <div className="nav-inner">
+      //         <button className="primary-button pure-button">Compose</button>
+
+      //         <div className="pure-menu">
+      //             <ul className="pure-menu-list">
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Inbox <span className="email-count">(2)</span></a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Important</a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Sent</a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Drafts</a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Trash</a></li>
+      //                 <li className="pure-menu-heading">Labels</li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-personal"></span>Personal</a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-work"></span>Work</a></li>
+      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-travel"></span>Travel</a></li>
+      //             </ul>
+      //         </div>
+      //     </div>
+      // </div>
+      // );
     }
   }]);
 
