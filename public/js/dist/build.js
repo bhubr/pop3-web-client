@@ -30843,26 +30843,6 @@ var _clientAPI2 = _interopRequireDefault(_clientAPI);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('clientAPI', _clientAPI2.default);
-_api2.default.setStrategy(_clientAPI2.default);
-
-/// TEST API
-var User = _api2.default.User;
-
-console.log('### User in main', User);
-User.create({ email: 'toto' + Date.now() + '@example.com', password: 'pouet' }).then(function (user) {
-  return User.findOne(user.id);
-}).then(function () {
-  return User.findAll();
-}).then(function (users) {
-  return users.pop();
-}).then(function (user) {
-  return User.delete(user.id);
-});
-
-///
-
-
 var mountNode = document.getElementById('app');
 
 var state = window.initialState || {};
@@ -31942,7 +31922,7 @@ var GenericValidatedForm = function (_React$Component) {
                 onChange: _this2.handleChange }),
               isValid ? '' : _react2.default.createElement(
                 'span',
-                { className: 'invalid-text pure-form-message' },
+                { className: 'invalid-text' },
                 validErrMsg
               ),
               f.type !== 'hidden' ? _react2.default.createElement(
