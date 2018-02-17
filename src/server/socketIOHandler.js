@@ -1,6 +1,6 @@
 class SocketIOHandler {
+
 	constructor(io) {
-		this.io = io;
     this.users = {};
 
     this.onAuthSuccess = this.onAuthSuccess.bind(this);
@@ -8,11 +8,14 @@ class SocketIOHandler {
     this.onMessageFetchError = this.onMessageFetchError.bind(this);
     this.onMessageListSuccess = this.onMessageListSuccess.bind(this);
 
-		this.io.on('connection', socket => {
-		  socket.emit('news', { hello: 'world' });
-		  socket.on('auth:success', this.onAuthSuccess(socket));
-		});
 	}
+
+  setIo(io) {
+    this.io = io;
+    this.io.on('connection', socket => {
+      socket.on('auth:success', this.onAuthSuccess(socket));
+    });
+  }
 
   onMessageListSuccess(userId) {
     return idUidls => {
@@ -49,14 +52,15 @@ class SocketIOHandler {
   }
 }
 
-let instance;
+// let instance;
 
-module.exports = function(io) {
-  if(io) {
-    instance = new SocketIOHandler(io);
-  }
-  if(! io && ! instance) {
-    throw new Error('SocketIOHandler instance should be created first');
-  }
-  return instance;
-}
+// module.exports = function(io) {
+//   if(io) {
+//     instance = new SocketIOHandler(io);
+//   }
+//   if(! io && ! instance) {
+//     throw new Error('SocketIOHandler instance should be created first');
+//   }
+//   return instance;
+// }
+export default new SocketIOHandler();
