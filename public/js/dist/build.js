@@ -30843,26 +30843,6 @@ var _clientAPI2 = _interopRequireDefault(_clientAPI);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('clientAPI', _clientAPI2.default);
-_api2.default.setStrategy(_clientAPI2.default);
-
-/// TEST API
-var User = _api2.default.User;
-
-console.log('### User in main', User);
-User.create({ email: 'toto' + Date.now() + '@example.com', password: 'pouet' }).then(function (user) {
-  return User.findOne(user.id);
-}).then(function () {
-  return User.findAll();
-}).then(function (users) {
-  return users.pop();
-}).then(function (user) {
-  return User.delete(user.id);
-});
-
-///
-
-
 var mountNode = document.getElementById('app');
 
 var state = window.initialState || {};
@@ -31567,7 +31547,21 @@ var _GenericValidatedForm2 = _interopRequireDefault(_GenericValidatedForm);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fields = ['type', 'host', 'port', 'identifier', 'password', 'userId', 'userPass'];
+var fields = [{
+  name: 'type', type: 'text'
+}, {
+  name: 'host', type: 'text'
+}, {
+  name: 'port', type: 'text'
+}, {
+  name: 'identifier', type: 'text'
+}, {
+  name: 'password', type: 'password'
+}, {
+  name: 'userId', type: 'hidden'
+}, {
+  name: 'userPass', type: 'hidden'
+}];
 
 // https://medium.com/netscape/connecting-react-component-to-redux-store-with-render-callback-53fd044bb42b
 var AccountForm = function AccountForm(_ref) {
@@ -31634,8 +31628,8 @@ var AccountItem = function (_React$Component) {
           id = _props$account.id;
 
       return _react2.default.createElement(
-        'div',
-        null,
+        'li',
+        { className: 'collection-item' },
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: "/inbox/" + id },
@@ -31677,8 +31671,8 @@ var AccountList = function (_React$Component2) {
         return _react2.default.createElement(AccountItem, { key: a.id, account: a });
       });
       return _react2.default.createElement(
-        'div',
-        null,
+        'ul',
+        { className: 'collection' },
         accounts && accounts.length ? accountItems : ''
       );
     }
@@ -31745,20 +31739,16 @@ var Accounts = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'pure-u-1' },
+        { className: 'row' },
         _react2.default.createElement(
           'div',
-          { className: 'pure-g' },
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-1-2' },
-            _react2.default.createElement(_AccountList2.default, null)
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-u-1-2' },
-            _react2.default.createElement(_AccountForm2.default, null)
-          )
+          { className: 'col s6' },
+          _react2.default.createElement(_AccountList2.default, null)
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col s6' },
+          _react2.default.createElement(_AccountForm2.default, null)
         )
       );
     }
@@ -31842,7 +31832,7 @@ var GenericValidatedForm = function (_React$Component) {
 
     console.log('GenericValidatedForm ctor', _this);
     _this.state = fields.reduce(function (carry, f) {
-      return Object.assign(carry, _defineProperty({}, f, { value: initialValues[f] ? initialValues[f] : '', isValid: true, validErrMsg: '' }));
+      return Object.assign(carry, _defineProperty({}, f.name, { value: initialValues[f.name] ? initialValues[f.name] : '', isValid: true, validErrMsg: '' }));
     }, {});
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -31894,64 +31884,59 @@ var GenericValidatedForm = function (_React$Component) {
           isPending = _props.isPending;
 
       return _react2.default.createElement(
-        'div',
-        { className: 'pure-u-1' },
+        'form',
+        { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
-          _react2.default.createElement(
-            'fieldset',
-            null,
-            _react2.default.createElement(
-              'legend',
-              null,
-              title
-            ),
-            errorMessage ? _react2.default.createElement(
-              'div',
-              { className: 'alert alert-danger' },
-              errorMessage
-            ) : '',
-            isPending ? _react2.default.createElement(
-              'div',
-              { className: 'alert alert-loading' },
-              'LOADING'
-            ) : '',
-            fields.map(function (f) {
-              var _state$f = _this2.state[f],
-                  value = _state$f.value,
-                  isValid = _state$f.isValid,
-                  validErrMsg = _state$f.validErrMsg;
+          'h5',
+          null,
+          title
+        ),
+        errorMessage ? _react2.default.createElement(
+          'div',
+          { className: 'alert alert-danger' },
+          errorMessage
+        ) : '',
+        isPending ? _react2.default.createElement(
+          'div',
+          { className: 'alert alert-loading' },
+          'LOADING'
+        ) : '',
+        fields.map(function (f) {
+          var _state$f$name = _this2.state[f.name],
+              value = _state$f$name.value,
+              isValid = _state$f$name.isValid,
+              validErrMsg = _state$f$name.validErrMsg;
 
-              return _react2.default.createElement(
-                'div',
-                { key: f },
-                _react2.default.createElement(
-                  'label',
-                  { htmlFor: f },
-                  f
-                ),
-                _react2.default.createElement('input', {
-                  id: f,
-                  name: f,
-                  type: f,
-                  className: "form-control " + (isValid ? 'valid-input' : 'invalid-input'),
-                  placeholder: f,
-                  value: value,
-                  onChange: _this2.handleChange }),
-                isValid ? '' : _react2.default.createElement(
-                  'span',
-                  { className: 'invalid-text pure-form-message' },
-                  validErrMsg
-                )
-              );
-            }),
+          return _react2.default.createElement(
+            'div',
+            { key: f.name, className: 'row' },
             _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'pure-button pure-button-primary' },
-              title
+              'div',
+              { className: 'input-field col s12' },
+              _react2.default.createElement('input', {
+                id: f.name,
+                name: f.name,
+                type: f.type,
+                className: "validate " + (value ? isValid ? 'valid' : 'invalid' : ''),
+                value: value,
+                onChange: _this2.handleChange }),
+              isValid ? '' : _react2.default.createElement(
+                'span',
+                { className: 'invalid-text' },
+                validErrMsg
+              ),
+              f.type !== 'hidden' ? _react2.default.createElement(
+                'label',
+                { htmlFor: f.name },
+                f.name
+              ) : ''
             )
-          )
+          );
+        }),
+        _react2.default.createElement(
+          'button',
+          { type: 'submit', className: 'col s12 btn btn-large waves-effect indigo' },
+          title
         )
       );
     }
@@ -32146,56 +32131,52 @@ var Inbox = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement(_MailList2.default, { messages: messages, acntId: this.acntId }),
+        { className: 'row' },
         _react2.default.createElement(
           'div',
-          { id: 'main', className: 'pure-u-1' },
+          { className: 'col s5' },
+          _react2.default.createElement(_MailList2.default, { messages: messages, acntId: this.acntId })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col s7' },
           _react2.default.createElement(
             'div',
-            { className: 'email-content' },
+            { className: 'pure-u-1' },
             _react2.default.createElement(
-              'div',
-              { className: 'email-content-header pure-g' },
-              _react2.default.createElement(
-                'div',
-                { className: 'pure-u-1' },
-                _react2.default.createElement(
-                  'h1',
-                  { className: 'email-content-title' },
-                  subject || _react2.default.createElement(
-                    'span',
-                    { style: { color: '#b44' } },
-                    '(vide)'
-                  )
-                ),
-                _react2.default.createElement(
-                  'p',
-                  { className: 'email-content-subtitle' },
-                  'From ',
-                  _react2.default.createElement(
-                    'a',
-                    { href: senderLink },
-                    senderName || senderEmail
-                  ),
-                  ' at ',
-                  _react2.default.createElement(
-                    'span',
-                    null,
-                    _react2.default.createElement(
-                      'del',
-                      null,
-                      '3:56pm, April 3, 2012'
-                    )
-                  )
-                )
+              'h1',
+              { className: 'email-content-title' },
+              subject || _react2.default.createElement(
+                'span',
+                { style: { color: '#b44' } },
+                '(vide)'
               )
             ),
             _react2.default.createElement(
-              'div',
-              { className: 'email-content-body' },
-              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: message.body } })
+              'p',
+              { className: 'email-content-subtitle' },
+              'From ',
+              _react2.default.createElement(
+                'a',
+                { href: senderLink },
+                senderName || senderEmail
+              ),
+              ' at ',
+              _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                  'del',
+                  null,
+                  '3:56pm, April 3, 2012'
+                )
+              )
             )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'email-content-body' },
+            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: message.body } })
           )
         )
       );
@@ -32395,70 +32376,128 @@ var LoginRegisterForm = function (_React$Component) {
           errorMessage = _props.errorMessage,
           isPending = _props.isPending;
 
+      console.log(this.props);
+      var mainStyles = {
+        height: '100vh',
+        background: 'repeat url("/img/mp-01.png")'
+      };
+      var overlayStyles = {
+        paddingTop: '10%',
+        height: '100vh',
+        background: 'rgba(255, 255, 255, 0.3)'
+      };
+      var formStyles = {
+        padding: '32px 64px 16px 64px',
+        border: '1px solid #eee',
+        maxWidth: '450px',
+        margin: '0 auto'
+      };
       return _react2.default.createElement(
-        'div',
-        { className: 'pure-u-1' },
+        'main',
+        { style: mainStyles },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
+          'div',
+          { style: overlayStyles },
           _react2.default.createElement(
-            'fieldset',
-            null,
+            'div',
+            { className: 'z-depth-1 grey lighten-4 row', style: formStyles },
             _react2.default.createElement(
-              'legend',
-              null,
-              this.title
+              'h5',
+              { className: 'indigo-text' },
+              'Please, ',
+              this.title,
+              ' into your account'
             ),
             errorMessage ? _react2.default.createElement(
               'div',
-              { className: 'alert alert-danger' },
+              { 'class': 'card-panel red lighten-4' },
               errorMessage
             ) : '',
             isPending ? _react2.default.createElement(
               'div',
-              { className: 'alert alert-loading' },
+              { className: 'card-panel blue lighten-4' },
               'LOADING'
             ) : '',
             _react2.default.createElement(
-              'label',
-              { htmlFor: 'email' },
-              'Email'
-            ),
-            _react2.default.createElement('input', {
-              id: 'email',
-              name: 'email',
-              type: 'email',
-              className: "form-control " + (email.isValid ? 'valid-input' : 'invalid-input'),
-              placeholder: 'Email',
-              value: email.value,
-              onChange: this.handleChange }),
-            email.isValid ? '' : _react2.default.createElement(
-              'span',
-              { className: 'invalid-text pure-form-message' },
-              email.validErrMsg
-            ),
-            _react2.default.createElement(
-              'label',
-              { htmlFor: 'password' },
-              'Password'
-            ),
-            _react2.default.createElement('input', {
-              id: 'password',
-              name: 'password',
-              type: 'password',
-              className: "form-control " + (password.isValid ? 'valid-input' : 'invalid-input'),
-              placeholder: 'Password',
-              value: password.value,
-              onChange: this.handleChange }),
-            password.isValid ? '' : _react2.default.createElement(
-              'span',
-              { className: 'invalid-text pure-form-message' },
-              password.validErrMsg
-            ),
-            _react2.default.createElement(
-              'button',
-              { type: 'submit', className: 'pure-button pure-button-primary' },
-              this.title
+              'form',
+              { onSubmit: this.handleSubmit, className: 'col s12', method: 'POST' },
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement('div', { className: 'col s12' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    id: 'email',
+                    name: 'email',
+                    type: 'email',
+                    className: "validate " + (email.value ? email.isValid ? 'valid' : 'invalid' : ''),
+                    value: email.value,
+                    onChange: this.handleChange }),
+                  email.isValid ? '' : _react2.default.createElement(
+                    'span',
+                    { className: 'invalid-text pure-form-message' },
+                    email.validErrMsg
+                  ),
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: 'email' },
+                    'Enter your email'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    id: 'password',
+                    name: 'password',
+                    type: 'password',
+                    className: "validate " + (password.value ? password.isValid ? 'valid' : 'invalid' : ''),
+                    value: password.value,
+                    onChange: this.handleChange }),
+                  password.isValid ? '' : _react2.default.createElement(
+                    'span',
+                    { className: 'invalid-text pure-form-message' },
+                    password.validErrMsg
+                  ),
+                  _react2.default.createElement(
+                    'label',
+                    { htmlFor: 'password' },
+                    'Enter your password'
+                  )
+                ),
+                _react2.default.createElement(
+                  'label',
+                  { style: { float: 'right' } },
+                  _react2.default.createElement(
+                    'a',
+                    { className: 'pink-text', href: '#!' },
+                    _react2.default.createElement(
+                      'b',
+                      null,
+                      'Forgot Password?'
+                    )
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'button',
+                  { type: 'submit', name: 'btn-login', className: 'col s12 btn btn-large waves-effect indigo' },
+                  this.title
+                )
+              )
             )
           )
         )
@@ -32513,32 +32552,14 @@ var EmailItem = function (_React$Component) {
           senderName = _props$message.senderName,
           senderEmail = _props$message.senderEmail,
           body = _props$message.body;
-      // const content = html ? html : textAsHtml;
 
       return _react2.default.createElement(
-        'div',
-        { className: 'email-item email-item-selected pure-g' },
+        'li',
+        { className: 'collection-item' },
         _react2.default.createElement(
-          'div',
-          { className: 'pure-u-3-4' },
-          _react2.default.createElement(
-            'h5',
-            { className: 'email-name' },
-            _react2.default.createElement(
-              'a',
-              { href: "mailto:" + senderEmail },
-              senderName
-            )
-          ),
-          _react2.default.createElement(
-            'h4',
-            { className: 'email-subject' },
-            _react2.default.createElement(
-              _reactRouterDom.Link,
-              { to: '/inbox/' + acntId + '/' + uidl },
-              subject
-            )
-          )
+          _reactRouterDom.Link,
+          { to: '/inbox/' + acntId + '/' + uidl },
+          subject
         )
       );
     }
@@ -32565,7 +32586,7 @@ var MailList = function (_React$Component2) {
 
       return _react2.default.createElement(
         'div',
-        { id: 'list', className: 'pure-u-1' },
+        { id: 'list', className: 'collection' },
         messages.map(function (m, i) {
           return _react2.default.createElement(EmailItem, { key: i, message: m, acntId: acntId });
         })
@@ -32748,6 +32769,8 @@ var _routes2 = _interopRequireDefault(_routes);
 
 var _reactRouterDom = require('react-router-dom');
 
+var _reactRedux = require('react-redux');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Status = function Status(_ref) {
@@ -32779,11 +32802,12 @@ var NotFound = function NotFound() {
   );
 };
 
+// const MyApp = ({ user }) => (
 var MyApp = function MyApp() {
   return _react2.default.createElement(
     'div',
-    { id: 'layout', className: 'content pure-g' },
-    _react2.default.createElement(_Navbar2.default, { user: null }),
+    { id: 'layout' },
+    _react2.default.createElement(_Navbar2.default, null),
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
@@ -32804,9 +32828,15 @@ var MyApp = function MyApp() {
   );
 };
 
+// export default connect(
+//   (state) => ({
+//     user: state.session.user
+//   }),
+//   {}
+// )(MyApp);
 exports.default = MyApp;
 
-},{"./Accounts":158,"./Dashboard":159,"./Home":161,"./Inbox":162,"./Login":163,"./MailList":165,"./Navbar":168,"./PrivateRoute":169,"./Profile":170,"./RedirectWithStatus":171,"./Register":172,"./routes":173,"react":119,"react-router-dom":103}],168:[function(require,module,exports){
+},{"./Accounts":158,"./Dashboard":159,"./Home":161,"./Inbox":162,"./Login":163,"./MailList":165,"./Navbar":168,"./PrivateRoute":169,"./Profile":170,"./RedirectWithStatus":171,"./Register":172,"./routes":173,"react":119,"react-redux":86,"react-router-dom":103}],168:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32859,7 +32889,7 @@ var RightMenuLoggedIn = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'ul',
-        { className: 'nav navbar-nav pull-right' },
+        { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
         _react2.default.createElement(
           'li',
           null,
@@ -32899,14 +32929,14 @@ var RightMenuGuest = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'ul',
-        { className: 'nav navbar-nav pull-right' },
+        { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
         _react2.default.createElement(
           'li',
           null,
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/login' },
-            'Login'
+            { to: '/about' },
+            'About'
           )
         ),
         _react2.default.createElement(
@@ -32914,8 +32944,17 @@ var RightMenuGuest = function (_React$Component2) {
           null,
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/register' },
-            'Register'
+            { to: '/signin' },
+            'Sign in'
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/signup' },
+            'Sign up'
           )
         )
       );
@@ -32940,126 +32979,19 @@ var Navbar = function (_React$Component3) {
       var user = this.props.user;
 
       var rightMenu = user ? _react2.default.createElement(RightMenuLoggedIn, { email: user.email, logout: this.props.onLogout }) : _react2.default.createElement(RightMenuGuest, null);
-      //
-      // const menuItems = rightMenu.map((link, index) => (
-      //   <LinkItem key={index} href={link.href} label={link.label} onClick={link.onClick} />
-      // ));
-      // key={index.toString()}
-      //  (
-      //   <li><a href="/profile/">{this.props.user.email}</a></li>
-      // ) : (
-      //   <li><a href="/login/">Login</a></li>
-      //   <li><a href="/register/">Register</a></li>
-      // );
+
       return _react2.default.createElement(
-        'div',
-        { id: 'nav', className: 'pure-u' },
-        _react2.default.createElement(
-          'a',
-          { href: '#', className: 'nav-menu-button' },
-          'Menu'
-        ),
+        'nav',
+        null,
         _react2.default.createElement(
           'div',
-          { className: 'nav-inner' },
+          { className: 'nav-wrapper' },
           _react2.default.createElement(
-            'button',
-            { className: 'primary-button pure-button' },
-            'Compose'
+            _reactRouterDom.Link,
+            { to: '/', className: 'brand-logo', style: { paddingLeft: '15px' } },
+            'Webmail'
           ),
-          _react2.default.createElement(
-            'div',
-            { className: 'pure-menu' },
-            _react2.default.createElement(
-              'ul',
-              { className: 'pure-menu-list' },
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Inbox ',
-                  _react2.default.createElement(
-                    'span',
-                    { className: 'email-count' },
-                    '(2)'
-                  )
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Important'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Sent'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Drafts'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  'Trash'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-heading' },
-                'Labels'
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-personal' }),
-                  'Personal'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-work' }),
-                  'Work'
-                )
-              ),
-              _react2.default.createElement(
-                'li',
-                { className: 'pure-menu-item' },
-                _react2.default.createElement(
-                  'a',
-                  { href: '#', className: 'pure-menu-link' },
-                  _react2.default.createElement('span', { className: 'email-label-travel' }),
-                  'Travel'
-                )
-              )
-            )
-          )
+          rightMenu
         )
       );
     }
@@ -33068,23 +33000,16 @@ var Navbar = function (_React$Component3) {
   return Navbar;
 }(_react2.default.Component);
 
-var mapStateToProps = function mapStateToProps(state) {
+exports.default = (0, _reactRedux.connect)(function (state) {
   return {
     user: state.session.user
   };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    // onLogin: () => dispatch(loginUser({ email: 'jonsnow.tv' })),
-    onLogout: function onLogout(event) {
-      event.preventDefault();
-      dispatch((0, _actions.logoutUser)());
-    }
-  };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
+}, {
+  onLogout: function onLogout(event) {
+    event.preventDefault();
+    dispatch((0, _actions.logoutUser)());
+  }
+})(Navbar);
 
 },{"../actions":154,"react":119,"react-redux":86,"react-router-dom":103}],169:[function(require,module,exports){
 'use strict';
@@ -33808,6 +33733,7 @@ exports.default = function () {
       {
         return Object.assign(_extends({}, state), {
           isAuthenticating: true,
+          authenticationError: '',
           upw: action.user.password
         });
       }

@@ -68,6 +68,7 @@ export default (state = initialState, action) => {
       case LOGIN_USER: {
         return Object.assign({ ...state }, {
           isAuthenticating: true,
+          authenticationError: '',
           upw: action.user.password
         });
       }

@@ -20,6 +20,7 @@ import {
   Link,
   Switch
 } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 const Status = ({ code, children }) => (
   <Route render={({ staticContext }) => {
@@ -38,12 +39,11 @@ const NotFound = () => (
   </Status>
 );
 
+// const MyApp = ({ user }) => (
 const MyApp = () => (
-  <div id="layout" className="content pure-g">
+  <div id="layout">
 
-
-    <Navbar user={null}/>
-    {/*<Navbar user={{email:'joe@foo.bar'}}/>*/}
+    <Navbar />
 
     <Switch>
       <Route exact path="/" component={Home}/>
@@ -77,4 +77,10 @@ const MyApp = () => (
   </div>
 );
 
+// export default connect(
+//   (state) => ({
+//     user: state.session.user
+//   }),
+//   {}
+// )(MyApp);
 export default MyApp;

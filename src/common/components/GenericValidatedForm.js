@@ -10,7 +10,7 @@ export default class GenericValidatedForm extends React.Component {
 
     console.log('GenericValidatedForm ctor', this);
     this.state = fields.reduce((carry, f) => (
-      Object.assign(carry, { [f]: { value: initialValues[f] ? initialValues[f] : '', isValid: true, validErrMsg: '' } })
+      Object.assign(carry, { [f.name]: { value: initialValues[f.name] ? initialValues[f.name] : '', isValid: true, validErrMsg: '' } })
     ), {});
 
 
@@ -42,37 +42,32 @@ export default class GenericValidatedForm extends React.Component {
   render() {
     const { title, fields, errorMessage, isPending } = this.props;
     return (
-      <div className="pure-u-1">
+      <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
+        <h5>{title}</h5>
+        {errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : ''}
+        {isPending ? <div className="alert alert-loading">LOADING</div> : ''}
 
-        <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
-            <fieldset>
-                <legend>{title}</legend>
-                {errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : ''}
-                {isPending ? <div className="alert alert-loading">LOADING</div> : ''}
+        {fields.map(f => {
+          const { value, isValid, validErrMsg } = this.state[f.name];
+          return (
+            <div key={f.name} className="row">
+              <div className="input-field col s12">
+                <input
+                  id={f.name}
+                  name={f.name}
+                  type={f.type}
+                  className={"validate " + (value ? (isValid ? 'valid' : 'invalid') : '') }
+                  value={value}
+                  onChange={this.handleChange} />
+                {isValid ? '' : <span className="invalid-text">{validErrMsg}</span>}
+                {f.type !== 'hidden' ? <label htmlFor={f.name}>{f.name}</label> : ''}
+              </div>
+            </div>
+          );
+        } )}
 
-                {fields.map(f => {
-                  const { value, isValid, validErrMsg } = this.state[f];
-                  return (
-                  <div key={f}>
-                    <label htmlFor={f}>{f}</label>
-                    <input
-                      id={f}
-                      name={f}
-                      type={f}
-                      className={"form-control " + (isValid ? 'valid-input' : 'invalid-input')}
-                      placeholder={f}
-                      value={value}
-                      onChange={this.handleChange} />
-                    {isValid ? '' : <span className="invalid-text pure-form-message">{validErrMsg}</span>}
-
-                  </div>
-                ); } )}
-
-                <button type="submit" className="pure-button pure-button-primary">{title}</button>
-            </fieldset>
-        </form>
-
-      </div>
+        <button type="submit" className="col s12 btn btn-large waves-effect indigo">{title}</button>
+      </form>
     );
   }
 }

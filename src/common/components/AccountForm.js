@@ -3,7 +3,22 @@ import { connect } from 'react-redux';
 import { createAccount } from '../actions';
 import GenericValidatedForm from './GenericValidatedForm';
 
-const fields = ['type', 'host', 'port', 'identifier', 'password', 'userId', 'userPass'];
+const fields = [{
+    name: 'type', type: 'text'
+  }, {
+    name: 'host', type: 'text'
+  }, {
+    name: 'port', type: 'text'
+  }, {
+    name: 'identifier', type: 'text'
+  }, {
+    name: 'password', type: 'password'
+  }, {
+    name: 'userId', type: 'hidden'
+  }, {
+    name: 'userPass', type: 'hidden'
+  }
+];
 
 // https://medium.com/netscape/connecting-react-component-to-redux-store-with-render-callback-53fd044bb42b
 const AccountForm = ({ onSubmit, errorMessage, initialValues, isPending }) => (

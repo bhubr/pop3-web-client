@@ -9,9 +9,9 @@ class AccountItem extends React.Component {
 	render() {
 		const { identifier, host, port, id } = this.props.account;
 		return (
-        <div>
+        <li className="collection-item">
           <Link to={"/inbox/" + id}>{identifier}@{host}{port ? ':' + port : ''}</Link>
-        </div>
+        </li>
 		);
 	}
 }
@@ -32,9 +32,9 @@ class AccountList extends React.Component {
       <AccountItem key={a.id} account={a} />
     ));
 		return (
-      <div>
+      <ul className="collection">
       {accounts && accounts.length ? accountItems : ''}
-      </div>
+      </ul>
     );
 	}
 

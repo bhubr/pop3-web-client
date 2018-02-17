@@ -67,34 +67,26 @@ class Inbox extends React.Component {
 
     return (
 
-      <div>
-        <MailList messages={messages} acntId={this.acntId} />
+      <div className="row">
+        <div className="col s5">
+          <MailList messages={messages} acntId={this.acntId} />
+        </div>
+        <div className="col s7">
 
-        <div id="main" className="pure-u-1">
-          <div className="email-content">
-            <div className="email-content-header pure-g">
-              <div className="pure-u-1">
-                <h1 className="email-content-title">{ subject || <span style={{ color: '#b44' }}>(vide)</span> }</h1>
-                <p className="email-content-subtitle">
-                  From <a href={senderLink}>{ senderName || senderEmail }</a> at <span><del>3:56pm, April 3, 2012</del></span>
-                </p>
-              </div>
-
-            {/*
-              <div className="email-content-controls pure-u-1-2">
-                <button className="secondary-button pure-button">Reply</button>
-                <button className="secondary-button pure-button">Forward</button>
-                <button className="secondary-button pure-button">Move to</button>
-              </div>
-            */}
+            <div className="pure-u-1">
+              <h1 className="email-content-title">{ subject || <span style={{ color: '#b44' }}>(vide)</span> }</h1>
+              <p className="email-content-subtitle">
+                From <a href={senderLink}>{ senderName || senderEmail }</a> at <span><del>3:56pm, April 3, 2012</del></span>
+              </p>
             </div>
 
             <div className="email-content-body">
               <div dangerouslySetInnerHTML={{ __html: message.body }}></div>
             </div>
-          </div>
+
         </div>
       </div>
+
     );
   }
 
