@@ -60,7 +60,6 @@ export default class LoginRegisterForm extends React.Component {
       <main style={mainStyles}>
           <div style={overlayStyles}>
 
-
           <div className="z-depth-1 grey lighten-4 row" style={formStyles}>
             <h5 className="indigo-text">Please, login into your account</h5>
             {errorMessage ? <div class="card-panel red lighten-4">{errorMessage}</div> : ''}
