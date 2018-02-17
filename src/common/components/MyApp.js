@@ -39,11 +39,11 @@ const NotFound = () => (
   </Status>
 );
 
-const MyApp = ({ user }) => (
+// const MyApp = ({ user }) => (
+const MyApp = () => (
   <div id="layout">
 
-
-    { user ? <Navbar user={user} /> : '' }
+    <Navbar />
 
     <Switch>
       <Route exact path="/" component={Home}/>
@@ -77,9 +77,10 @@ const MyApp = ({ user }) => (
   </div>
 );
 
-export default connect(
-  (state) => ({
-    user: state.session.user
-  }),
-  {}
-)(MyApp);
+// export default connect(
+//   (state) => ({
+//     user: state.session.user
+//   }),
+//   {}
+// )(MyApp);
+export default MyApp;

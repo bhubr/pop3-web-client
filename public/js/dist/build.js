@@ -32131,56 +32131,52 @@ var Inbox = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement(_MailList2.default, { messages: messages, acntId: this.acntId }),
+        { className: 'row' },
         _react2.default.createElement(
           'div',
-          { id: 'main', className: 'pure-u-1' },
+          { className: 'col s5' },
+          _react2.default.createElement(_MailList2.default, { messages: messages, acntId: this.acntId })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'col s7' },
           _react2.default.createElement(
             'div',
-            { className: 'email-content' },
+            { className: 'pure-u-1' },
             _react2.default.createElement(
-              'div',
-              { className: 'email-content-header pure-g' },
-              _react2.default.createElement(
-                'div',
-                { className: 'pure-u-1' },
-                _react2.default.createElement(
-                  'h1',
-                  { className: 'email-content-title' },
-                  subject || _react2.default.createElement(
-                    'span',
-                    { style: { color: '#b44' } },
-                    '(vide)'
-                  )
-                ),
-                _react2.default.createElement(
-                  'p',
-                  { className: 'email-content-subtitle' },
-                  'From ',
-                  _react2.default.createElement(
-                    'a',
-                    { href: senderLink },
-                    senderName || senderEmail
-                  ),
-                  ' at ',
-                  _react2.default.createElement(
-                    'span',
-                    null,
-                    _react2.default.createElement(
-                      'del',
-                      null,
-                      '3:56pm, April 3, 2012'
-                    )
-                  )
-                )
+              'h1',
+              { className: 'email-content-title' },
+              subject || _react2.default.createElement(
+                'span',
+                { style: { color: '#b44' } },
+                '(vide)'
               )
             ),
             _react2.default.createElement(
-              'div',
-              { className: 'email-content-body' },
-              _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: message.body } })
+              'p',
+              { className: 'email-content-subtitle' },
+              'From ',
+              _react2.default.createElement(
+                'a',
+                { href: senderLink },
+                senderName || senderEmail
+              ),
+              ' at ',
+              _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                  'del',
+                  null,
+                  '3:56pm, April 3, 2012'
+                )
+              )
             )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'email-content-body' },
+            _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: message.body } })
           )
         )
       );
@@ -32408,7 +32404,9 @@ var LoginRegisterForm = function (_React$Component) {
             _react2.default.createElement(
               'h5',
               { className: 'indigo-text' },
-              'Please, login into your account'
+              'Please, ',
+              this.title,
+              ' into your account'
             ),
             errorMessage ? _react2.default.createElement(
               'div',
@@ -32554,32 +32552,14 @@ var EmailItem = function (_React$Component) {
           senderName = _props$message.senderName,
           senderEmail = _props$message.senderEmail,
           body = _props$message.body;
-      // const content = html ? html : textAsHtml;
 
       return _react2.default.createElement(
-        'div',
-        { className: 'email-item email-item-selected pure-g' },
+        'li',
+        { className: 'collection-item' },
         _react2.default.createElement(
-          'div',
-          { className: 'pure-u-3-4' },
-          _react2.default.createElement(
-            'h5',
-            { className: 'email-name' },
-            _react2.default.createElement(
-              'a',
-              { href: "mailto:" + senderEmail },
-              senderName
-            )
-          ),
-          _react2.default.createElement(
-            'h4',
-            { className: 'email-subject' },
-            _react2.default.createElement(
-              _reactRouterDom.Link,
-              { to: '/inbox/' + acntId + '/' + uidl },
-              subject
-            )
-          )
+          _reactRouterDom.Link,
+          { to: '/inbox/' + acntId + '/' + uidl },
+          subject
         )
       );
     }
@@ -32606,7 +32586,7 @@ var MailList = function (_React$Component2) {
 
       return _react2.default.createElement(
         'div',
-        { id: 'list', className: 'pure-u-1' },
+        { id: 'list', className: 'collection' },
         messages.map(function (m, i) {
           return _react2.default.createElement(EmailItem, { key: i, message: m, acntId: acntId });
         })
@@ -32822,12 +32802,12 @@ var NotFound = function NotFound() {
   );
 };
 
-var MyApp = function MyApp(_ref3) {
-  var user = _ref3.user;
+// const MyApp = ({ user }) => (
+var MyApp = function MyApp() {
   return _react2.default.createElement(
     'div',
     { id: 'layout' },
-    user ? _react2.default.createElement(_Navbar2.default, { user: user }) : '',
+    _react2.default.createElement(_Navbar2.default, null),
     _react2.default.createElement(
       _reactRouterDom.Switch,
       null,
@@ -32848,11 +32828,13 @@ var MyApp = function MyApp(_ref3) {
   );
 };
 
-exports.default = (0, _reactRedux.connect)(function (state) {
-  return {
-    user: state.session.user
-  };
-}, {})(MyApp);
+// export default connect(
+//   (state) => ({
+//     user: state.session.user
+//   }),
+//   {}
+// )(MyApp);
+exports.default = MyApp;
 
 },{"./Accounts":158,"./Dashboard":159,"./Home":161,"./Inbox":162,"./Login":163,"./MailList":165,"./Navbar":168,"./PrivateRoute":169,"./Profile":170,"./RedirectWithStatus":171,"./Register":172,"./routes":173,"react":119,"react-redux":86,"react-router-dom":103}],168:[function(require,module,exports){
 'use strict';
@@ -32907,7 +32889,7 @@ var RightMenuLoggedIn = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'ul',
-        { className: 'nav navbar-nav pull-right' },
+        { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
         _react2.default.createElement(
           'li',
           null,
@@ -32947,14 +32929,14 @@ var RightMenuGuest = function (_React$Component2) {
     value: function render() {
       return _react2.default.createElement(
         'ul',
-        { className: 'nav navbar-nav pull-right' },
+        { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
         _react2.default.createElement(
           'li',
           null,
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/login' },
-            'Login'
+            { to: '/about' },
+            'About'
           )
         ),
         _react2.default.createElement(
@@ -32962,8 +32944,17 @@ var RightMenuGuest = function (_React$Component2) {
           null,
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/register' },
-            'Register'
+            { to: '/signin' },
+            'Sign in'
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/signup' },
+            'Sign up'
           )
         )
       );
@@ -32988,17 +32979,7 @@ var Navbar = function (_React$Component3) {
       var user = this.props.user;
 
       var rightMenu = user ? _react2.default.createElement(RightMenuLoggedIn, { email: user.email, logout: this.props.onLogout }) : _react2.default.createElement(RightMenuGuest, null);
-      //
-      // const menuItems = rightMenu.map((link, index) => (
-      //   <LinkItem key={index} href={link.href} label={link.label} onClick={link.onClick} />
-      // ));
-      // key={index.toString()}
-      //  (
-      //   <li><a href="/profile/">{this.props.user.email}</a></li>
-      // ) : (
-      //   <li><a href="/login/">Login</a></li>
-      //   <li><a href="/register/">Register</a></li>
-      // );
+
       return _react2.default.createElement(
         'nav',
         null,
@@ -33006,89 +32987,29 @@ var Navbar = function (_React$Component3) {
           'div',
           { className: 'nav-wrapper' },
           _react2.default.createElement(
-            'a',
-            { href: '#', className: 'brand-logo' },
-            'Logo'
+            _reactRouterDom.Link,
+            { to: '/', className: 'brand-logo', style: { paddingLeft: '15px' } },
+            'Webmail'
           ),
-          _react2.default.createElement(
-            'ul',
-            { id: 'nav-mobile', className: 'right hide-on-med-and-down' },
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                'a',
-                { href: 'sass.html' },
-                'Sass'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                'a',
-                { href: 'badges.html' },
-                'Components'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                'a',
-                { href: 'collapsible.html' },
-                'JavaScript'
-              )
-            )
-          )
+          rightMenu
         )
       );
-      // return (
-      // <div id="nav" className="pure-u">
-      //     <a href="#" className="nav-menu-button">Menu</a>
-
-      //     <div className="nav-inner">
-      //         <button className="primary-button pure-button">Compose</button>
-
-      //         <div className="pure-menu">
-      //             <ul className="pure-menu-list">
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Inbox <span className="email-count">(2)</span></a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Important</a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Sent</a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Drafts</a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link">Trash</a></li>
-      //                 <li className="pure-menu-heading">Labels</li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-personal"></span>Personal</a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-work"></span>Work</a></li>
-      //                 <li className="pure-menu-item"><a href="#" className="pure-menu-link"><span className="email-label-travel"></span>Travel</a></li>
-      //             </ul>
-      //         </div>
-      //     </div>
-      // </div>
-      // );
     }
   }]);
 
   return Navbar;
 }(_react2.default.Component);
 
-var mapStateToProps = function mapStateToProps(state) {
+exports.default = (0, _reactRedux.connect)(function (state) {
   return {
     user: state.session.user
   };
-};
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    // onLogin: () => dispatch(loginUser({ email: 'jonsnow.tv' })),
-    onLogout: function onLogout(event) {
-      event.preventDefault();
-      dispatch((0, _actions.logoutUser)());
-    }
-  };
-};
-
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Navbar);
+}, {
+  onLogout: function onLogout(event) {
+    event.preventDefault();
+    dispatch((0, _actions.logoutUser)());
+  }
+})(Navbar);
 
 },{"../actions":154,"react":119,"react-redux":86,"react-router-dom":103}],169:[function(require,module,exports){
 'use strict';
