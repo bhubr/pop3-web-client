@@ -63,7 +63,7 @@ export default class Model {
     for(let k in whereHash) {
       whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
     }
-    return whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+    return whereStrings.length ? 'WHERE ' + whereStrings.join(' AND ') : '';
   }
 
   /**
@@ -125,5 +125,36 @@ export default class Model {
         .query(insertQuery)
         .then(result => this.findOne(result.insertId));
     });
+  }
+
+  /**
+   * Delete one or many records
+   *
+   * idOrWhere can be an integer or a hash
+   */
+  static delete(idOrWhere) {
+    // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
+    const whereCondition = (idOrWhere === parseInt(idOrWhere, 10)) ?
+      `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
+    const deleteQuery = `delete from ${this._tableName} ${whereCondition}`;
+    return pool
+      .query(deleteQuery);
+  }
+
+  /**
+   * Update one or many records
+   */
+  static update(idOrWhere, props) {
+    // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
+    const whereCondition = (idOrWhere === parseInt(idOrWhere, 10)) ?
+      `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
+    let setFieldsArr = [];
+    for(let p in props) {
+      setFieldsArr.push(`${p} = ` + trimAndQuote(props[p]));
+    }
+    const setFields = setFieldsArr.join(',');
+    const updateQuery = `update ${this._tableName} set ${setFields} ${whereCondition}`;
+    return pool
+      .query(updateQuery);
   }
 }
