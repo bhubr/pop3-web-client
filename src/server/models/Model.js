@@ -90,6 +90,11 @@ export default class Model {
       .then(props => new this.classes[this.name](props));
   }
 
+  /**
+   * Func to be executed before actual object creation.
+   *
+   * This one is a stub meant to be overridden by subclasses.
+   */
   static beforeCreate(props, ...extraArgs) {
     return new Promise((resolve, reject) => resolve(props));
   }
