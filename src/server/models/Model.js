@@ -124,7 +124,6 @@ export default class Model {
    * This one is a stub meant to be overridden by subclasses.
    */
   static afterCreate(props, ...args) {
-    // console.log('beforeCreate', props, args)
     return props;
   }
 
@@ -134,14 +133,25 @@ export default class Model {
    * This one is a stub meant to be overridden by subclasses.
    */
   static _beforeCreate(props, ...args) {
-    // console.log('_beforeCreate', args)
     return new Promise((resolve, reject) => resolve(
       this.beforeCreate(props, args)
     ));
   }
 
   static beforeCreate(props, ...args) {
-    // console.log('beforeCreate', props, args)
+    return props;
+  }
+
+  /**
+   * Func to be executed before object upddate.
+   */
+  static _beforeUpdate(props) {
+    return new Promise((resolve, reject) => resolve(
+      this.beforeUpdate(props)
+    ));
+  }
+
+  static beforeUpdate(props) {
     return props;
   }
 
@@ -200,13 +210,25 @@ export default class Model {
     // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
     const whereCondition = (idOrWhere === parseInt(idOrWhere, 10)) ?
       `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
-    let setFieldsArr = [];
-    for(let p in props) {
-      setFieldsArr.push(`${p} = ` + trimAndQuote(props[p]));
-    }
-    const setFields = setFieldsArr.join(',');
-    const updateQuery = `update ${this._tableName} set ${setFields} ${whereCondition}`;
-    return pool
+
+    return this.beforeUpdate(props)
+    .then(props => {
+      let setFieldsArr = [];
+      for(let p in props) {
+        // Skip id key
+        if(p === 'id') {
+          continue;
+        }
+        setFieldsArr.push(`${p} = ` + trimAndQuote(props[p]));
+      }
+      const setFields = setFieldsArr.join(',');
+      const updateQuery = `update ${this._tableName} set ${setFields} ${whereCondition}`;
+      console.log('## updateQuery', updateQuery);
+      return pool
       .query(updateQuery);
+
+    });
+
+
   }
 }

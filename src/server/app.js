@@ -68,6 +68,31 @@ app.get('/api/users/:id', (req, res) => {
   }));
 });
 
+app.patch('/api/users/:id',
+  (req, res, next) => {
+    console.log('REQ HEADERS/SESSION', req.headers, req.session.user);
+    if(! req.session.user) {
+      return res.status(401).json({
+        error: 'Not logged-in'
+      });
+    }
+    else if(parseInt(req.params.id, 10) !== req.session.user.id) {
+      return res.status(403).json({
+        error: 'Operation not permitted'
+      });
+    }
+    next();
+  },
+  (req, res) => {
+  console.log('### User update', req.params.id, req.body);
+  const userId = parseInt(req.params.id, 10);
+  User.update(userId, req.body)
+  .then(result => res.json(result))
+  .catch(err => res.status(400).json({
+    error: err.message
+  }));
+});
+
 app.delete('/api/users/:id', (req, res) => {
   User.delete(req.params.id)
   .then(result => res.json(result))

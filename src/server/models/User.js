@@ -32,6 +32,7 @@ class User extends Model {
   }
 
   static hashPassword(password) {
+    console.log('hash pass', password);
     return hashAsync(password, SALT_ROUNDS);
   }
 
@@ -48,9 +49,14 @@ class User extends Model {
 
   static beforeCreate(user) {
     return this.hashPassword(user.password)
-      .then(password => Object.assign(user, {
-        password
-      }));
+    .then(password => Object.assign(user, {
+      password
+    }));
+  }
+
+  static beforeUpdate(user) {
+    return ! user.password ? Promise.resolve(user) :
+    this.beforeCreate(user);
   }
 
   static getByEmail(email) {
@@ -62,7 +68,7 @@ class User extends Model {
   }
 
   static checkPassword(dbUser, password) {
-    // console.log('### checkPassword', dbUser, password);
+    console.log('### checkPassword', dbUser, password);
     return compareAsync(password, dbUser.password);
   }
 
