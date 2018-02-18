@@ -3,16 +3,22 @@ const expect = chai.expect;
 const Promise = require('bluebird');
 const pool = require('../../dist/db');
 const DummyModel = require('../../dist/models/DummyModel').default;
+const DummyProfile = require('../../dist/models/DummyProfile').default;
 
-const createTableSQL = `CREATE TABLE IF NOT EXISTS persons (
+const createPersonsTableSQL = `CREATE TABLE IF NOT EXISTS persons (
   id int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   firstName varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   lastName varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   createdOn varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   age int(10) UNSIGNED NOT NULL
 );`;
+const createProfilesTableSQL = `CREATE TABLE IF NOT EXISTS dummyProfiles (
+  id int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  personId int(10) UNSIGNED NOT NULL
+);`;
 
-const dropTableSQL = `DROP TABLE persons`;
+const dropPersonsTableSQL = `DROP TABLE persons;`;
+const dropProfilesTableSQL = `DROP TABLE dummyProfiles;`;
 
 let timeoutIncr = 0;
 
@@ -59,14 +65,20 @@ describe('DummyModel test', () => {
   /**
    * Create db table before starting
    */
-  beforeEach(() => pool.query(createTableSQL)
+  beforeEach(() => Promise.all([
+      pool.query(createPersonsTableSQL),
+      pool.query(createProfilesTableSQL)
+    ])
     .then(() => { timeoutIncr = 0; })
   );
 
   /**
    * Drop db table when done
    */
-  afterEach(() => pool.query(dropTableSQL));
+  afterEach(() => Promise.all([
+    pool.query(dropPersonsTableSQL),
+    pool.query(dropProfilesTableSQL)
+  ]));
 
   /**
    * Find all with no records
@@ -87,6 +99,11 @@ describe('DummyModel test', () => {
     .then(() => DummyModel.findAll())
     .then(records => (records[0]))
     .then(assertPropsHelper(1, 'john', 'difool', 44))
+    .then(() => DummyProfile.findAll())
+    .then(([profileRecord]) => {
+      expect(profileRecord.id).to.equal(1);
+      expect(profileRecord.personId).to.equal(1);
+    })
   );
 
   /**

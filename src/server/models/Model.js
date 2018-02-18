@@ -93,6 +93,43 @@ export default class Model {
 
   /**
    * Func to be executed before actual object creation.
+   * Only calls beforeCreate().
+   */
+  static _beforeCreate(props, ...args) {
+    // console.log('_beforeCreate', args)
+    return new Promise((resolve, reject) => resolve(
+      this.beforeCreate(props, args)
+    ));
+  }
+
+  /**
+   * This one is a stub meant to be overridden by subclasses.
+   */
+  static beforeCreate(props, ...args) {
+    // console.log('beforeCreate', props, args)
+    return props;
+  }
+
+  /**
+   * Func to be executed after object creation. Calls _afterCreate().
+   */
+  static _afterCreate(props, ...args) {
+    // console.log('_beforeCreate', args)
+    return new Promise((resolve, reject) => resolve(
+      this.afterCreate(props, args)
+    ));
+  }
+
+  /**
+   * This one is a stub meant to be overridden by subclasses.
+   */
+  static afterCreate(props, ...args) {
+    // console.log('beforeCreate', props, args)
+    return props;
+  }
+
+  /**
+   * Func to be executed before actual object creation.
    *
    * This one is a stub meant to be overridden by subclasses.
    */
@@ -107,6 +144,7 @@ export default class Model {
     // console.log('beforeCreate', props, args)
     return props;
   }
+
 
   /**
    * Create a record
@@ -134,7 +172,10 @@ export default class Model {
       const insertQuery = `insert into ${this._tableName}(${fields}) values(${values})`;
       return pool
         .query(insertQuery)
-        .then(result => this.findOne(result.insertId));
+        .then(result => this.findOne(result.insertId))
+        .then(record => this._afterCreate(record)
+          .then(() => (record))
+        );
     });
   }
 

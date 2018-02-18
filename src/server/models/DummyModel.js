@@ -1,4 +1,5 @@
 import Model from './Model';
+import DummyProfile from './DummyProfile';
 
 class DummyModel extends Model {
 
@@ -8,15 +9,21 @@ class DummyModel extends Model {
   };
 	static _tableName = 'persons';
 
-  static get callingClassType() { return this.name; }
+  // static get callingClassType() { return this.name; }
 
   static beforeCreate(props, ...extraArgs) {
-    console.log({
-      ...props, createdOn: new Date().toISOString().substr(0, 16)
-    })
+    // console.log({
+    //   ...props, createdOn: new Date().toISOString().substr(0, 16)
+    // })
     return {
       ...props, createdOn: new Date().toISOString().substr(0, 16)
     };
+  }
+
+  static afterCreate(person) {
+    return DummyProfile.create({
+      personId: person.id
+    });
   }
 }
 
