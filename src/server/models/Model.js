@@ -71,12 +71,11 @@ export default class Model {
    */
   static findAll(whereHash) {
     const fieldsString = this.getFieldsString();
-    const whereCondition = this.getWhereCondition();
-    const baseQuery = `select id,${fieldsString} from ${this._tableName} ${whereCondition}`;
-    console.log(baseQuery, Model.callingClassType);
+    const whereCondition = this.getWhereCondition(whereHash);
+    const baseQuery = `select id,${fieldsString} from ${this._tableName} ${whereCondition} ORDER by id asc`;
 
     return pool
-      .query(baseQuery + whereCondition);
+      .query(baseQuery);
   }
 
   /**

@@ -13,19 +13,38 @@ const createTableSQL = `CREATE TABLE IF NOT EXISTS dummyModels (
 
 const dropTableSQL = `DROP TABLE dummyModels`;
 
+let timeoutIncr = 0;
+
+function timeoutPromise() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(timeoutIncr), timeoutIncr);
+      timeoutIncr += 5;
+    });
+}
+
 function createHelper(foo, bar, intVal) {
-  return DummyModel.create({ foo, bar, intVal });
+  // console.log('createHelper', foo, bar, intVal, timeoutIncr);
+  return timeoutPromise()
+  .then(() => DummyModel.create({ foo, bar, intVal }));
 }
 
 function assertPropsHelper(_id, _foo, _bar, _intVal) {
   return record => {
-    console.log('## assertPropsHelper', record, _id, _foo, _bar, _intVal);
+    // console.log('## assertPropsHelper record:', record, '// expected:', _id, _foo, _bar, _intVal);
     expect(record.id).to.equal(_id);
     expect(record.foo).to.equal(_foo);
     expect(record.bar).to.equal(_bar);
     expect(record.intVal).to.equal(_intVal);
     return new Promise((resolve, reject) => resolve(record));
   };
+}
+
+
+function passLog(label) {
+  return v => {
+    console.log('\n\n######\\\\\\#\n#', label, '\n', v);
+    return v;
+  }
 }
 
 describe('DummyModel test', () => {
@@ -37,7 +56,9 @@ describe('DummyModel test', () => {
   /**
    * Create db table before starting
    */
-  beforeEach(() => pool.query(createTableSQL));
+  beforeEach(() => pool.query(createTableSQL)
+    .then(() => { timeoutIncr = 0; })
+  );
 
   /**
    * Drop db table when done
@@ -66,14 +87,46 @@ describe('DummyModel test', () => {
   );
 
   /**
-   * Create record then retrieves it
+   * Create three records
    */
-  it('Create three records and retrieve them', () =>
+  it('Create three records and retrieve them all', () =>
     Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    .then(() => DummyModel.findAll())
     .then(([rec1, rec2, rec3]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'averell', 'dalton', 22)(rec2))
       .then(() => assertPropsHelper(3, 'poe', 'dameron', 27)(rec3))
     )
+  );
+
+  /**
+   * Create record then retrieves it
+   */
+  it('Create three records and filter them by string value', () =>
+    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    .then(() => DummyModel.findAll({ bar: 'dalton' }))
+    .then(([rec1, rec2]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
+      .then(() => assertPropsHelper(2, 'averell', 'dalton', 22)(rec2))
+    )
+  );
+
+  /**
+   * Create record then retrieves it
+   */
+  it('Create three records and filter them by integer value', () =>
+    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    .then(() => DummyModel.findAll({ intVal: 27 }))
+    .then(([rec1, rec2]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
+      .then(() => assertPropsHelper(3, 'poe', 'dameron', 27)(rec2))
+    )
+  );
+
+  /**
+   * Create record then retrieves it
+   */
+  it('Create three records and filter them by string and integer value', () =>
+    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    .then(() => DummyModel.findAll({ foo: 'poe', intVal: 27 }))
+    .then(([rec1, rec2]) => assertPropsHelper(3, 'poe', 'dameron', 27)(rec1))
   );
 
 });
