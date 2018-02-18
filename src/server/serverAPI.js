@@ -1,7 +1,7 @@
 
 
 // let id = 0;
- 
+
 
 // class serverAPI {
 
@@ -21,6 +21,6 @@
 // const server = new serverAPI();
 // export default server;
 
-import User from './models/user';
+import User from './models/User';
 
 export { User };
