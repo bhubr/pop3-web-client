@@ -4,14 +4,15 @@ const Promise = require('bluebird');
 const pool = require('../../dist/db');
 const DummyModel = require('../../dist/models/DummyModel').default;
 
-const createTableSQL = `CREATE TABLE IF NOT EXISTS dummyModels (
+const createTableSQL = `CREATE TABLE IF NOT EXISTS persons (
   id int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  foo varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  bar varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  intVal int(10) UNSIGNED NOT NULL
+  firstName varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  lastName varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  createdOn varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  age int(10) UNSIGNED NOT NULL
 );`;
 
-const dropTableSQL = `DROP TABLE dummyModels`;
+const dropTableSQL = `DROP TABLE persons`;
 
 let timeoutIncr = 0;
 
@@ -22,21 +23,25 @@ function timeoutPromise() {
     });
 }
 
-function createHelper(foo, bar, intVal) {
+function createHelper(firstName, lastName, age) {
   return timeoutPromise()
-  .then(() => DummyModel.create({ foo, bar, intVal }));
+  .then(() => DummyModel.create({ firstName, lastName, age }));
 }
 
-function assertPropsHelper(_id, _foo, _bar, _intVal) {
+function assertPropsHelper(_id, _foo, _bar, _age) {
   return record => {
     expect(record.id).to.equal(_id);
-    expect(record.foo).to.equal(_foo);
-    expect(record.bar).to.equal(_bar);
-    expect(record.intVal).to.equal(_intVal);
+    expect(record.firstName).to.equal(_foo);
+    expect(record.lastName).to.equal(_bar);
+    expect(record.age).to.equal(_age);
+    expect(record.createdOn).to.equal(getTrucatedDate());
     return new Promise((resolve, reject) => resolve(record));
   };
 }
 
+function getTrucatedDate() {
+  return new Date().toISOString().substr(0, 16);
+}
 
 function passLog(label) {
   return v => {
@@ -78,7 +83,7 @@ describe('DummyModel test', () => {
    */
   it('Create record and retrieve it', () =>
     createHelper('john', 'difool', 44)
-    .then(assertPropsHelper(1, 'john', 'difool', 44))
+    .then(assertPropsHelper(1, 'john', 'difool', 44, getTrucatedDate()))
     .then(() => DummyModel.findAll())
     .then(records => (records[0]))
     .then(assertPropsHelper(1, 'john', 'difool', 44))
@@ -88,7 +93,7 @@ describe('DummyModel test', () => {
    * Create three records
    */
   it('Create three records and retrieve them all', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2, rec3]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'averell', 'dalton', 22)(rec2))
@@ -100,8 +105,8 @@ describe('DummyModel test', () => {
    * Create three records and filter them by string value
    */
   it('Create three records and filter them by string value', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.findAll({ bar: 'dalton' }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.findAll({ lastName: 'dalton' }))
     .then(([rec1, rec2]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'averell', 'dalton', 22)(rec2))
     )
@@ -111,8 +116,8 @@ describe('DummyModel test', () => {
    * Create three records and filter them by integer value
    */
   it('Create three records and filter them by integer value', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.findAll({ intVal: 27 }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.findAll({ age: 27 }))
     .then(([rec1, rec2]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(3, 'poe', 'dameron', 27)(rec2))
     )
@@ -122,8 +127,8 @@ describe('DummyModel test', () => {
    * Create three records and filter them by string and integer value
    */
   it('Create three records and filter them by string and integer value', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.findAll({ foo: 'poe', intVal: 27 }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.findAll({ firstName: 'poe', age: 27 }))
     .then(([rec1, rec2]) => assertPropsHelper(3, 'poe', 'dameron', 27)(rec1))
   );
 
@@ -131,7 +136,7 @@ describe('DummyModel test', () => {
    * Create three records, delete one by id, and retrieve the remaining
    */
   it('Create three records, delete one by id, and retrieve the remaining', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
     .then(() => DummyModel.delete(2))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
@@ -143,8 +148,8 @@ describe('DummyModel test', () => {
    * Create three records, delete one by id, and retrieve the remaining
    */
   it('Create three records, delete two by where condition, and retrieve the remaining', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.delete({ bar: 'dalton' }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.delete({ lastName: 'dalton' }))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2]) => assertPropsHelper(3, 'poe', 'dameron', 27)(rec1))
   );
@@ -153,8 +158,8 @@ describe('DummyModel test', () => {
    * Create three records, update one by id, retrieve them all
    */
   it('Create three records, update one by id, retrieve them all', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.update(2, { foo: 'jack', intVal: 25 }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.update(2, { firstName: 'jack', age: 25 }))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2, rec3]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'jack', 'dalton', 25)(rec2))
@@ -166,8 +171,8 @@ describe('DummyModel test', () => {
    * Create three records, update two by hash, retrieve them all
    */
   it('Create three records, update two by hash, retrieve them all', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.update({ bar: 'dalton' }, { bar: 'dawton' }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.update({ lastName: 'dalton' }, { lastName: 'dawton' }))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2, rec3]) => assertPropsHelper(1, 'joe', 'dawton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'averell', 'dawton', 22)(rec2))
@@ -179,8 +184,8 @@ describe('DummyModel test', () => {
    * Create three records, update one by hash, retrieve them all
    */
   it('Create three records, update one by hash, retrieve them all', () =>
-    Promise.map(threeRecords, ([foo, bar, intVal]) => createHelper(foo, bar, intVal))
-    .then(() => DummyModel.update({ bar: 'dalton', intVal: 22 }, { foo: 'john', bar: 'dawton', intVal: 43 }))
+    Promise.map(threeRecords, ([firstName, lastName, age]) => createHelper(firstName, lastName, age))
+    .then(() => DummyModel.update({ lastName: 'dalton', age: 22 }, { firstName: 'john', lastName: 'dawton', age: 43 }))
     .then(() => DummyModel.findAll())
     .then(([rec1, rec2, rec3]) => assertPropsHelper(1, 'joe', 'dalton', 27)(rec1)
       .then(() => assertPropsHelper(2, 'john', 'dawton', 43)(rec2))

@@ -96,8 +96,16 @@ export default class Model {
    *
    * This one is a stub meant to be overridden by subclasses.
    */
-  static beforeCreate(props, ...extraArgs) {
-    return new Promise((resolve, reject) => resolve(props));
+  static _beforeCreate(props, ...args) {
+    // console.log('_beforeCreate', args)
+    return new Promise((resolve, reject) => resolve(
+      this.beforeCreate(props, args)
+    ));
+  }
+
+  static beforeCreate(props, ...args) {
+    // console.log('beforeCreate', props, args)
+    return props;
   }
 
   /**
@@ -118,8 +126,9 @@ export default class Model {
       }
     }
 
-    return this.beforeCreate(props)
+    return this._beforeCreate(props)
     .then(props => {
+      // console.log(props);
       const fields = Object.keys(props).join(',');
       const values = Object.values(props).map(trimAndQuote).join(',');
       const insertQuery = `insert into ${this._tableName}(${fields}) values(${values})`;
