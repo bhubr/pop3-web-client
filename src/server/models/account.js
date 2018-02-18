@@ -43,7 +43,7 @@ export default class Account {
     this.parseEmail = this.parseEmail.bind(this);
 
     this.pop3 = pop3SessionStore.get(this.id);
-    this.socketIOHandler = require('../socketIOHandler')();
+    this.socketIOHandler = require('../socketIOHandler');
   }
 
   getPop3Credentials() {

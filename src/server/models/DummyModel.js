@@ -8,5 +8,5 @@ class DummyModel extends Model {
   static get callingClassType() { return this.name; }
 }
 
-Model.classes.DummyModel = DummyModel;
+Model._classes.DummyModel = DummyModel;
 export default DummyModel;

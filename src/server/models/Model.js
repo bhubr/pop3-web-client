@@ -32,7 +32,9 @@ function trimAndQuote(v) {
 }
 
 export default class Model {
-  static classes = {};
+
+  static _classes = {};
+  static _defaults = {};
 
   /**
    * Constructor: assign all passed props to instance properties
@@ -86,7 +88,7 @@ export default class Model {
     const selectQuery = `select id,${fieldsString} from ${this._tableName} where id = ${id}`;
     return pool.query(selectQuery)
       .then(records => (records[0]))
-      .then(props => new this.classes[this.name](props));
+      .then(props => new this._classes[this.name](props));
   }
 
   /**
@@ -102,11 +104,11 @@ export default class Model {
    * Create a record
    */
   static create(...args) {
-    const props = args[0];
+    const props = Object.assign(this._defaults, args[0]);
     const requiredKeys = this._fields;
     for(let i = 0 ; i < requiredKeys.length ; i++) {
       const k = requiredKeys[i];
-      if(! props[k]) {
+      if(typeof props[k] === 'undefined') {
         return Promise.reject(new Error(`required key '${k}' is missing`));
       }
     }
