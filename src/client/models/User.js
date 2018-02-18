@@ -59,4 +59,8 @@ export default class User {
     .then(response => response.json());
 
   }
+
+  static update(user) {
+    return api.patch(`/api/users/${user.id}`, user);
+  }
 }

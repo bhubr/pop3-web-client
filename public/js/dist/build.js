@@ -30920,6 +30920,11 @@ var API = function () {
     value: function post(url, data) {
       return this.sendRequest(url, 'POST', JSON.stringify(data));
     }
+  }, {
+    key: 'patch',
+    value: function patch(url, data) {
+      return this.sendRequest(url, 'PATCH', JSON.stringify(data));
+    }
   }]);
 
   return API;
@@ -31013,6 +31018,11 @@ var User = function () {
       }).then(function (response) {
         return response.json();
       });
+    }
+  }, {
+    key: 'update',
+    value: function update(user) {
+      return _API2.default.patch('/api/users/' + user.id, user);
     }
   }]);
 
@@ -31437,7 +31447,7 @@ function updateUser(user) {
   return function (dispatch) {
     console.log('updateUser', user);
     dispatch(requestUpdateUser(user));
-    return api.call('updateUser', user).then(function (user) {
+    return _models.User.update(user).then(function (user) {
       return dispatch(updateUserSuccess(user));
     }).catch(function (err) {
       return dispatch(updateUserError(err));
@@ -32895,6 +32905,15 @@ var RightMenuLoggedIn = function (_React$Component) {
           null,
           _react2.default.createElement(
             _reactRouterDom.Link,
+            { to: '/accounts' },
+            'Accounts'
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          _react2.default.createElement(
+            _reactRouterDom.Link,
             { to: '/profile' },
             this.props.email
           )
@@ -33139,7 +33158,7 @@ var Profile = function (_React$Component) {
         lastName = _this$props$user.lastName,
         email = _this$props$user.email;
 
-    _this.state = { id: id, firstName: firstName, lastName: lastName, email: email };
+    _this.state = { id: id, email: email, password: '' };
     console.log('Profile state', _this.state);
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -33154,6 +33173,7 @@ var Profile = function (_React$Component) {
           name = _event$target.name,
           value = _event$target.value;
 
+      console.log('handleChange', name, value);
       var changedValue = _defineProperty({}, name, value);
       this.setState(function (prevState, props) {
         return Object.assign(_extends({}, prevState), changedValue);
@@ -33171,54 +33191,60 @@ var Profile = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { className: 'pure-u-1' },
+        { className: 'row' },
         _react2.default.createElement(
-          'form',
-          { onSubmit: this.handleSubmit, className: 'pure-form pure-form-stacked' },
+          'div',
+          { className: 'col s6' },
           _react2.default.createElement(
-            'fieldset',
-            null,
+            'div',
+            { className: 'row' },
             _react2.default.createElement(
-              'legend',
-              null,
-              'Profile'
-            ),
-            _react2.default.createElement('input', {
-              className: 'form-control',
-              placeholder: 'First name',
-              name: 'firstName',
-              type: 'text',
-              value: this.state.firstName,
-              onChange: this.handleChange }),
-            _react2.default.createElement('input', {
-              className: 'form-control',
-              placeholder: 'Last name',
-              name: 'lastName',
-              type: 'text',
-              value: this.state.lastName,
-              onChange: this.handleChange }),
-            _react2.default.createElement('input', {
-              className: 'form-control',
-              placeholder: 'Email',
-              name: 'email',
-              type: 'email',
-              value: this.state.email,
-              onChange: this.handleChange }),
-            _react2.default.createElement('input', {
-              className: 'form-control',
-              placeholder: 'Password',
-              name: 'password',
-              type: 'password',
-              value: this.state.password,
-              onChange: this.handleChange })
-          ),
-          _react2.default.createElement('i', { className: 'divider' }),
-          _react2.default.createElement(
-            'button',
-            { className: 'btn btn-primary mbtn', style: { marginLeft: '15px' } },
-            'Update profile'
+              'form',
+              { onSubmit: this.handleSubmit, className: 'col s12' },
+              _react2.default.createElement(
+                'h1',
+                null,
+                'Account data'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    className: 'form-control',
+                    placeholder: 'Email',
+                    name: 'email',
+                    type: 'email',
+                    value: this.state.email,
+                    onChange: this.handleChange })
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    className: 'form-control',
+                    placeholder: 'Password',
+                    name: 'password',
+                    type: 'password',
+                    value: this.state.password,
+                    onChange: this.handleChange })
+                )
+              ),
+              _react2.default.createElement(
+                'button',
+                { type: 'submit', className: 'col s12 btn btn-large waves-effect indigo' },
+                'Update profile'
+              )
+            )
           )
-        )
+        ),
+        _react2.default.createElement('div', { className: 'col s6' })
       );
     }
   }]);
@@ -34067,6 +34093,11 @@ var User = function () {
       }).then(function (response) {
         return response.json();
       });
+    }
+  }, {
+    key: 'update',
+    value: function update(user) {
+      return _API2.default.patch('/api/users/' + user.id, user);
     }
   }]);
 

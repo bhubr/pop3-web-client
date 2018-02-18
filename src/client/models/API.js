@@ -40,6 +40,12 @@ class API {
       url, 'POST', JSON.stringify(data)
     );
   }
+
+  patch(url, data) {
+    return this.sendRequest(
+      url, 'PATCH', JSON.stringify(data)
+    );
+  }
 }
 
 export default new API();

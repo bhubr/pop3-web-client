@@ -75,7 +75,7 @@ export default class Model {
     const fieldsString = this.getFieldsString();
     const whereCondition = this.getWhereCondition(whereHash);
     const baseQuery = `select id,${fieldsString} from ${this._tableName} ${whereCondition} ORDER by id asc`;
-
+    // console.log(baseQuery);
     return pool
       .query(baseQuery);
   }

@@ -10,7 +10,7 @@ export default class Accounts extends React.Component {
           <AccountList />
         </div>
         <div className="col s6">
-            <AccountForm />
+          <AccountForm />
         </div>
       </div>
     )

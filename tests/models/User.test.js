@@ -63,4 +63,31 @@ describe('User model test', () => {
     })
   );
 
+  it('authenticate a user (wrong pass)', () => {
+    const user = {
+      email: getEmail(), password: 'Pass12$'
+    };
+    return User.create(user)
+    .then(() => User.authenticate({ email: user.email, password: 'Wrong!!!' }))
+    .then(result => {
+      expect(result).to.be.a('boolean');
+      expect(result).to.equal(false);
+    });
+  });
+
+  it('authenticate a user', () => {
+    const userProps = {
+      email: getEmail(), password: 'Pass12$'
+    };
+    let user;
+    return User.create(userProps)
+    .then(_user => { user = _user; })
+    .then(() => User.authenticate(userProps))
+    .then(_user => {
+      expect(_user).to.be.a('object');
+      expect(_user.id).to.equal(user.id);
+      expect(_user.email).to.equal(user.email);
+    });
+  });
+
 });

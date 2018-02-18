@@ -367,7 +367,7 @@ export function updateUser(user)  {
   return dispatch => {
     console.log('updateUser', user);
     dispatch(requestUpdateUser(user));
-    return api.call('updateUser', user)
+    return User.update(user)
       .then(user => dispatch(updateUserSuccess(user)))
       .catch(err => dispatch(updateUserError(err)));
   };

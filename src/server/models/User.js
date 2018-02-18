@@ -13,9 +13,12 @@ const SALT_ROUNDS = 10;
 //     "'" + v.trim() + "'" : v;
 // }
 
-// function passLog(v) {
-//   console.log('passLog', v); return v;
-// }
+function passLog(...args) {
+  return v => {
+    console.log.apply(console, ['\n\n###############################\n', ...args, '\n', v]);
+    return v;
+  }
+}
 
 class User extends Model {
 
@@ -59,17 +62,17 @@ class User extends Model {
   }
 
   static checkPassword(dbUser, password) {
-    console.log('### checkPassword', dbUser, password);
-    return compareAsync(password, dbUser.password)
-    .then(matches => (matches ? dbUser : false));
+    // console.log('### checkPassword', dbUser, password);
+    return compareAsync(password, dbUser.password);
   }
 
   static authenticate(credentials) {
-    console.log('Server-side User.authenticate', credentials);
     return User.getByEmail(credentials.email)
     .then(user => (! user ? false :
       User.checkPassword(user, credentials.password)
+      .then(matches => (matches ? user : false))
     ))
+    .then(passLog('Server-side User.authenticate', credentials));
   }
 
   static afterCreate(user) {

@@ -15,7 +15,7 @@ class Profile extends React.Component {
       lastName,
       email
     } = this.props.user;
-    this.state = { id, firstName, lastName, email };
+    this.state = { id, email, password: '' };
     console.log('Profile state', this.state);
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,6 +24,7 @@ class Profile extends React.Component {
 
   handleChange(event) {
     const { name, value } = event.target;
+    console.log('handleChange', name, value);
     let changedValue = { [name]: value };
     this.setState((prevState, props) => Object.assign(
       { ...prevState }, changedValue
@@ -41,48 +42,69 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <div className="pure-u-1">
-        <form onSubmit={this.handleSubmit} className="pure-form pure-form-stacked">
-          <fieldset>
-            <legend>Profile</legend>
+      <div className="row">
 
-            <input
-              className="form-control"
-              placeholder="First name"
-              name="firstName"
-              type="text"
-              value={this.state.firstName}
-              onChange={this.handleChange} />
+        <div className="col s6">
+          <div className="row">
 
-            <input
-              className="form-control"
-              placeholder="Last name"
-              name="lastName"
-              type="text"
-              value={this.state.lastName}
-              onChange={this.handleChange} />
+          <form onSubmit={this.handleSubmit} className="col s12">
+            <h1>Account data</h1>
 
-            <input
-              className="form-control"
-              placeholder="Email"
-              name="email"
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChange} />
+            {/*<div className="row">
+              <div className="input-field col s12">
+                <input
+                  className="validate"
+                  placeholder="First name"
+                  name="firstName"
+                  type="text"
+                  value={this.state.firstName}
+                  onChange={this.handleChange} />
+              </div>
+            </div>
 
-            <input
-              className="form-control"
-              placeholder="Password"
-              name="password"
-              type="password"
-              value={this.state.password}
-              onChange={this.handleChange} />
+            <div className="row">
+              <div className="input-field col s12">
+                <input
+                  className="validate"
+                  placeholder="Last name"
+                  name="lastName"
+                  type="text"
+                  value={this.state.lastName}
+                  onChange={this.handleChange} />
+              </div>
+            </div>*/}
 
-          </fieldset>
+            <div className="row">
+              <div className="input-field col s12">
+                <input
+                  className="form-control"
+                  placeholder="Email"
+                  name="email"
+                  type="email"
+                  value={this.state.email}
+                  onChange={this.handleChange} />
+              </div>
+            </div>
 
-          <i className="divider"></i>
-          <button className="btn btn-primary mbtn" style={{ marginLeft: '15px' }}>Update profile</button>
-        </form>
+            <div className="row">
+              <div className="input-field col s12">
+              <input
+                className="form-control"
+                placeholder="Password"
+                name="password"
+                type="password"
+                value={this.state.password}
+                onChange={this.handleChange} />
+              </div>
+            </div>
+
+
+            <button type="submit" className="col s12 btn btn-large waves-effect indigo">Update profile</button>
+          </form>
+          </div>
+        </div>
+        <div className="col s6">
+        </div>
       </div>
     );
   }

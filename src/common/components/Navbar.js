@@ -15,6 +15,7 @@ class RightMenuLoggedIn extends React.Component {
   render() {
     return (
       <ul id="nav-mobile" className="right hide-on-med-and-down">
+        <li><Link to="/accounts">Accounts</Link></li>
         <li><Link to="/profile">{this.props.email}</Link></li>
         <li><a href="#0" onClick={this.props.logout}>Logout</a></li>
       </ul>
