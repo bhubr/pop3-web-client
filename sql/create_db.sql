@@ -45,6 +45,15 @@ CREATE TABLE `messages` (
 ALTER TABLE messages
 ADD FOREIGN KEY (accountId) REFERENCES accounts(id);
 
+CREATE TABLE userProfiles (
+  `id` int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `userId` int(10) UNSIGNED NOT NULL,
+  `redirectTo` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+);
+
+ALTER TABLE userProfiles
+ADD FOREIGN KEY (userId) REFERENCES users(id);
+
 -- alter table messages add column subject text;
 -- alter table messages add column senderName varchar(255);
 -- alter table messages add column senderEmail varchar(255);

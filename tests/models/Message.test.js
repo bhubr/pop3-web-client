@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const User = require('../../dist/models/user').default;
+const User = require('../../dist/models/User').default;
 const Account = require('../../dist/models/account').default;
 const Message = require('../../dist/models/Message').default;
 const Promise = require('bluebird');

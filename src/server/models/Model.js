@@ -96,7 +96,7 @@ export default class Model {
    * Only calls beforeCreate().
    */
   static _beforeCreate(props, ...args) {
-    // console.log('_beforeCreate', args)
+    console.log('_beforeCreate', props, args)
     return new Promise((resolve, reject) => resolve(
       this.beforeCreate(props, args)
     ));
@@ -106,7 +106,7 @@ export default class Model {
    * This one is a stub meant to be overridden by subclasses.
    */
   static beforeCreate(props, ...args) {
-    // console.log('beforeCreate', props, args)
+    console.log('beforeCreate', props, args)
     return props;
   }
 
@@ -166,7 +166,7 @@ export default class Model {
 
     return this._beforeCreate(props)
     .then(props => {
-      // console.log(props);
+      // console.log('after beforeCreate', props);
       const fields = Object.keys(props).join(',');
       const values = Object.values(props).map(trimAndQuote).join(',');
       const insertQuery = `insert into ${this._tableName}(${fields}) values(${values})`;

@@ -1,7 +1,8 @@
 const chai = require('chai');
 const expect = chai.expect;
 const pool = require('../../dist/db');
-const User = require('../../dist/models/user').default;
+const User = require('../../dist/models/User').default;
+const UserProfile = require('../../dist/models/UserProfile').default;
 const clearDatabase = require('../_utils/clearDatabase');
 
 const getId = (() => {
@@ -29,7 +30,7 @@ describe('User model test', () => {
 
   it('creates a user with empty pass', () =>
     User.create({
-      email: getEmail(), password: ''
+      email: getEmail(), password: undefined
     })
     .then(() => {
       expect(false).to.be.equal(true);
@@ -47,6 +48,11 @@ describe('User model test', () => {
       expect(user).to.be.a('object');
       expect(user.email).to.equal('test.user.2@example.com');
       expect(user.password).to.be.a('undefined');
+    })
+    .then(() => UserProfile.findAll())
+    .then(([profile]) => {
+      expect(profile.id).to.equal(1);
+      expect(profile.userId).to.equal(1);
     })
   );
 

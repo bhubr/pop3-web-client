@@ -2,9 +2,9 @@ import Model from './Model';
 
 class DummyProfile extends Model {
 
-	static _fields = ['personId'];
+  static _fields = ['personId'];
   static _defaults = {};
-	static _tableName = 'dummyProfiles';
+  static _tableName = 'dummyProfiles';
 
 }
 

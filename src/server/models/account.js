@@ -5,7 +5,7 @@ import Pop3Command from 'node-pop3';
 import chain from 'store-chain';
 import { simpleParser } from 'mailparser';
 import cheerio from 'cheerio';
-import Message from './message';
+import Message from './Message';
 import pop3SessionStore from './pop3SessionStore';
 
 import { encrypt, decrypt } from '../utils';
