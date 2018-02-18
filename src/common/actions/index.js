@@ -334,7 +334,7 @@ export function loginUser(user)  {
         dispatch(loginUserSuccess(user));
         socket.emit('auth:success', user);
         console.log('DISPATCHED LOGIN SUCCESS', history);
-        history.push('/accounts');
+        history.push(user.redirectTo ? user.redirectTo : '/profile');
       })
       .catch(err => dispatch(loginUserError(err)));
   };

@@ -22,8 +22,12 @@ function passLog(...args) {
 
 class User extends Model {
 
-  static _fields = ['email', 'password'];
-  static _defaults = {};
+  static _fields = ['email', 'password', 'firstName', 'lastName', 'redirectTo'];
+  static _defaults = {
+    firstName: '',
+    lastName: '',
+    redirectTo: '/profile'
+  };
   static _tableName = 'users';
 
   constructor(props) {
@@ -55,8 +59,16 @@ class User extends Model {
   }
 
   static beforeUpdate(user) {
-    return ! user.password ? Promise.resolve(user) :
-    this.beforeCreate(user);
+    if(typeof user.password !== 'string') {
+      return Promise.resolve(user);
+    }
+    else {
+      if(user.password === '') {
+        delete user.password;
+        return Promise.resolve(user);
+      }
+      return this.beforeCreate(user);
+    }
   }
 
   static getByEmail(email) {

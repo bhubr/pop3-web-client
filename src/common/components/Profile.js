@@ -13,9 +13,10 @@ class Profile extends React.Component {
       id,
       firstName,
       lastName,
+      redirectTo,
       email
     } = this.props.user;
-    this.state = { id, email, password: '' };
+    this.state = { id, email, firstName, lastName, redirectTo, password: '' };
     console.log('Profile state', this.state);
 
     this.handleChange = this.handleChange.bind(this);
@@ -50,7 +51,7 @@ class Profile extends React.Component {
           <form onSubmit={this.handleSubmit} className="col s12">
             <h1>Account data</h1>
 
-            {/*<div className="row">
+            <div className="row">
               <div className="input-field col s12">
                 <input
                   className="validate"
@@ -72,7 +73,19 @@ class Profile extends React.Component {
                   value={this.state.lastName}
                   onChange={this.handleChange} />
               </div>
-            </div>*/}
+            </div>
+
+            <div className="row">
+              <div className="input-field col s12">
+                <input
+                  className="validate"
+                  placeholder="Redirect To"
+                  name="redirectTo"
+                  type="text"
+                  value={this.state.redirectTo}
+                  onChange={this.handleChange} />
+              </div>
+            </div>
 
             <div className="row">
               <div className="input-field col s12">

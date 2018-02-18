@@ -31412,7 +31412,7 @@ function loginUser(user) {
       dispatch(loginUserSuccess(user));
       _socket2.default.emit('auth:success', user);
       console.log('DISPATCHED LOGIN SUCCESS', _history2.default);
-      _history2.default.push('/accounts');
+      _history2.default.push(user.redirectTo ? user.redirectTo : '/profile');
     }).catch(function (err) {
       return dispatch(loginUserError(err));
     });
@@ -33156,9 +33156,10 @@ var Profile = function (_React$Component) {
         id = _this$props$user.id,
         firstName = _this$props$user.firstName,
         lastName = _this$props$user.lastName,
+        redirectTo = _this$props$user.redirectTo,
         email = _this$props$user.email;
 
-    _this.state = { id: id, email: email, password: '' };
+    _this.state = { id: id, email: email, firstName: firstName, lastName: lastName, redirectTo: redirectTo, password: '' };
     console.log('Profile state', _this.state);
 
     _this.handleChange = _this.handleChange.bind(_this);
@@ -33205,6 +33206,51 @@ var Profile = function (_React$Component) {
                 'h1',
                 null,
                 'Account data'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    className: 'validate',
+                    placeholder: 'First name',
+                    name: 'firstName',
+                    type: 'text',
+                    value: this.state.firstName,
+                    onChange: this.handleChange })
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    className: 'validate',
+                    placeholder: 'Last name',
+                    name: 'lastName',
+                    type: 'text',
+                    value: this.state.lastName,
+                    onChange: this.handleChange })
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'row' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'input-field col s12' },
+                  _react2.default.createElement('input', {
+                    className: 'validate',
+                    placeholder: 'Redirect To',
+                    name: 'redirectTo',
+                    type: 'text',
+                    value: this.state.redirectTo,
+                    onChange: this.handleChange })
+                )
               ),
               _react2.default.createElement(
                 'div',
