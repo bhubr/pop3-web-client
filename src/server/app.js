@@ -20,7 +20,7 @@ import socketIOHandler from './socketIOHandler';
 const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
 const config = require('../' + configFile);
 
-// console.log(config);
+console.log(config);
 console.log(serverAPI);
 api.setStrategy(serverAPI);
 

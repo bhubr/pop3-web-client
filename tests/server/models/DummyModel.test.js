@@ -1,9 +1,9 @@
 const chai = require('chai');
 const expect = chai.expect;
 const Promise = require('bluebird');
-const pool = require('../../dist/db');
-const DummyModel = require('../../dist/models/DummyModel').default;
-const DummyProfile = require('../../dist/models/DummyProfile').default;
+const pool = require('../../../dist/db');
+const DummyModel = require('../../../dist/models/DummyModel').default;
+const DummyProfile = require('../../../dist/models/DummyProfile').default;
 
 const createPersonsTableSQL = `CREATE TABLE IF NOT EXISTS persons (
   id int(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,

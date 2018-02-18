@@ -1,19 +1,10 @@
 const chai = require('chai');
 const expect = chai.expect;
-const pool = require('../../dist/db');
-const User = require('../../dist/models/User').default;
-const UserProfile = require('../../dist/models/UserProfile').default;
-const clearDatabase = require('../_utils/clearDatabase');
-
-const getId = (() => {
-  let id = 0;
-  return () => (++id);
-})();
-
-const getEmail = (() => {
-  return () => 'test.user.' + getId() + '@example.com';
-})();
-
+const pool = require('../../../dist/db');
+const User = require('../../../dist/models/User').default;
+const UserProfile = require('../../../dist/models/UserProfile').default;
+const clearDatabase = require('../../_utils/clearDatabase');
+const { getId, getEmail } = require('../../_utils/getCredentials');
 
 describe('User model test', () => {
 

@@ -1,11 +1,11 @@
 const chai = require('chai');
 const expect = chai.expect;
-const User = require('../../dist/models/User').default;
-const Account = require('../../dist/models/Account').default;
-const Message = require('../../dist/models/Message').default;
+const User = require('../../../dist/models/User').default;
+const Account = require('../../../dist/models/Account').default;
+const Message = require('../../../dist/models/Message').default;
 const Promise = require('bluebird');
 const chain = require('store-chain');
-const credentials = require('../../credentials.test.json');
+const credentials = require('../../../credentials.test.json');
 
 const getId = (() => {
   let id = 0;
