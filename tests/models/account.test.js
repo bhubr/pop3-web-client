@@ -1,8 +1,8 @@
 const chai = require('chai');
 const expect = chai.expect;
-const User = require('../../dist/models/user').default;
-const Account = require('../../dist/models/account').default;
-const Message = require('../../dist/models/message').default;
+const User = require('../../dist/models/User').default;
+const Account = require('../../dist/models/Account').default;
+const Message = require('../../dist/models/Message').default;
 const Promise = require('bluebird');
 const { spawn } = require('child_process');
 const chain = require('store-chain');

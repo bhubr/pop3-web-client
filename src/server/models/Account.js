@@ -5,7 +5,7 @@ import Pop3Command from 'node-pop3';
 import chain from 'store-chain';
 import { simpleParser } from 'mailparser';
 import cheerio from 'cheerio';
-import Message from './message';
+import Message from './Message';
 import pop3SessionStore from './pop3SessionStore';
 
 import { encrypt, decrypt } from '../utils';
@@ -43,7 +43,7 @@ export default class Account {
     this.parseEmail = this.parseEmail.bind(this);
 
     this.pop3 = pop3SessionStore.get(this.id);
-    this.socketIOHandler = require('../socketIOHandler')();
+    this.socketIOHandler = require('../socketIOHandler');
   }
 
   getPop3Credentials() {

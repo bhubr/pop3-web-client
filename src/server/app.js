@@ -14,10 +14,8 @@ import initStore from './initStore';
 
 import api from './api';
 import serverAPI from './serverAPI';
-import User from './models/user';
-import Account from './models/account';
-import Message from './models/message';
-
+import { User, Account, Message } from './models';
+import socketIOHandler from './socketIOHandler';
 
 const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
 const config = require('../' + configFile);
@@ -233,4 +231,4 @@ app.get('*', (req, res) => {
 
 const server = app.listen(config.port);
 const io = require('socket.io').listen(server);
-require('./socketIOHandler')(io);
+socketIOHandler.setIo(io);
