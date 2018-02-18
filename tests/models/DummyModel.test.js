@@ -23,14 +23,12 @@ function timeoutPromise() {
 }
 
 function createHelper(foo, bar, intVal) {
-  // console.log('createHelper', foo, bar, intVal, timeoutIncr);
   return timeoutPromise()
   .then(() => DummyModel.create({ foo, bar, intVal }));
 }
 
 function assertPropsHelper(_id, _foo, _bar, _intVal) {
   return record => {
-    // console.log('## assertPropsHelper record:', record, '// expected:', _id, _foo, _bar, _intVal);
     expect(record.id).to.equal(_id);
     expect(record.foo).to.equal(_foo);
     expect(record.bar).to.equal(_bar);
