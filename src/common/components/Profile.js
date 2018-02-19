@@ -49,7 +49,7 @@ class Profile extends React.Component {
           <div className="row">
 
           <form onSubmit={this.handleSubmit} className="col s12">
-            <h1>Account data</h1>
+            <h3>Account data</h3>
 
             <div className="row">
               <div className="input-field col s12">

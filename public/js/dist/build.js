@@ -33203,7 +33203,7 @@ var Profile = function (_React$Component) {
               'form',
               { onSubmit: this.handleSubmit, className: 'col s12' },
               _react2.default.createElement(
-                'h1',
+                'h3',
                 null,
                 'Account data'
               ),

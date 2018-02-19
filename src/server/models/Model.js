@@ -208,7 +208,8 @@ export default class Model {
    */
   static update(idOrWhere, props) {
     // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-    const whereCondition = (idOrWhere === parseInt(idOrWhere, 10)) ?
+    const isById = (idOrWhere === parseInt(idOrWhere, 10));
+    const whereCondition = isById ?
       `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
 
     return this.beforeUpdate(props)
@@ -225,7 +226,10 @@ export default class Model {
       const updateQuery = `update ${this._tableName} set ${setFields} ${whereCondition}`;
       console.log('## updateQuery', updateQuery);
       return pool
-      .query(updateQuery);
+      .query(updateQuery)
+      .then(() => isById ? this.findOne(idOrWhere) :
+        this.findAll(idOrWhere)
+      );
 
     });
 

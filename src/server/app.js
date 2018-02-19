@@ -240,15 +240,15 @@ app.get('*', (req, res) => {
     );
     console.log('context after', context);
 
-    const status = context.status ? context.status : 200;
 
     if (context.url) {
       // Somewhere a `<Redirect>` was rendered
-      res.redirect(status, context.url);
+      res.redirect(302, context.url);
     } else {
       const protocol = config.useHttps ? 'https' : 'http';
 
       // we're good, send the response
+      const status = context.status ? context.status : 200;
       res.status(status).render('app.html.twig', { markup, state: stateJSON, protocol });
     }
   });

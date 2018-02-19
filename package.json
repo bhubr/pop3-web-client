@@ -55,6 +55,7 @@
     "gulp-tap": "^1.0.1",
     "gulp-uglify": "^3.0.0",
     "gulplog": "^1.0.0",
+    "nodemailer": "^4.4.2",
     "pathmodify": "^0.5.0",
     "pop-server": "0.0.1",
     "pop3-n3": "^0.1.2",
