@@ -1,6 +1,6 @@
-function passLog(label) {
+function passLog(...args) {
   return v => {
-    console.log('\n\n##############\n', label, '\n', v);
+    console.log.apply(console, ['\n\n###############################\n', ...args, '\n', v]);
     return v;
   }
 }

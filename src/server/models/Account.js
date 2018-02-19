@@ -5,6 +5,7 @@ import Pop3Command from 'node-pop3';
 import chain from 'store-chain';
 import { simpleParser } from 'mailparser';
 import cheerio from 'cheerio';
+import Model from './Model';
 import Message from './Message';
 import pop3SessionStore from './pop3SessionStore';
 
@@ -26,16 +27,21 @@ function passLog(label) {
   }
 }
 
-export default class Account {
+class Account extends Model {
+
+  static _fields = ['userId', 'type', 'host', 'port', 'identifier', 'password'];
+  static _defaults = {};
+  static _tableName = 'accounts';
 
   constructor(props) {
-    this.id = props.id;
-    this.userId = props.userId;
-    this.type = props.type;
-    this.port = props.port;
-    this.host = props.host;
-    this.identifier = props.identifier;
-    this.password = props.password;
+    super(props);
+    // this.id = props.id;
+    // this.userId = props.userId;
+    // this.type = props.type;
+    // this.port = props.port;
+    // this.host = props.host;
+    // this.identifier = props.identifier;
+    // this.password = props.password;
 
     this.fetchMessages = this.fetchMessages.bind(this);
     this.fetchMessage = this.fetchMessage.bind(this);
@@ -55,18 +61,18 @@ export default class Account {
     };
   }
 
-  static findAll(whereHash) {
-    whereHash = whereHash || {};
-    const baseQuery = 'select id, userId, type, host, port, identifier, password from accounts';
-    let whereStrings = [];
-    for(let k in whereHash) {
-      whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
-    }
-    const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
-    console.log('Account.findAll', baseQuery + whereCondition);
-    return pool
-      .query(baseQuery + whereCondition);
-  }
+  // static findAll(whereHash) {
+  //   whereHash = whereHash || {};
+  //   const baseQuery = 'select id, userId, type, host, port, identifier, password from accounts';
+  //   let whereStrings = [];
+  //   for(let k in whereHash) {
+  //     whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
+  //   }
+  //   const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
+  //   console.log('Account.findAll', baseQuery + whereCondition);
+  //   return pool
+  //     .query(baseQuery + whereCondition);
+  // }
 
   static findOne(id, userPass) {
     const doDecrypt = typeof userPass === 'string';
@@ -81,38 +87,40 @@ export default class Account {
   }
 
   static beforeCreate(account, userPass) {
+    // console.log('\n\n### Account.beforeCreate', arguments);
     const password = encrypt(account.password, userPass);
     return Promise.resolve(Object.assign(account, { password }));
   }
 
-  static create(account, userPass) {
-    const requiredKeys = ['userId', 'host', 'port', 'identifier', 'password', 'type'];
-    for(let i = 0 ; i < requiredKeys.length ; i++) {
-      const k = requiredKeys[i];
-      if(! account[k]) {
-        return Promise.reject(new Error(`required key '${k}' is missing`));
-      }
-    }
-    for(let k in account) {
-      if(requiredKeys.indexOf(k) === -1) {
-        return Promise.reject(new Error(`unexpected key '${k}'`));
-      }
-    }
-    if(typeof userPass !== 'string') {
-      return Promise.reject(new Error(`required 2nd arg userPass is missing`));
-    }
+  // static create(account, userPass) {
+  //   const requiredKeys = ['userId', 'host', 'port', 'identifier', 'password', 'type'];
+  //   for(let i = 0 ; i < requiredKeys.length ; i++) {
+  //     const k = requiredKeys[i];
+  //     if(! account[k]) {
+  //       return Promise.reject(new Error(`required key '${k}' is missing`));
+  //     }
+  //   }
+  //   for(let k in account) {
+  //     if(requiredKeys.indexOf(k) === -1) {
+  //       return Promise.reject(new Error(`unexpected key '${k}'`));
+  //     }
+  //   }
+  //   if(typeof userPass !== 'string') {
+  //     return Promise.reject(new Error(`required 2nd arg userPass is missing`));
+  //   }
 
-    return Account.beforeCreate(account, userPass)
-    .then(account => {
-      const fields = Object.keys(account).join(',');
-      const values = Object.values(account).map(trimAndQuote).join(',');
-      const insertQuery = `insert into accounts(${fields}) values(${values})`;
-      return pool
-        .query(insertQuery)
-        .then(result => Account.findOne(result.insertId))
-        .then(props => new Account(props));
-    });
-  }
+  //   return Account.beforeCreate(account, userPass)
+  //   .then(account => {
+  //     const fields = Object.keys(account).join(',');
+  //     const values = Object.values(account).map(trimAndQuote).join(',');
+  //     const insertQuery = `insert into accounts(${fields}) values(${values})`;
+  //     console.log(insertQuery);
+  //     return pool
+  //       .query(insertQuery)
+  //       .then(result => Account.findOne(result.insertId))
+  //       .then(props => new Account(props));
+  //   });
+  // }
 
   static delete(id) {
     const deleteQuery = 'delete from accounts where id = ' + id;
@@ -147,19 +155,19 @@ export default class Account {
   }
 
   fetchMessages(idUidls) {
-    console.log('\n\n##### Account.fetchMessages', idUidls)
+    // console.log('\n\n##### Account.fetchMessages', idUidls)
     return Promise.reduce(idUidls, this.fetchMessage, []);
   }
 
   fetchRemoteMessages(start = 0, num = 0) {
-console.log('#### this.socketIOHandler', this.socketIOHandler);
+// console.log('#### this.socketIOHandler', this.socketIOHandler);
     return chain(this.listRemoteMessages())
-    .then(passLog('returned by listRemoteMessages'))
+    // .then(passLog('returned by listRemoteMessages'))
     .then(idUidls => (
       num ? idUidls.slice(start, num) : idUidls
     ))
     // .then(passLog('after optional slice'))
-    .then((_this => stuff => { console.log('this', _this.socketIOHandler); return stuff; })(this))
+    // .then((_this => stuff => { console.log('this', _this.socketIOHandler); return stuff; })(this))
     .then(this.socketIOHandler.onMessageListSuccess(this.userId))
     .then(this.fetchMessages)
     // .then(passLog('fetchMessages returned'))
@@ -225,7 +233,7 @@ console.log('#### this.socketIOHandler', this.socketIOHandler);
   }
 
   fetchMessage(carry, msgIdUidl) {
-    console.log('##### fetchMessage', msgIdUidl);
+    // console.log('##### fetchMessage', msgIdUidl);
 
     const [msgId, uidl] = msgIdUidl;
     return Message.findOneByUidl(uidl, this.id)
@@ -237,10 +245,10 @@ console.log('#### this.socketIOHandler', this.socketIOHandler);
         return message;
       }
       return this.pop3.RETR(msgId)
-      .then(passLog('\n\nfetchMessage #1 stream'))
+      // .then(passLog('\n\nfetchMessage #1 stream'))
       .then(this.readEmailStream)
       .then(this.parseEmail(uidl))
-      .then(passLog('\n\nfetchMessage #2 parsed'))
+      // .then(passLog('\n\nfetchMessage #2 parsed'))
       .then(props => Message.create(props))
       // .catch(this.socketIOHandler.onMessageFetchError(this.userId)
         // .then(() => (carry))
@@ -256,3 +264,6 @@ console.log('#### this.socketIOHandler', this.socketIOHandler);
 
 
 }
+
+Model._classes.Account = Account;
+export default Account;

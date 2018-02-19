@@ -80,7 +80,7 @@ export default class Model {
     const fieldsString = this.getFieldsString();
     const whereCondition = this.getWhereCondition(whereHash);
     const query = `select id,${fieldsString} from ${this._tableName} ${whereCondition} ORDER by id asc`;
-    console.log('findAll query:', query, 'where:', whereCondition);
+    // console.log('findAll query:', query, 'where:', whereCondition);
     return pool
       .query(query);
   }
@@ -101,7 +101,7 @@ export default class Model {
    * Only calls beforeCreate().
    */
   static _beforeCreate(props, ...args) {
-    console.log('_beforeCreate', props, args)
+    // console.log('_beforeCreate', props, args)
     return new Promise((resolve, reject) => resolve(
       this.beforeCreate(props, args)
     ));
@@ -111,7 +111,7 @@ export default class Model {
    * This one is a stub meant to be overridden by subclasses.
    */
   static beforeCreate(props, ...args) {
-    console.log('beforeCreate', props, args)
+    // console.log('beforeCreate', props, args)
     return props;
   }
 
@@ -137,27 +137,28 @@ export default class Model {
    *
    * This one is a stub meant to be overridden by subclasses.
    */
-  static _beforeCreate(props, ...args) {
+  static _beforeCreate(...args) {
+    // console.log('Model._beforeCreate', args);
     return new Promise((resolve, reject) => resolve(
-      this.beforeCreate(props, args)
+      this.beforeCreate.apply(this, args)
     ));
   }
 
-  static beforeCreate(props, ...args) {
-    return props;
+  static beforeCreate(...args) {
+    return new Promise((resolve, reject) => resolve(args[0]));
   }
 
   /**
    * Func to be executed before object upddate.
    */
-  static _beforeUpdate(props) {
+  static _beforeUpdate(...args) {
     return new Promise((resolve, reject) => resolve(
-      this.beforeUpdate(props)
+      this.beforeUpdate.apply(this, args)
     ));
   }
 
-  static beforeUpdate(props) {
-    return new Promise((resolve, reject) => resolve(props));
+  static beforeUpdate(...args) {
+    return new Promise((resolve, reject) => resolve(args[0]));
     // return props;
   }
 
@@ -165,8 +166,8 @@ export default class Model {
   /**
    * Create a record
    */
-  static create(...args) {
-    const props = Object.assign(this._defaults, args[0]);
+  static create(props, ...args) {
+    props = Object.assign(this._defaults, props);
     const requiredKeys = this._fields;
     for(let i = 0 ; i < requiredKeys.length ; i++) {
       const k = requiredKeys[i];
@@ -179,13 +180,13 @@ export default class Model {
         return Promise.reject(new Error(`unexpected key '${k}'`));
       }
     }
-
-    return this._beforeCreate(props)
+// console.log('before beforeCreate', props);
+    return this._beforeCreate.apply(this, [props, ...args])
     .then(props => {
-      // console.log('after beforeCreate', props);
       const fields = Object.keys(props).join(',');
       const values = Object.values(props).map(trimAndQuote).join(',');
       const insertQuery = `insert into ${this._tableName}(${fields}) values(${values})`;
+      // console.log('after beforeCreate', props, insertQuery);
       return pool
         .query(insertQuery)
         .then(result => this.findOne(result.insertId))
@@ -230,7 +231,7 @@ export default class Model {
       }
       const setFields = setFieldsArr.join(',');
       const updateQuery = `update ${this._tableName} set ${setFields} ${whereCondition}`;
-      console.log('## updateQuery', updateQuery);
+      // console.log('## updateQuery', updateQuery);
       return pool
       .query(updateQuery)
       .then(() => isById ? this.findOne(idOrWhere) :

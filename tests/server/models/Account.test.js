@@ -111,7 +111,7 @@ describe('Account model test', () => {
     ]))
     .get(({ account }) => account.listRemoteMessages())
     .then(messages => {
-      console.log(`GOT ${messages.length} MESSAGES`);
+      // console.log(`GOT ${messages.length} MESSAGES`);
       expect(messages.length).to.equal(3);
       const [[m1id, m1uidl], [m2id, m2uidl], [m3id, m3uidl]] = messages;
       expect(m1id).to.equal('1');
@@ -142,7 +142,7 @@ describe('Account model test', () => {
       return account.fetchRemoteMessages();
     })
     .then(messages => {
-      console.log('messages', messages);
+      // console.log('messages', messages);
       expect(messages.length).to.equal(3);
       const [ m1, m2, m3 ] = messages;
       // expect(m1.id).to.equal(1);
