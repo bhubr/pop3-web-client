@@ -52,6 +52,28 @@ class SocketIOHandler {
   }
 }
 
+
+class SocketIOHandlerTest {
+
+  setIo(io) {}
+
+  onMessageListSuccess(userId) {
+    return idUidls => (idUidls);
+  }
+
+  onMessageFetchSuccess(userId) {
+    return message => (message);
+  }
+
+  onMessageFetchError(userId) {
+    return error => (true);
+  }
+
+  onAuthSuccess(socket) {
+    return user => (undefined);
+  }
+}
+
 // let instance;
 
 // module.exports = function(io) {
@@ -63,4 +85,4 @@ class SocketIOHandler {
 //   }
 //   return instance;
 // }
-export default new SocketIOHandler();
+module.exports = process.env.NODE_ENV === 'test' ? new SocketIOHandlerTest() : new SocketIOHandler();

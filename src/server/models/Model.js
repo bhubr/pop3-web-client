@@ -44,6 +44,7 @@ export default class Model {
     for(let p in props) {
       this[p] = props[p];
     }
+    // console.log('Model default constructor', props, this);
   }
 
   // static get callingClassType() { return this.name; }
@@ -156,7 +157,8 @@ export default class Model {
   }
 
   static beforeUpdate(props) {
-    return props;
+    return new Promise((resolve, reject) => resolve(props));
+    // return props;
   }
 
 

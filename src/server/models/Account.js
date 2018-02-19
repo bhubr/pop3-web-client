@@ -152,13 +152,14 @@ export default class Account {
   }
 
   fetchRemoteMessages(start = 0, num = 0) {
-
+console.log('#### this.socketIOHandler', this.socketIOHandler);
     return chain(this.listRemoteMessages())
     .then(passLog('returned by listRemoteMessages'))
     .then(idUidls => (
       num ? idUidls.slice(start, num) : idUidls
     ))
     // .then(passLog('after optional slice'))
+    .then((_this => stuff => { console.log('this', _this.socketIOHandler); return stuff; })(this))
     .then(this.socketIOHandler.onMessageListSuccess(this.userId))
     .then(this.fetchMessages)
     // .then(passLog('fetchMessages returned'))
@@ -227,7 +228,7 @@ export default class Account {
     console.log('##### fetchMessage', msgIdUidl);
 
     const [msgId, uidl] = msgIdUidl;
-    return Message.findOneByUidl(uidl, accountId)
+    return Message.findOneByUidl(uidl, this.id)
     .then(message => {
 
       // BYPASS DB
