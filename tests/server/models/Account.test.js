@@ -4,15 +4,18 @@ const User = require('../../../dist/models/User').default;
 const Account = require('../../../dist/models/Account').default;
 const Message = require('../../../dist/models/Message').default;
 const Promise = require('bluebird');
-const { spawn } = require('child_process');
 const chain = require('store-chain');
-const { encrypt, decrypt } = require('../../dist/utils');
-const credentials = require('../../credentials.test.json');
-const clearDatabase = require('../_utils/clearDatabase');
-const path = require('path');
+const { encrypt, decrypt } = require('../../../dist/utils');
+const credentials = require('../../../credentials.test.json');
+const clearDatabase = require('../../_utils/clearDatabase');
+const passLog = require('../../_utils/passLog');
 const {
-  createEmail, killServer
-} = require('../_resources/redis-pub');
+  createEmail
+} = require('../../_resources/redis-pub');
+const {
+  startPop3Server,
+  killPop3Server
+} = require('../../_resources/fake-pop3-control');
 
 
 const UIDL_DATE = 1514764800000;
@@ -37,24 +40,10 @@ describe('Account model test', () => {
   let userId;
 
   before(() => clearDatabase()
-    .then(() => {
-      const child = spawn('node', [path.normalize(__dirname + '/../_resources/pop3_server')]);
-
-      child.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-      });
-
-      child.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
-      });
-
-      child.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-      });
-    })
+    .then(startPop3Server)
   );
 
-  after(killServer);
+  after(killPop3Server);
 
   it('creates an account with empty fields', () =>
     Account.create({})
@@ -116,9 +105,9 @@ describe('Account model test', () => {
     .set('account')
     .then(account => account.listRemoteMessages())
     .then(() => Promise.all([
-      createEmail(1, 'John Difool', 'johndifool@example.com'),
-      createEmail(2, 'John Difool', 'johndifool@example.com'),
-      createEmail(3, 'John Difool', 'johndifool@example.com'),
+      // createEmail(1, 'John Difool', 'johndifool@example.com'),
+      // createEmail(2, 'John Difool', 'johndifool@example.com'),
+      // createEmail(3, 'John Difool', 'johndifool@example.com'),
     ]))
     .get(({ account }) => account.listRemoteMessages())
     .then(messages => {
@@ -126,11 +115,11 @@ describe('Account model test', () => {
       expect(messages.length).to.equal(3);
       const [[m1id, m1uidl], [m2id, m2uidl], [m3id, m3uidl]] = messages;
       expect(m1id).to.equal('1');
-      expect(m1uidl).to.equal(getExpectedUidl(1));
+      expect(m1uidl).to.equal('msg_1');
       expect(m2id).to.equal('2');
-      expect(m2uidl).to.equal(getExpectedUidl(2));
+      expect(m2uidl).to.equal('msg_2');
       expect(m3id).to.equal('3');
-      expect(m3uidl).to.equal(getExpectedUidl(3));
+      expect(m3uidl).to.equal('msg_3');
     })
     // .get(({ account }) => account.closePop3Session())
   );

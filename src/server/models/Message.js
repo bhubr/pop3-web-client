@@ -46,6 +46,11 @@ class Message extends Model {
   //     .then(props => (props ? new Message(props) : undefined));
   // }
 
+  static findOneByUidl(uidl, accountId) {
+    return this.findAll({ uidl, accountId })
+    .then(records => (records.length > 0 ? new Message(records[0]) : undefined))
+  }
+
   static beforeCreate(message) {
     return new Promise((resolve, reject) => {
       const $ = cheerio.load(message.html);

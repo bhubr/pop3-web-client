@@ -5,22 +5,11 @@ const { spawn } = require('child_process');
 const request = require('request-promise');
 const path = require('path');
 const clearDatabase = require('../../_utils/clearDatabase');
+const timeoutPromise = require('../../_utils/timeoutPromise');
+const passLog = require('../../_utils/passLog');
 const { getId, getEmail, getCredentials } = require('../../_utils/getCredentials');
-
 let child;
 
-function passLog(label) {
-  return v => {
-    console.log('\n\n######\\\\\\#\n#', label, '\n', v);
-    return v;
-  }
-}
-
-function timeoutPromise() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(true), 1000);
-    });
-}
 
 function startServer() {
   child = spawn('node', [path.normalize(__dirname + '/../../../dist/app')]);

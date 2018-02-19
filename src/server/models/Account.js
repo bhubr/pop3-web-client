@@ -227,7 +227,7 @@ export default class Account {
     console.log('##### fetchMessage', msgIdUidl);
 
     const [msgId, uidl] = msgIdUidl;
-    return Message.findOneByUidl(uidl)
+    return Message.findOneByUidl(uidl, accountId)
     .then(message => {
 
       // BYPASS DB
