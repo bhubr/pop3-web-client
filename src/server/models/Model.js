@@ -1,4 +1,5 @@
 import pool from '../db';
+import { isInt } from '../utils';
 
 // https://stackoverflow.com/questions/7744912/making-a-javascript-string-sql-friendly
 function mysqlEscape (str) {
@@ -63,6 +64,9 @@ export default class Model {
     whereHash = whereHash !== undefined ? whereHash : {};
     let whereStrings = [];
     for(let k in whereHash) {
+      if(whereHash[k] === undefined) {
+        throw new Error(`No value set for key ${k} in where hash`);
+      }
       whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
     }
     return whereStrings.length ? 'WHERE ' + whereStrings.join(' AND ') : '';
@@ -74,10 +78,10 @@ export default class Model {
   static findAll(whereHash) {
     const fieldsString = this.getFieldsString();
     const whereCondition = this.getWhereCondition(whereHash);
-    const baseQuery = `select id,${fieldsString} from ${this._tableName} ${whereCondition} ORDER by id asc`;
-    // console.log(baseQuery);
+    const query = `select id,${fieldsString} from ${this._tableName} ${whereCondition} ORDER by id asc`;
+    console.log('findAll query:', query, 'where:', whereCondition);
     return pool
-      .query(baseQuery);
+      .query(query);
   }
 
   /**
@@ -196,7 +200,7 @@ export default class Model {
    */
   static delete(idOrWhere) {
     // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-    const whereCondition = (idOrWhere === parseInt(idOrWhere, 10)) ?
+    const whereCondition = isInt(idOrWhere) ?
       `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
     const deleteQuery = `delete from ${this._tableName} ${whereCondition}`;
     return pool
@@ -208,7 +212,7 @@ export default class Model {
    */
   static update(idOrWhere, props) {
     // https://stackoverflow.com/questions/14636536/how-to-check-if-a-variable-is-an-integer-in-javascript
-    const isById = (idOrWhere === parseInt(idOrWhere, 10));
+    const isById = isInt(idOrWhere);
     const whereCondition = isById ?
       `where id = ${idOrWhere}` : this.getWhereCondition(idOrWhere);
 

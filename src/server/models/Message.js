@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import cheerio from 'cheerio';
 import Promise from 'bluebird';
 import Model from './Model';
+import { isInt } from '../utils';
 
 function extractMessageBody(message) {
 
@@ -47,6 +48,9 @@ class Message extends Model {
   // }
 
   static findOneByUidl(uidl, accountId) {
+    if(typeof uidl !== 'string' || ! isInt(accountId)) {
+      throw new Error(`findOneByUidl requires (str: uidl, int: accountId), got ${uidl} and ${accountId}`);
+    }
     return this.findAll({ uidl, accountId })
     .then(records => (records.length > 0 ? new Message(records[0]) : undefined))
   }

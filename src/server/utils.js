@@ -18,4 +18,8 @@ function decrypt(text, password) {
   return dec;
 }
 
-export { encrypt, decrypt }
+function isInt(maybeInt) {
+  return maybeInt === parseInt(maybeInt, 10);
+}
+
+export { encrypt, decrypt, isInt }
