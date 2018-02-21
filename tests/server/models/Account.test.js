@@ -16,22 +16,16 @@ const {
   startPop3Server,
   killPop3Server
 } = require('../../_resources/fake-pop3-control');
+const {
+  getId,
+  getEmail
+} = require('../../_utils/getCredentials');
 
+// const UIDL_DATE = 1514764800000;
 
-const UIDL_DATE = 1514764800000;
-
-const getId = (() => {
-  let id = 0;
-  return () => (++id);
-})();
-
-const getEmail = (() => {
-  return () => 'test.user.' + getId() + '@example.com';
-})();
-
-function getExpectedUidl(index) {
-  return ('uid' + index) + (UIDL_DATE + index * 1000);
-}
+// function getExpectedUidl(index) {
+//   return ('uid' + index) + (UIDL_DATE + index * 1000);
+// }
 
 
 describe('Account model test', () => {

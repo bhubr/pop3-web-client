@@ -14,6 +14,7 @@ pop3Server = new POP3Server({
   },
   store: {
     register: function(cb) {
+      console.log('register', this.user);
       if (this.user === "jdoe") {
         var self = this;
         uids.forEach(function(uid) {

@@ -216,7 +216,8 @@ app.get('*', (req, res) => {
         isFetching: false,
         fetchingError: '',
         perAccount: {}
-      }
+      },
+      title: ''
     };
 
     // const initialState = JSON.stringify(data[0] || {});

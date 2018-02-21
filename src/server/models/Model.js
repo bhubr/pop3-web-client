@@ -41,6 +41,7 @@ export default class Model {
    * Constructor: assign all passed props to instance properties
    */
   constructor(props) {
+    this._propKeys = Object.keys(props);
     for(let p in props) {
       this[p] = props[p];
     }
@@ -55,6 +56,7 @@ export default class Model {
   static getFieldsString() {
     return this._fields.join(',');
   }
+
 
   /**
    * Convert a query hash to a where condition
@@ -239,7 +241,14 @@ export default class Model {
       );
 
     });
-
-
   }
+
+  toPOJO() {
+    let obj = {};
+    this._propKeys.forEach(p => {
+      obj[p] = this[p];
+    });
+    return obj;
+  }
+
 }

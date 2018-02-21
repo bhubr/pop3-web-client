@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { registerUser } from '../actions';
+import { registerUser, changeTitle } from '../actions';
 import LoginRegisterForm from './LoginRegisterForm';
 
 class Register extends LoginRegisterForm {
@@ -16,6 +16,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    changeTitle: title => dispatch(changeTitle(title)),
     onSubmit: user => dispatch(registerUser(user))
   };
 };

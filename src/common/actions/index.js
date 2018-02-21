@@ -50,6 +50,8 @@ export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
 
+export const CHANGE_TITLE = 'CHANGE_TITLE';
+
 import socket from '../socket';
 
 
@@ -83,7 +85,12 @@ import socket from '../socket';
 //   };
 // }
 
-
+export function changeTitle(title) {
+  return {
+    type: CHANGE_TITLE,
+    title
+  };
+}
 
 // ------------- FETCH SINGLE MESSAGE ------------
 export function requestFetchSingleMessage(accountId, uidl) {
@@ -221,7 +228,7 @@ export function requestCreateAccount(account) {
   };
 }
 
-export function createAccountSuccess(user) {
+export function createAccountSuccess(account) {
   console.log('createAccountSuccess', account);
   return {
     type: CREATE_ACCOUNT_SUCCESS,
@@ -236,6 +243,18 @@ export function createAccountError(error) {
     error
   };
 }
+
+export function createAccount(accountProps)  {
+  return dispatch => {
+    dispatch(requestCreateAccount(accountProps));
+    return Account.create(accountProps)
+      .then(account => {
+        dispatch(createAccountSuccess(account));
+      })
+      .catch(err => dispatch(createAccountError(err)));
+  };
+}
+
 // --------------------------------------------
 
 export function requestRegisterUser(user) {
@@ -310,20 +329,6 @@ export function loginUserError(error) {
   };
 }
 
-
-export function createAccount(account)  {
-  return dispatch => {
-    console.log('createAccount', account);
-    dispatch(requestCreateAccount(account));
-    return Account.create(account)
-      .then(user => {
-        dispatch(createAccountSuccess(account));
-        console.log('DISPATCHED createAccountSuccess');
-        // history.push('/accounts');
-      })
-      .catch(err => dispatch(createAccountError(err)));
-  };
-}
 
 export function loginUser(user)  {
   return dispatch => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Helmet} from "react-helmet";
 import MailList from './MailList';
 import Navbar from './Navbar';
 import Register from './Register';
@@ -39,9 +40,13 @@ const NotFound = () => (
   </Status>
 );
 
-// const MyApp = ({ user }) => (
+// const MyApp = ({ title }) => (
 const MyApp = () => (
   <div id="layout">
+    {/*<Helmet>
+      <title>Email</title>
+    </Helmet>*/}
+
 
     <Navbar />
 
@@ -79,7 +84,7 @@ const MyApp = () => (
 
 // export default connect(
 //   (state) => ({
-//     user: state.session.user
+//     title: state.title
 //   }),
 //   {}
 // )(MyApp);

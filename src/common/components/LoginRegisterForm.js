@@ -18,6 +18,10 @@ export default class LoginRegisterForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentWillMount() {
+    this.props.changeTitle(this.title);
+  }
+
   handleChange(event) {
     const { name, value } = event.target;
     const [ isValid, validErrMsg ] = validator.validate(name, value);

@@ -35,19 +35,24 @@ describe("Integration tests", function() {
     })
   );
 
+  after(() => client.end());
+
   describe('Sign-up and sign-in test', function() {
     const email = getEmail();
     const password = 'Pass4@';
 
-    it('signs up', done => {
+    it('signs up', () =>
       client
       .url(url('/signup'))
       .setValue('input[name="email"]', email)
       .setValue('input[name="password"]', password)
       .click('button[type="submit"]')
-      .pause(1500)
-      .then(() => done())
-    }, 10000);
+      .pause(1000)
+      .then(() => client.getUrl())
+      .then(url => expect(url).to.equal('http://localhost:3001/profile'))
+      .then(() => client.getTitle())
+      .then(title => expect(title).to.equal('Email'))
+    );
   });
 
 });

@@ -25,6 +25,7 @@
     "mysql": "^2.15.0",
     "node-pop3": "^0.1.0",
     "promise-mysql": "^3.2.0",
+    "react-helmet": "^5.2.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
@@ -70,6 +71,7 @@
     "utf-8-validate": "^4.0.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "webdriverio": "^4.10.2"
   }
 }
