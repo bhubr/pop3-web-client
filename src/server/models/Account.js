@@ -35,13 +35,6 @@ class Account extends Model {
 
   constructor(props) {
     super(props);
-    // this.id = props.id;
-    // this.userId = props.userId;
-    // this.type = props.type;
-    // this.port = props.port;
-    // this.host = props.host;
-    // this.identifier = props.identifier;
-    // this.password = props.password;
 
     this.fetchMessages = this.fetchMessages.bind(this);
     this.fetchMessage = this.fetchMessage.bind(this);
@@ -61,28 +54,18 @@ class Account extends Model {
     };
   }
 
-  // static findAll(whereHash) {
-  //   whereHash = whereHash || {};
-  //   const baseQuery = 'select id, userId, type, host, port, identifier, password from accounts';
-  //   let whereStrings = [];
-  //   for(let k in whereHash) {
-  //     whereStrings.push(k + '=' + trimAndQuote(whereHash[k]));
-  //   }
-  //   const whereCondition = whereStrings.length ? ' WHERE ' + whereStrings.join(' AND ') : '';
-  //   console.log('Account.findAll', baseQuery + whereCondition);
-  //   return pool
-  //     .query(baseQuery + whereCondition);
-  // }
-
   static findOne(id, userPass) {
     const doDecrypt = typeof userPass === 'string';
 
     const selectQuery = `select id, userId, type, host, port, identifier, password from accounts where id = ${id}`;
+    console.log(selectQuery)
     return pool.query(selectQuery)
       .then(records => (records[0]))
+      .then(passLog('record'))
       .then(account => (! doDecrypt ? account : Object.assign(account, {
         password: decrypt(account.password, userPass)
       })))
+      .then(passLog('decrypted pass'))
       .then(props => new Account(props));
   }
 
@@ -91,36 +74,6 @@ class Account extends Model {
     const password = encrypt(account.password, userPass);
     return Promise.resolve(Object.assign(account, { password }));
   }
-
-  // static create(account, userPass) {
-  //   const requiredKeys = ['userId', 'host', 'port', 'identifier', 'password', 'type'];
-  //   for(let i = 0 ; i < requiredKeys.length ; i++) {
-  //     const k = requiredKeys[i];
-  //     if(! account[k]) {
-  //       return Promise.reject(new Error(`required key '${k}' is missing`));
-  //     }
-  //   }
-  //   for(let k in account) {
-  //     if(requiredKeys.indexOf(k) === -1) {
-  //       return Promise.reject(new Error(`unexpected key '${k}'`));
-  //     }
-  //   }
-  //   if(typeof userPass !== 'string') {
-  //     return Promise.reject(new Error(`required 2nd arg userPass is missing`));
-  //   }
-
-  //   return Account.beforeCreate(account, userPass)
-  //   .then(account => {
-  //     const fields = Object.keys(account).join(',');
-  //     const values = Object.values(account).map(trimAndQuote).join(',');
-  //     const insertQuery = `insert into accounts(${fields}) values(${values})`;
-  //     console.log(insertQuery);
-  //     return pool
-  //       .query(insertQuery)
-  //       .then(result => Account.findOne(result.insertId))
-  //       .then(props => new Account(props));
-  //   });
-  // }
 
   static delete(id) {
     const deleteQuery = 'delete from accounts where id = ' + id;

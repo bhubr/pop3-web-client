@@ -1,21 +1,18 @@
-// Part of https://github.com/chris-rock/node-crypto-examples
+import CryptoJS from 'crypto-js';
+const configFile = process.env.NODE_ENV !== 'test' ? 'config' : 'config.test';
+const { salt } = require('../' + configFile);
 
-// Nodejs encryption with CTR
-import crypto from 'crypto';
-const algorithm = 'aes-256-ctr';
 
 function encrypt(text, password) {
-  const cipher = crypto.createCipher(algorithm, password)
-  let crypted = cipher.update(text,'utf8','hex')
-  crypted += cipher.final('hex');
-  return crypted;
+  const ciphertext = CryptoJS.AES.encrypt(salt + text, password);
+  return ciphertext.toString();
 }
  
-function decrypt(text, password) {
-  const decipher = crypto.createDecipher(algorithm, password)
-  let dec = decipher.update(text,'hex','utf8')
-  dec += decipher.final('utf8');
-  return dec;
+function decrypt(ciphertext, password) {
+  const bytes = CryptoJS.AES.decrypt(ciphertext.toString(), password);
+  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  console.log('decrypt', decrypted, decrypted.length, salt.length, password);
+  return decrypted.substr(salt.length);
 }
 
 function isInt(maybeInt) {

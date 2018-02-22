@@ -1,5 +1,6 @@
 module.exports = {
   secret: 'your-secret',
+  salt: '//R4nd0m-Str1ng//'
   port: 3000,
   useHttps: false,
   host: 'localhost:3000',

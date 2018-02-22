@@ -53,6 +53,25 @@ describe("Integration tests", function() {
       .then(() => client.getTitle())
       .then(title => expect(title).to.equal('Email'))
     );
+
+    it('sets up an account', () =>
+      client
+      // .url(url('/accounts'))
+      .click('a[href="/accounts"]')
+      .setValue('input[name="type"]', 'POP3')
+      .setValue('input[name="host"]', 'localhost')
+      .setValue('input[name="port"]', '1100')
+      .setValue('input[name="identifier"]', 'jdoe')
+      .setValue('input[name="password"]', 'ok')
+      .click('button[type="submit"]')
+      .pause(1000)
+    );
+
+    it('opens an inbox', () =>
+      client
+      .click('a[href="/inbox/1"]')
+      .pause(10000)
+    );
   });
 
 });

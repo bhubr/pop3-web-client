@@ -130,7 +130,7 @@ app.post('/api/accounts', (req, res) => {
   const { userPass } = req.body;
   delete req.body.userPass;
   Account.create(req.body, userPass)
-  .then(account => res.json(account))
+  .then(account => res.json(account.toPOJO()))
   .catch(err => res.status(400).json({
     error: err.message
   }));

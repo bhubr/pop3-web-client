@@ -32932,7 +32932,7 @@ var AccountList = function (_React$Component2) {
       });
       return _react2.default.createElement(
         'ul',
-        { className: 'collection' },
+        { id: 'account-list', className: 'collection' },
         accounts && accounts.length ? accountItems : ''
       );
     }

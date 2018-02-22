@@ -32,7 +32,7 @@ class AccountList extends React.Component {
       <AccountItem key={a.id} account={a} />
     ));
 		return (
-      <ul className="collection">
+      <ul id="account-list" className="collection">
       {accounts && accounts.length ? accountItems : ''}
       </ul>
     );
